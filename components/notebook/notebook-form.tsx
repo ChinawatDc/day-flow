@@ -1,3 +1,6 @@
+"use client";
+
+import { ClosingForm } from "@/components/notebook/composer-sheet";
 import { cn } from "@/lib/utils";
 
 export function NotebookForm({
@@ -10,8 +13,8 @@ export function NotebookForm({
   className?: string;
 }) {
   return (
-    <form action={action} className={cn("grid gap-3", className)}>
+    <ClosingForm action={action} className={cn("grid gap-3", className)}>
       {children}
-    </form>
+    </ClosingForm>
   );
 }

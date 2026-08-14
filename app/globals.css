@@ -90,3 +90,31 @@ body {
   background: var(--kaffir);
   color: var(--paper);
 }
+
+/* Flutter-like touch / scroll feel on mobile */
+@media (max-width: 767px) {
+  html {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    overscroll-behavior-y: none;
+  }
+
+  input,
+  select,
+  textarea,
+  button {
+    touch-action: manipulation;
+  }
+}
+
+.leaflet-container {
+  font: inherit;
+  background: var(--paper-2);
+}
+
+.leaflet-control-attribution {
+  font-size: 10px;
+  background: rgba(244, 239, 230, 0.9) !important;
+}
