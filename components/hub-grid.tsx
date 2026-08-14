@@ -39,7 +39,7 @@ export function HubGrid() {
             >
               <Icon className={cn("size-6", m.id === "today" ? "text-paper" : "text-kaffir")} />
               <div>
-                <p className="font-display text-2xl md:text-3xl">{m.label}</p>
+                <p className="text-title text-2xl md:text-3xl">{m.label}</p>
                 <p
                   className={cn(
                     "mt-1 text-sm",

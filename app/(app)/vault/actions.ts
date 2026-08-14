@@ -27,6 +27,34 @@ export async function createVaultItem(formData: FormData) {
   revalidatePath("/today");
 }
 
+export async function updateVaultItem(formData: FormData) {
+  const user = await requireUser();
+  const id = String(formData.get("id"));
+  const title = String(formData.get("title") ?? "").trim();
+  if (!title) return;
+  const file = formData.get("file");
+  const extraKey = await maybeUpload(user.id, "vault", file instanceof File ? file : null);
+  const db = getDb();
+  const [row] = await db
+    .select()
+    .from(vaultItems)
+    .where(and(eq(vaultItems.id, id), eq(vaultItems.userId, user.id)))
+    .limit(1);
+  if (!row) return;
+  await db
+    .update(vaultItems)
+    .set({
+      title,
+      kind: String(formData.get("kind") ?? row.kind),
+      expiresOn: String(formData.get("expiresOn") ?? "") || null,
+      r2Key: extraKey ?? row.r2Key,
+      updatedAt: new Date(),
+    })
+    .where(and(eq(vaultItems.id, id), eq(vaultItems.userId, user.id)));
+  revalidatePath("/vault");
+  revalidatePath("/today");
+}
+
 export async function deleteVaultItem(formData: FormData) {
   const user = await requireUser();
   const id = String(formData.get("id"));

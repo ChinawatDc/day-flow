@@ -32,7 +32,7 @@ Google ไม่บังคับ
 npm run dev
 ```
 - [ ] `/login` สมัครได้
-- [ ] `/api/health` ได้ `{ "ok": true, "db": true }` (`r2` เป็น true หลัง V0.0.3 ตั้งค่าแล้ว)
+- [ ] `/api/health` ได้ `{ "ok": true, "db": true }` (`r2` และ `authEnv` มีใน JSON)
 - [ ] สร้างงานและรายจ่ายได้โดยไม่ต้องมี R2
 
 ## 5) GitHub + Vercel (V0.1.0)

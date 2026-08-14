@@ -2,6 +2,7 @@ import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
 import { FileField } from "@/components/file-field";
 import { FileLink } from "@/components/file-link";
+import { NotebookForm } from "@/components/notebook/notebook-form";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { NativeSelect } from "@/components/ui/select";
@@ -31,13 +32,13 @@ export default async function JournalPage({
         <Link href={`/journal?day=${prev}`} className="text-sm text-kaffir">
           ← วันก่อน
         </Link>
-        <p className="font-display text-2xl">{isoToThaiDisplay(entryOn)}</p>
+        <p className="text-title">{isoToThaiDisplay(entryOn)}</p>
         <Link href={`/journal?day=${next}`} className="text-sm text-kaffir">
           วันถัดไป →
         </Link>
       </div>
 
-      <form action={saveJournal} className="grid gap-3 md:max-w-xl">
+      <NotebookForm action={saveJournal} className="bg-paper">
         <input type="hidden" name="entryOn" value={entryOn} />
         <div className="grid gap-1.5">
           <Label htmlFor="mood">อารมณ์</Label>
@@ -52,7 +53,7 @@ export default async function JournalPage({
         <Textarea name="body" defaultValue={entry?.body ?? ""} placeholder="วันนี้เป็นอย่างไร" />
         <FileField label="รูป" />
         <Button type="submit">บันทึก</Button>
-      </form>
+      </NotebookForm>
 
       {photos.length > 0 ? (
         <ul className="mt-6 grid gap-2">

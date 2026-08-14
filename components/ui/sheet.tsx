@@ -31,7 +31,7 @@ export function SheetContent({
         )}
         {...props}
       >
-        <DialogPrimitive.Title className="font-display text-lg">{title}</DialogPrimitive.Title>
+        <DialogPrimitive.Title className="text-title">{title}</DialogPrimitive.Title>
         <SheetClose className="absolute right-4 top-4 text-ink-muted">
           <X className="size-5" />
         </SheetClose>

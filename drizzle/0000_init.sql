@@ -50,7 +50,8 @@ CREATE TABLE IF NOT EXISTS "captures" (
   "note" text NOT NULL DEFAULT '',
   "kind" text NOT NULL DEFAULT 'unfiled',
   "r2_key" text,
-  "created_at" timestamp NOT NULL DEFAULT now()
+  "created_at" timestamp NOT NULL DEFAULT now(),
+  "updated_at" timestamp NOT NULL DEFAULT now()
 );
 
 CREATE TABLE IF NOT EXISTS "tasks" (
@@ -60,7 +61,8 @@ CREATE TABLE IF NOT EXISTS "tasks" (
   "note" text NOT NULL DEFAULT '',
   "due_on" date,
   "done_at" timestamp,
-  "created_at" timestamp NOT NULL DEFAULT now()
+  "created_at" timestamp NOT NULL DEFAULT now(),
+  "updated_at" timestamp NOT NULL DEFAULT now()
 );
 
 CREATE TABLE IF NOT EXISTS "expenses" (
@@ -71,7 +73,8 @@ CREATE TABLE IF NOT EXISTS "expenses" (
   "merchant" text NOT NULL DEFAULT '',
   "spent_on" date NOT NULL,
   "receipt_r2_key" text,
-  "created_at" timestamp NOT NULL DEFAULT now()
+  "created_at" timestamp NOT NULL DEFAULT now(),
+  "updated_at" timestamp NOT NULL DEFAULT now()
 );
 
 CREATE TABLE IF NOT EXISTS "vault_items" (
@@ -81,7 +84,8 @@ CREATE TABLE IF NOT EXISTS "vault_items" (
   "kind" text NOT NULL DEFAULT 'other',
   "expires_on" date,
   "r2_key" text,
-  "created_at" timestamp NOT NULL DEFAULT now()
+  "created_at" timestamp NOT NULL DEFAULT now(),
+  "updated_at" timestamp NOT NULL DEFAULT now()
 );
 
 CREATE TABLE IF NOT EXISTS "home_items" (
@@ -91,7 +95,8 @@ CREATE TABLE IF NOT EXISTS "home_items" (
   "location" text NOT NULL DEFAULT '',
   "quantity" integer NOT NULL DEFAULT 1,
   "r2_key" text,
-  "created_at" timestamp NOT NULL DEFAULT now()
+  "created_at" timestamp NOT NULL DEFAULT now(),
+  "updated_at" timestamp NOT NULL DEFAULT now()
 );
 
 CREATE TABLE IF NOT EXISTS "shopping_items" (
@@ -99,7 +104,8 @@ CREATE TABLE IF NOT EXISTS "shopping_items" (
   "user_id" text NOT NULL REFERENCES "user"("id") ON DELETE CASCADE,
   "name" text NOT NULL,
   "bought" boolean NOT NULL DEFAULT false,
-  "created_at" timestamp NOT NULL DEFAULT now()
+  "created_at" timestamp NOT NULL DEFAULT now(),
+  "updated_at" timestamp NOT NULL DEFAULT now()
 );
 
 CREATE TABLE IF NOT EXISTS "home_bills" (
@@ -109,7 +115,8 @@ CREATE TABLE IF NOT EXISTS "home_bills" (
   "amount_satang" integer NOT NULL DEFAULT 0,
   "due_on" date,
   "paid" boolean NOT NULL DEFAULT false,
-  "created_at" timestamp NOT NULL DEFAULT now()
+  "created_at" timestamp NOT NULL DEFAULT now(),
+  "updated_at" timestamp NOT NULL DEFAULT now()
 );
 
 CREATE TABLE IF NOT EXISTS "journal_entries" (

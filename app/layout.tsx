@@ -1,21 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import localFont from "next/font/local";
 import { Anuphan } from "next/font/google";
 import "./globals.css";
 
 const anuphan = Anuphan({
   subsets: ["thai", "latin"],
+  weight: ["400", "600", "700"],
   variable: "--font-anuphan",
-  display: "swap",
-});
-
-const cabinet = localFont({
-  src: [
-    { path: "./fonts/cabinet-grotesk-400.woff2", weight: "400", style: "normal" },
-    { path: "./fonts/cabinet-grotesk-700.woff2", weight: "700", style: "normal" },
-    { path: "./fonts/cabinet-grotesk-800.woff2", weight: "800", style: "normal" },
-  ],
-  variable: "--font-cabinet",
   display: "swap",
 });
 
@@ -43,15 +33,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="th">
-      <body
-        className={`${anuphan.variable} ${cabinet.variable} min-h-dvh bg-paper text-ink antialiased`}
-        style={
-          {
-            "--font-body": "var(--font-anuphan), sans-serif",
-            "--font-display": "var(--font-cabinet), sans-serif",
-          } as React.CSSProperties
-        }
-      >
+      <body className={`${anuphan.variable} min-h-dvh bg-paper text-ink antialiased`}>
         {children}
       </body>
     </html>

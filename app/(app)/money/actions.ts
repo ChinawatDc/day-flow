@@ -32,6 +32,35 @@ export async function createExpense(formData: FormData) {
   revalidatePath("/today");
 }
 
+export async function updateExpense(formData: FormData) {
+  const user = await requireUser();
+  const id = String(formData.get("id"));
+  const satang = satangFromBahtInput(String(formData.get("amount") ?? ""));
+  if (satang == null) return;
+  const file = formData.get("file");
+  const extraKey = await maybeUpload(user.id, "receipts", file instanceof File ? file : null);
+  const db = getDb();
+  const [row] = await db
+    .select()
+    .from(expenses)
+    .where(and(eq(expenses.id, id), eq(expenses.userId, user.id)))
+    .limit(1);
+  if (!row) return;
+  await db
+    .update(expenses)
+    .set({
+      amountSatang: satang,
+      category: String(formData.get("category") ?? row.category),
+      merchant: String(formData.get("merchant") ?? "").trim(),
+      spentOn: String(formData.get("spentOn") ?? row.spentOn),
+      receiptR2Key: extraKey ?? row.receiptR2Key,
+      updatedAt: new Date(),
+    })
+    .where(and(eq(expenses.id, id), eq(expenses.userId, user.id)));
+  revalidatePath("/money");
+  revalidatePath("/today");
+}
+
 export async function deleteExpense(formData: FormData) {
   const user = await requireUser();
   const id = String(formData.get("id"));

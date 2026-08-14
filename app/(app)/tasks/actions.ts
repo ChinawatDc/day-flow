@@ -23,13 +23,31 @@ export async function createTask(formData: FormData) {
   revalidatePath("/today");
 }
 
+export async function updateTask(formData: FormData) {
+  const user = await requireUser();
+  const id = String(formData.get("id"));
+  const title = String(formData.get("title") ?? "").trim();
+  if (!title) return;
+  await getDb()
+    .update(tasks)
+    .set({
+      title,
+      note: String(formData.get("note") ?? "").trim(),
+      dueOn: String(formData.get("dueOn") ?? "") || null,
+      updatedAt: new Date(),
+    })
+    .where(and(eq(tasks.id, id), eq(tasks.userId, user.id)));
+  revalidatePath("/tasks");
+  revalidatePath("/today");
+}
+
 export async function toggleTask(formData: FormData) {
   const user = await requireUser();
   const id = String(formData.get("id"));
   const done = String(formData.get("done")) === "1";
   await getDb()
     .update(tasks)
-    .set({ doneAt: done ? new Date() : null })
+    .set({ doneAt: done ? new Date() : null, updatedAt: new Date() })
     .where(and(eq(tasks.id, id), eq(tasks.userId, user.id)));
   revalidatePath("/tasks");
   revalidatePath("/today");

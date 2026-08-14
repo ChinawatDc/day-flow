@@ -24,7 +24,7 @@ export function DialogContent({
         )}
         {...props}
       >
-        <DialogPrimitive.Title className="font-display text-xl">{title}</DialogPrimitive.Title>
+        <DialogPrimitive.Title className="text-title">{title}</DialogPrimitive.Title>
         <div className="mt-4">{children}</div>
       </DialogPrimitive.Content>
     </DialogPrimitive.Portal>

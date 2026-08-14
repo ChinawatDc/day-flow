@@ -67,6 +67,7 @@ export const captures = pgTable("captures", {
   kind: text("kind").notNull().default("unfiled"),
   r2Key: text("r2_key"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
 export const tasks = pgTable("tasks", {
@@ -79,6 +80,7 @@ export const tasks = pgTable("tasks", {
   dueOn: date("due_on"),
   doneAt: timestamp("done_at"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
 export const expenses = pgTable("expenses", {
@@ -92,6 +94,7 @@ export const expenses = pgTable("expenses", {
   spentOn: date("spent_on").notNull(),
   receiptR2Key: text("receipt_r2_key"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
 export const vaultItems = pgTable("vault_items", {
@@ -104,6 +107,7 @@ export const vaultItems = pgTable("vault_items", {
   expiresOn: date("expires_on"),
   r2Key: text("r2_key"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
 export const homeItems = pgTable("home_items", {
@@ -116,6 +120,7 @@ export const homeItems = pgTable("home_items", {
   quantity: integer("quantity").notNull().default(1),
   r2Key: text("r2_key"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
 export const shoppingItems = pgTable("shopping_items", {
@@ -126,6 +131,7 @@ export const shoppingItems = pgTable("shopping_items", {
   name: text("name").notNull(),
   bought: boolean("bought").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
 export const homeBills = pgTable("home_bills", {
@@ -138,6 +144,7 @@ export const homeBills = pgTable("home_bills", {
   dueOn: date("due_on"),
   paid: boolean("paid").notNull().default(false),
   createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
 
 export const journalEntries = pgTable(

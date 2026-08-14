@@ -2,6 +2,7 @@
 
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { getDb } from "@/lib/db/client";
 import {
   captures,
@@ -122,7 +123,19 @@ export async function fileCapture(formData: FormData) {
     }
   }
 
-  await db.update(captures).set({ kind }).where(eq(captures.id, id));
+  await db.update(captures).set({ kind, updatedAt: new Date() }).where(eq(captures.id, id));
+  refresh();
+  redirect("/today");
+}
+
+export async function updateCapture(formData: FormData) {
+  const user = await requireUser();
+  const id = String(formData.get("id"));
+  const note = String(formData.get("note") ?? "").trim();
+  await getDb()
+    .update(captures)
+    .set({ note, updatedAt: new Date() })
+    .where(and(eq(captures.id, id), eq(captures.userId, user.id)));
   refresh();
 }
 

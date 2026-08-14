@@ -28,7 +28,7 @@ export function LoginForm({ googleEnabled }: { googleEnabled: boolean }) {
       setError(result.error.message ?? "ไม่สำเร็จ");
       return;
     }
-    router.push("/");
+    router.push("/today");
     router.refresh();
   }
 

@@ -1,6 +1,7 @@
 import {
   DeleteObjectCommand,
   GetObjectCommand,
+  ListObjectsV2Command,
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
@@ -51,6 +52,25 @@ export async function deletePrivateObject(key: string) {
       Key: key,
     }),
   );
+}
+
+export async function deletePrefix(prefix: string) {
+  const client = getR2Client();
+  if (!client) return;
+  let token: string | undefined;
+  do {
+    const listed = await client.send(
+      new ListObjectsV2Command({
+        Bucket: env.r2BucketName,
+        Prefix: prefix,
+        ContinuationToken: token,
+      }),
+    );
+    for (const obj of listed.Contents ?? []) {
+      if (obj.Key) await deletePrivateObject(obj.Key);
+    }
+    token = listed.IsTruncated ? listed.NextContinuationToken : undefined;
+  } while (token);
 }
 
 export async function getPresignedGetUrl(key: string, expiresIn = 3600) {

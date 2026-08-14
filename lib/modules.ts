@@ -5,6 +5,7 @@ import {
   Inbox,
   LayoutGrid,
   ListChecks,
+  Settings,
   Sun,
   Wallet,
   Warehouse,
@@ -18,7 +19,8 @@ export type ModuleId =
   | "money"
   | "vault"
   | "home"
-  | "journal";
+  | "journal"
+  | "settings";
 
 export type AppModule = {
   id: ModuleId;
@@ -33,7 +35,7 @@ export const modules: AppModule[] = [
     id: "today",
     href: "/today",
     label: "วันนี้",
-    blurb: "งานค้าง ยอดจ่าย Inbox และบันทึกของวัน",
+    blurb: "บ้านสมุด — ทำต่อจากที่ค้าง",
     icon: Sun,
   },
   {
@@ -82,13 +84,21 @@ export const modules: AppModule[] = [
 
 export const hubModule: AppModule = {
   id: "hub",
-  href: "/",
-  label: "ฮับ",
-  blurb: "เมนูทั้งหมด",
+  href: "/menu",
+  label: "เมนู",
+  blurb: "ทุกบทในสมุด",
   icon: LayoutGrid,
 };
 
-export const bottomNav = [hubModule, modules[0], modules[1], modules[3]];
+export const settingsModule: AppModule = {
+  id: "settings",
+  href: "/settings",
+  label: "ตั้งค่า",
+  blurb: "รหัส สำรอง ลบบัญชี",
+  icon: Settings,
+};
+
+export const bottomNav = [modules[0], modules[1], modules[3], modules[2], hubModule];
 
 export const expenseCategories = [
   { id: "food", label: "อาหาร" },

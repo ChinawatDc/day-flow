@@ -1,4 +1,4 @@
-import { and, desc, eq, gte, isNull, lte, or } from "drizzle-orm";
+import { and, desc, eq, gte, ilike, isNull, lt, lte, or } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import {
   captures,
@@ -12,13 +12,25 @@ import {
   vaultItems,
 } from "@/lib/db/schema";
 import { addDaysIso, bangkokTodayIso } from "@/lib/utils";
+import { expenseCategories } from "@/lib/modules";
 
 export async function getTodaySnapshot(userId: string) {
   const db = getDb();
   const today = bangkokTodayIso();
   const soon = addDaysIso(today, 30);
+  const staleBefore = new Date(Date.now() - 3 * 24 * 60 * 60 * 1000);
+  const monthPrefix = today.slice(0, 7);
 
-  const [openTasks, dayExpenses, unfiled, journal, expiring] = await Promise.all([
+  const [
+    todayTasks,
+    overdueTasks,
+    dayExpenses,
+    unfiled,
+    staleInbox,
+    journal,
+    expiring,
+    unpaidBills,
+  ] = await Promise.all([
     db
       .select()
       .from(tasks)
@@ -32,6 +44,11 @@ export async function getTodaySnapshot(userId: string) {
       .orderBy(tasks.dueOn),
     db
       .select()
+      .from(tasks)
+      .where(and(eq(tasks.userId, userId), isNull(tasks.doneAt), lt(tasks.dueOn, today)))
+      .orderBy(tasks.dueOn),
+    db
+      .select()
       .from(expenses)
       .where(and(eq(expenses.userId, userId), eq(expenses.spentOn, today))),
     db
@@ -39,6 +56,16 @@ export async function getTodaySnapshot(userId: string) {
       .from(captures)
       .where(and(eq(captures.userId, userId), eq(captures.kind, "unfiled")))
       .orderBy(desc(captures.createdAt)),
+    db
+      .select()
+      .from(captures)
+      .where(
+        and(
+          eq(captures.userId, userId),
+          eq(captures.kind, "unfiled"),
+          lt(captures.createdAt, staleBefore),
+        ),
+      ),
     db
       .select()
       .from(journalEntries)
@@ -54,17 +81,25 @@ export async function getTodaySnapshot(userId: string) {
           lte(vaultItems.expiresOn, soon),
         ),
       ),
+    db
+      .select()
+      .from(homeBills)
+      .where(and(eq(homeBills.userId, userId), eq(homeBills.paid, false))),
   ]);
 
   const spentToday = dayExpenses.reduce((s, e) => s + e.amountSatang, 0);
+  const billsThisMonth = unpaidBills.filter((b) => !b.dueOn || String(b.dueOn).startsWith(monthPrefix));
   return {
     today,
-    openTasks,
+    todayTasks,
+    overdueTasks,
     spentToday,
     unfiledCount: unfiled.length,
     unfiled,
+    staleInbox,
     hasJournal: journal.length > 0,
     expiring,
+    billsThisMonth,
   };
 }
 
@@ -93,11 +128,23 @@ export async function listExpenses(userId: string) {
 }
 
 export async function monthExpenseTotal(userId: string, dayIso: string) {
+  const byCat = await monthExpensesByCategory(userId, dayIso);
+  return byCat.reduce((s, c) => s + c.total, 0);
+}
+
+export async function monthExpensesByCategory(userId: string, dayIso: string) {
   const prefix = dayIso.slice(0, 7);
   const rows = await listExpenses(userId);
-  return rows
-    .filter((e) => e.spentOn.startsWith(prefix))
-    .reduce((s, e) => s + e.amountSatang, 0);
+  const map = new Map<string, number>();
+  for (const e of rows) {
+    if (!String(e.spentOn).startsWith(prefix)) continue;
+    map.set(e.category, (map.get(e.category) ?? 0) + e.amountSatang);
+  }
+  return expenseCategories.map((c) => ({
+    id: c.id,
+    label: c.label,
+    total: map.get(c.id) ?? 0,
+  }));
 }
 
 export async function listVault(userId: string) {
@@ -131,4 +178,64 @@ export async function getJournal(userId: string, entryOn: string) {
     .from(journalPhotos)
     .where(eq(journalPhotos.entryId, entry.id));
   return { entry, photos };
+}
+
+export async function searchNotebook(userId: string, q: string) {
+  const needle = `%${q.trim()}%`;
+  if (q.trim().length < 1) {
+    return { tasks: [], expenses: [], vault: [], captures: [] };
+  }
+  const db = getDb();
+  const [taskRows, expenseRows, vaultRows, captureRows] = await Promise.all([
+    db
+      .select()
+      .from(tasks)
+      .where(and(eq(tasks.userId, userId), or(ilike(tasks.title, needle), ilike(tasks.note, needle))))
+      .limit(20),
+    db
+      .select()
+      .from(expenses)
+      .where(and(eq(expenses.userId, userId), or(ilike(expenses.merchant, needle), ilike(expenses.category, needle))))
+      .limit(20),
+    db
+      .select()
+      .from(vaultItems)
+      .where(and(eq(vaultItems.userId, userId), ilike(vaultItems.title, needle)))
+      .limit(20),
+    db
+      .select()
+      .from(captures)
+      .where(
+        and(
+          eq(captures.userId, userId),
+          eq(captures.kind, "unfiled"),
+          ilike(captures.note, needle),
+        ),
+      )
+      .limit(20),
+  ]);
+  return { tasks: taskRows, expenses: expenseRows, vault: vaultRows, captures: captureRows };
+}
+
+export async function exportUserData(userId: string) {
+  const db = getDb();
+  const [taskRows, expenseRows, vaultRows, captureRows, home, journal] = await Promise.all([
+    listTasks(userId),
+    listExpenses(userId),
+    listVault(userId),
+    listCaptures(userId),
+    listHome(userId),
+    db.select().from(journalEntries).where(eq(journalEntries.userId, userId)),
+  ]);
+  return {
+    exportedAt: new Date().toISOString(),
+    tasks: taskRows,
+    expenses: expenseRows,
+    vault: vaultRows,
+    captures: captureRows,
+    homeItems: home.items,
+    shopping: home.shopping,
+    bills: home.bills,
+    journal,
+  };
 }
