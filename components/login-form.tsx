@@ -63,7 +63,7 @@ export function LoginForm({
       </div>
       {error ? <p className="text-sm text-orange">{error}</p> : null}
       <Button type="submit" size="lg" disabled={pending}>
-        {mode === "login" ? "เข้าใช้" : "สมัคร"}
+        {mode === "login" ? "login" : "สมัคร"}
       </Button>
       <button
         type="button"
