@@ -1,6 +1,6 @@
 {
   "name": "day-flow",
-  "version": "0.1.0",
+  "version": "0.0.2",
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
@@ -8,8 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
+    "db:apply": "node scripts/apply-schema.mjs",
     "db:studio": "drizzle-kit studio",
     "test:e2e": "playwright test",
     "screenshots": "playwright test tests/visual.spec.ts"
@@ -26,6 +26,7 @@
     "better-auth": "1.2.12",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "dotenv": "^16.4.7",
     "drizzle-orm": "^0.40.0",
     "lucide-react": "^0.511.0",
     "motion": "^12.9.2",

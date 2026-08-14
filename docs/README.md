@@ -7,7 +7,7 @@
 |------|---------|
 | [../GOAL.md](../GOAL.md) | เป้า + checklist ปัจจุบัน |
 | [../flow.md](../flow.md) | ทางเข้าใช้งาน |
-| [VERSIONS.md](./VERSIONS.md) | Semver จนถึง V0.1.0 และของที่ห้ามแตะ |
+| [BRANCHING.md](./BRANCHING.md) | สาขา `release/x.y.z` + tag `vX.Y.Z` |
 | [architecture.md](./architecture.md) | สแต็ก โฟลเดอร์ ข้อมูล |
 | [modules.md](./modules.md) | โมดูล 7 อัน สิ่งที่ทำได้/ยังขาด |
 | [DEPLOY.md](./DEPLOY.md) | Neon / R2 / Vercel |

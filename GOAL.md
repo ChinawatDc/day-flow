@@ -12,7 +12,8 @@
 - [x] ฮับกระเบื้องไม่เท่ากัน + rail / bottom nav
 - [x] หน้าโมดูล 7 อันมี CRUD ในโค้ด
 - [x] `.env.local` + `BETTER_AUTH_SECRET`
-- [ ] Neon `DATABASE_URL` (โปรเจกต์แยกจาก FitKub) + `db:push` / รัน SQL
+- [x] เครื่องมือ schema: `db:push` / `db:apply` (V0.0.2)
+- [ ] Neon `DATABASE_URL` (โปรเจกต์แยกจาก FitKub) + รัน `db:push`
 - [ ] สมัคร/ล็อกอินบนเครื่องตัวเองได้
 - [ ] CRUD ทั้ง 7 โมดูลผ่านมือถือจริง
 - [ ] R2 private อัปโหลด-เปิดไฟล์ได้ (ใบเสร็จ / คลัง / รูป)

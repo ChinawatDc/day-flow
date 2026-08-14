@@ -7,12 +7,14 @@
 1. สร้าง Neon project ชื่อประมาณ `day-flow`
 2. Copy pooled connection string
 3. วางใน `.env.local` ที่ `DATABASE_URL=`
-4. ใน `day-flow`: `npm run db:push`
+4. ใน `day-flow`: `npm run db:push` หรือ `npm run db:apply`
 5. `npm run dev` → `/login` สมัคร → `/` เห็นฮับ
-6. เปิด `/api/health` ต้อง `ok: true`
+6. เปิด `/api/health` ต้อง `{ "ok": true, "db": true }`
 
-## ถ้า db:push ล้ม
+## ถ้า db:push / db:apply ล้ม
 รัน [../../drizzle/0000_init.sql](../../drizzle/0000_init.sql) ใน Neon SQL Editor
+
+หมายเหตุ: คลื่นนี้ในรีโปคือ **เครื่องมือพร้อม** — ตารางจะมีเมื่อ human ใส่ `DATABASE_URL` แล้วรันคำสั่งด้านบน
 
 ## Done when
 - [ ] มีแถวในตาราง `user` หลังสมัคร
