@@ -11,7 +11,7 @@
 
 อย่าใช้ `drizzle-kit migrate` กับ snapshot ว่าง — schema ต้นทางคือ `0000_init.sql` + `db:push`
 
-ตรวจตาราง: `user`, `session`, `account`, `verification`, `captures`, `tasks`, `expenses`, `vault_items`, `home_items`, `shopping_items`, `home_bills`, `journal_entries`, `journal_photos`
+ตรวจตาราง: `user`, `session`, `account`, `verification`, `captures`, `tasks`, `expenses`, `vault_items`, `home_items`, `shopping_items`, `home_bills`, `journal_entries`, `journal_photos`, `families`, `family_members`, `family_messages`, `family_location_shares`
 
 ## 2) Auth env (มีใน `.env.local` แล้ว)
 - [x] `BETTER_AUTH_SECRET` (สุ่ม 32 bytes)
@@ -27,6 +27,13 @@ Google ไม่บังคับ
 
 อย่าเปิด public access
 
+## 3b) Session มือถือเว็บ
+Cookie session ของ better-auth ยาว **60 วัน** และต่ออายุเมื่อใช้ต่อทุกวัน (`updateAge` 1 วัน) ไม่เก็บ token ใน localStorage
+
+## 3c) Ably (ครอบครัว realtime)
+- [ ] สมัคร Ably Hobby (ฟรี) แล้วใส่ `ABLY_API_KEY` ฝั่งเซิร์ฟเวอร์เท่านั้น
+- ไม่มีคีย์: ส่งข้อความ/โหลดประวัติได้ แต่ไม่สด
+
 ## 4) รันบนเครื่อง
 ```bash
 npm run dev
@@ -39,6 +46,7 @@ npm run dev
 - [ ] Push โค้ด (root directory บน Vercel = `day-flow` ถ้าโมโนรีโป)
 - [ ] Env บน Vercel ครบชุดเดียวกับ `.env.example` + ค่าจริง
 - [ ] Redeploy หลังใส่ env
+- [ ] Vercel project → Settings → Functions: region ใกล้ Neon (เช่น `sin1`) — `vercel.json` ตั้ง `regions: ["sin1"]` แล้ว เปลี่ยนถ้า DB อยู่คนละทวีป
 - [ ] เปิด `https://<โดเมน>/api/health`
 - [ ] สมัครบัญชีใหม่บนโดเมนจริง (อย่าลืม trusted origin ของ better-auth = `BETTER_AUTH_URL`)
 

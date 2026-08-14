@@ -1,8 +1,9 @@
+import { cache } from "react";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 
-export async function getSession() {
+export const getSession = cache(async () => {
   if (!process.env.DATABASE_URL || !process.env.BETTER_AUTH_SECRET) {
     return null;
   }
@@ -11,10 +12,16 @@ export async function getSession() {
   } catch {
     return null;
   }
-}
+});
 
-export async function requireUser() {
+export const requireUser = cache(async () => {
   const session = await getSession();
-  if (!session?.user) redirect("/login");
+  if (!session?.user) {
+    const h = await headers();
+    const pathname = h.get("x-pathname") ?? "";
+    const search = h.get("x-search") ?? "";
+    const next = pathname.startsWith("/") ? `${pathname}${search}` : "/today";
+    redirect(`/login?next=${encodeURIComponent(next)}`);
+  }
   return session.user;
-}
+});

@@ -14,15 +14,13 @@ export function RecordRow({
   done?: boolean;
 }) {
   return (
-    <li className="rounded-[var(--radius-card)] border border-line bg-paper p-[var(--space-card)]">
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <p className={cn("text-title", done && "text-ink-muted line-through")}>{title}</p>
-          {hint ? <div className="text-caption mt-1">{hint}</div> : null}
-        </div>
-        {value ? <div className="shrink-0">{value}</div> : null}
+    <li className="flex items-center gap-3 rounded-[var(--radius-card)] border border-line bg-paper px-3 py-2.5">
+      <div className="min-w-0 flex-1">
+        <p className={cn("truncate text-sm font-medium", done && "text-ink-muted line-through")}>{title}</p>
+        {hint ? <div className="text-caption truncate">{hint}</div> : null}
       </div>
-      {actions ? <div className="mt-3 flex flex-wrap gap-2">{actions}</div> : null}
+      {value ? <div className="shrink-0">{value}</div> : null}
+      {actions ? <div className="flex shrink-0 items-center gap-1">{actions}</div> : null}
     </li>
   );
 }

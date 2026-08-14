@@ -1,10 +1,10 @@
-import { HubGrid } from "@/components/hub-grid";
+import { MenuCards } from "@/components/nav/menu-cards";
 
 export default function PreviewHubPage() {
   return (
     <div>
       <p className="mb-6 text-ink-muted">สวัสดี · พรีวิวฮับ</p>
-      <HubGrid />
+      <MenuCards />
     </div>
   );
 }

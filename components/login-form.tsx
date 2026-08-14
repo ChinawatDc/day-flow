@@ -7,7 +7,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { authClient } from "@/lib/auth-client";
 
-export function LoginForm({ googleEnabled }: { googleEnabled: boolean }) {
+export function LoginForm({
+  googleEnabled,
+  nextPath = "/today",
+}: {
+  googleEnabled: boolean;
+  nextPath?: string;
+}) {
   const router = useRouter();
   const [mode, setMode] = useState<"login" | "register">("login");
   const [error, setError] = useState("");
@@ -28,7 +34,7 @@ export function LoginForm({ googleEnabled }: { googleEnabled: boolean }) {
       setError(result.error.message ?? "ไม่สำเร็จ");
       return;
     }
-    router.push("/today");
+    router.push(nextPath);
     router.refresh();
   }
 
@@ -70,7 +76,7 @@ export function LoginForm({ googleEnabled }: { googleEnabled: boolean }) {
         <Button
           type="button"
           variant="outline"
-          onClick={() => authClient.signIn.social({ provider: "google" })}
+          onClick={() => authClient.signIn.social({ provider: "google", callbackURL: nextPath })}
         >
           เข้าด้วย Google
         </Button>

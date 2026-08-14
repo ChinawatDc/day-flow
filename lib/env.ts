@@ -36,6 +36,12 @@ export const env = {
   get r2BucketName() {
     return process.env.R2_BUCKET_NAME || "";
   },
+  get ablyApiKey() {
+    return process.env.ABLY_API_KEY || "";
+  },
+  get ablyConfigured() {
+    return Boolean(process.env.ABLY_API_KEY);
+  },
   get r2Configured() {
     return Boolean(
       env.r2AccountId &&

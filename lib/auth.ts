@@ -19,6 +19,10 @@ function createAuth() {
   return betterAuth({
     secret: process.env.BETTER_AUTH_SECRET || "dev-only-change-me-please-32ch",
     baseURL: env.appUrl,
+    session: {
+      expiresIn: 60 * 60 * 24 * 60,
+      updateAge: 60 * 60 * 24,
+    },
     database: drizzleAdapter(getDb(), {
       provider: "pg",
       schema: {

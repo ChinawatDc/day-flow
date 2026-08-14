@@ -171,3 +171,63 @@ export const journalPhotos = pgTable("journal_photos", {
   r2Key: text("r2_key").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
+
+export const families = pgTable("families", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  joinCode: text("join_code").notNull().unique(),
+  createdBy: text("created_by")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const familyMembers = pgTable(
+  "family_members",
+  {
+    id: text("id").primaryKey(),
+    familyId: text("family_id")
+      .notNull()
+      .references(() => families.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    role: text("role").notNull().default("member"),
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex("family_member_pair").on(t.familyId, t.userId),
+    uniqueIndex("family_member_user").on(t.userId),
+  ],
+);
+
+export const familyMessages = pgTable("family_messages", {
+  id: text("id").primaryKey(),
+  familyId: text("family_id")
+    .notNull()
+    .references(() => families.id, { onDelete: "cascade" }),
+  channel: text("channel").notNull(),
+  senderId: text("sender_id")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  body: text("body").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const familyLocationShares = pgTable(
+  "family_location_shares",
+  {
+    id: text("id").primaryKey(),
+    familyId: text("family_id")
+      .notNull()
+      .references(() => families.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    expiresAt: timestamp("expires_at").notNull(),
+    lat: text("lat").notNull().default(""),
+    lng: text("lng").notNull().default(""),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("family_location_user").on(t.familyId, t.userId)],
+);

@@ -3,7 +3,7 @@ import { EmptyState } from "@/components/empty-state";
 import { FileField } from "@/components/file-field";
 import { FileLink } from "@/components/file-link";
 import { ConfirmDelete } from "@/components/notebook/confirm-delete";
-import { EditPanel } from "@/components/notebook/edit-panel";
+import { ComposerSheet } from "@/components/notebook/composer-sheet";
 import { NotebookForm } from "@/components/notebook/notebook-form";
 import { RecordRow } from "@/components/notebook/record-row";
 import { Button } from "@/components/ui/button";
@@ -24,13 +24,9 @@ export default async function VaultPage({
 }) {
   const user = await requireUser();
   const { filter } = await searchParams;
-  const all = await listVault(user.id);
   const today = bangkokTodayIso();
   const soon = addDaysIso(today, 30);
-  const rows =
-    filter === "soon"
-      ? all.filter((v) => v.expiresOn && v.expiresOn >= today && v.expiresOn <= soon)
-      : all;
+  const all = await listVault(user.id, filter === "soon" ? { soonAfter: today, soonBefore: soon } : undefined);
   const label = (id: string) => vaultKinds.find((k) => k.id === id)?.label ?? id;
 
   return (
@@ -43,34 +39,31 @@ export default async function VaultPage({
           ใกล้หมดอายุ
         </a>
       </div>
-      <NotebookForm action={createVaultItem}>
-        <div className="grid gap-1.5">
-          <Label htmlFor="title">ชื่อเอกสาร</Label>
-          <Input id="title" name="title" required />
-        </div>
-        <div className="grid gap-1.5">
-          <Label htmlFor="kind">ประเภท</Label>
-          <NativeSelect id="kind" name="kind">
-            {vaultKinds.map((k) => (
-              <option key={k.id} value={k.id}>
-                {k.label}
-              </option>
-            ))}
-          </NativeSelect>
-        </div>
-        <div className="grid gap-1.5">
-          <Label htmlFor="expiresOn">วันหมดอายุ</Label>
-          <Input id="expiresOn" name="expiresOn" type="date" />
-        </div>
-        <FileField label="ไฟล์" />
-        <Button type="submit">เก็บ</Button>
-      </NotebookForm>
-
-      {rows.length === 0 ? (
+      <div className="mb-4">
+        <ComposerSheet label="เก็บเอกสาร" title="เอกสารใหม่">
+          <NotebookForm action={createVaultItem}>
+            <Label htmlFor="title">ชื่อเอกสาร</Label>
+            <Input id="title" name="title" required />
+            <Label htmlFor="kind">ประเภท</Label>
+            <NativeSelect id="kind" name="kind">
+              {vaultKinds.map((k) => (
+                <option key={k.id} value={k.id}>
+                  {k.label}
+                </option>
+              ))}
+            </NativeSelect>
+            <Label htmlFor="expiresOn">วันหมดอายุ</Label>
+            <Input id="expiresOn" name="expiresOn" type="date" />
+            <FileField label="ไฟล์" />
+            <Button type="submit">เก็บ</Button>
+          </NotebookForm>
+        </ComposerSheet>
+      </div>
+      {all.length === 0 ? (
         <EmptyState title="คลังว่าง" hint="เก็บบัตร ประกัน สัญญา ไว้ที่นี่" />
       ) : (
-        <ul className="grid gap-3">
-          {rows.map((v) => (
+        <ul className="grid gap-2">
+          {all.map((v) => (
             <RecordRow
               key={v.id}
               title={v.title}
@@ -78,8 +71,8 @@ export default async function VaultPage({
               actions={
                 <>
                   {v.r2Key ? <FileLink r2Key={v.r2Key} /> : null}
-                  <EditPanel>
-                    <form action={updateVaultItem} className="grid gap-2">
+                  <ComposerSheet label="แก้" title="แก้เอกสาร" variant="outline" compact>
+                    <NotebookForm action={updateVaultItem}>
                       <input type="hidden" name="id" value={v.id} />
                       <Input name="title" defaultValue={v.title} required />
                       <NativeSelect name="kind" defaultValue={v.kind}>
@@ -94,8 +87,8 @@ export default async function VaultPage({
                       <Button type="submit" size="sm">
                         บันทึก
                       </Button>
-                    </form>
-                  </EditPanel>
+                    </NotebookForm>
+                  </ComposerSheet>
                   <ConfirmDelete action={deleteVaultItem} id={v.id} />
                 </>
               }

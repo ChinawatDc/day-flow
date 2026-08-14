@@ -137,3 +137,44 @@ CREATE TABLE IF NOT EXISTS "journal_photos" (
   "r2_key" text NOT NULL,
   "created_at" timestamp NOT NULL DEFAULT now()
 );
+
+CREATE TABLE IF NOT EXISTS "families" (
+  "id" text PRIMARY KEY,
+  "name" text NOT NULL,
+  "join_code" text NOT NULL UNIQUE,
+  "created_by" text NOT NULL REFERENCES "user"("id") ON DELETE CASCADE,
+  "created_at" timestamp NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS "family_members" (
+  "id" text PRIMARY KEY,
+  "family_id" text NOT NULL REFERENCES "families"("id") ON DELETE CASCADE,
+  "user_id" text NOT NULL REFERENCES "user"("id") ON DELETE CASCADE,
+  "role" text NOT NULL DEFAULT 'member',
+  "created_at" timestamp NOT NULL DEFAULT now()
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS "family_member_pair" ON "family_members" ("family_id", "user_id");
+CREATE UNIQUE INDEX IF NOT EXISTS "family_member_user" ON "family_members" ("user_id");
+
+CREATE TABLE IF NOT EXISTS "family_messages" (
+  "id" text PRIMARY KEY,
+  "family_id" text NOT NULL REFERENCES "families"("id") ON DELETE CASCADE,
+  "channel" text NOT NULL,
+  "sender_id" text NOT NULL REFERENCES "user"("id") ON DELETE CASCADE,
+  "body" text NOT NULL,
+  "created_at" timestamp NOT NULL DEFAULT now()
+);
+
+CREATE TABLE IF NOT EXISTS "family_location_shares" (
+  "id" text PRIMARY KEY,
+  "family_id" text NOT NULL REFERENCES "families"("id") ON DELETE CASCADE,
+  "user_id" text NOT NULL REFERENCES "user"("id") ON DELETE CASCADE,
+  "expires_at" timestamp NOT NULL,
+  "lat" text NOT NULL DEFAULT '',
+  "lng" text NOT NULL DEFAULT '',
+  "updated_at" timestamp NOT NULL DEFAULT now()
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS "family_location_user" ON "family_location_shares" ("family_id", "user_id");
+

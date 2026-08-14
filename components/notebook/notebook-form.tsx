@@ -10,13 +10,7 @@ export function NotebookForm({
   className?: string;
 }) {
   return (
-    <form
-      action={action}
-      className={cn(
-        "mb-8 grid gap-3 rounded-[var(--radius-card)] border border-line bg-paper-2 p-[var(--space-card)] md:max-w-xl",
-        className,
-      )}
-    >
+    <form action={action} className={cn("grid gap-3", className)}>
       {children}
     </form>
   );

@@ -7,6 +7,7 @@ import {
   ListChecks,
   Settings,
   Sun,
+  Users,
   Wallet,
   Warehouse,
 } from "lucide-react";
@@ -20,6 +21,7 @@ export type ModuleId =
   | "vault"
   | "home"
   | "journal"
+  | "family"
   | "settings";
 
 export type AppModule = {
@@ -80,6 +82,13 @@ export const modules: AppModule[] = [
     blurb: "ข้อความ อารมณ์ รูปของวัน",
     icon: BookOpen,
   },
+  {
+    id: "family",
+    href: "/family",
+    label: "ครอบครัว",
+    blurb: "บ้าน แชท และโลเคชัน",
+    icon: Users,
+  },
 ];
 
 export const hubModule: AppModule = {
@@ -98,7 +107,7 @@ export const settingsModule: AppModule = {
   icon: Settings,
 };
 
-export const bottomNav = [modules[0], modules[1], modules[3], modules[2], hubModule];
+export const bottomNav = [modules[0], modules[1], hubModule, modules[3], modules[2]];
 
 export const expenseCategories = [
   { id: "food", label: "อาหาร" },

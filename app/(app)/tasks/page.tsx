@@ -1,7 +1,7 @@
 import { AppShell } from "@/components/app-shell";
 import { EmptyState } from "@/components/empty-state";
 import { ConfirmDelete } from "@/components/notebook/confirm-delete";
-import { EditPanel } from "@/components/notebook/edit-panel";
+import { ComposerSheet } from "@/components/notebook/composer-sheet";
 import { NotebookForm } from "@/components/notebook/notebook-form";
 import { RecordRow } from "@/components/notebook/record-row";
 import { Button } from "@/components/ui/button";
@@ -21,32 +21,24 @@ export default async function TasksPage({
 }) {
   const user = await requireUser();
   const { filter = "open" } = await searchParams;
-  const all = await listTasks(user.id);
   const today = bangkokTodayIso();
-  const rows = all.filter((t) => {
-    if (filter === "today") return t.dueOn === today && !t.doneAt;
-    if (filter === "open") return !t.doneAt;
-    return true;
-  });
+  const rows = await listTasks(user.id, filter, today);
 
   return (
     <AppShell title="งาน">
-      <NotebookForm action={createTask}>
-        <div className="grid gap-1.5">
-          <Label htmlFor="title">ชื่องาน</Label>
-          <Input id="title" name="title" required />
-        </div>
-        <div className="grid gap-1.5">
-          <Label htmlFor="dueOn">วันครบ</Label>
-          <Input id="dueOn" name="dueOn" type="date" defaultValue={today} />
-        </div>
-        <div className="grid gap-1.5">
-          <Label htmlFor="note">โน้ต</Label>
-          <Textarea id="note" name="note" />
-        </div>
-        <Button type="submit">เพิ่มงาน</Button>
-      </NotebookForm>
-
+      <div className="mb-4">
+        <ComposerSheet label="เพิ่มงาน" title="งานใหม่">
+          <NotebookForm action={createTask}>
+            <Label htmlFor="title">ชื่องาน</Label>
+            <Input id="title" name="title" required />
+            <Label htmlFor="dueOn">วันครบ</Label>
+            <Input id="dueOn" name="dueOn" type="date" defaultValue={today} />
+            <Label htmlFor="note">โน้ต</Label>
+            <Textarea id="note" name="note" />
+            <Button type="submit">เพิ่มงาน</Button>
+          </NotebookForm>
+        </ComposerSheet>
+      </div>
       <div className="mb-4 flex gap-2 text-sm">
         <a className={filter === "today" ? "text-kaffir" : "text-ink-muted"} href="/tasks?filter=today">
           วันนี้
@@ -58,11 +50,10 @@ export default async function TasksPage({
           ทั้งหมด
         </a>
       </div>
-
       {rows.length === 0 ? (
-        <EmptyState title="ยังไม่มีงาน" hint="เพิ่มงานด้านบน" />
+        <EmptyState title="ยังไม่มีงาน" hint="กดเพิ่มงานด้านบน" />
       ) : (
-        <ul className="grid gap-3">
+        <ul className="grid gap-2">
           {rows.map((t) => (
             <RecordRow
               key={t.id}
@@ -75,11 +66,11 @@ export default async function TasksPage({
                     <input type="hidden" name="id" value={t.id} />
                     <input type="hidden" name="done" value={t.doneAt ? "0" : "1"} />
                     <Button size="sm" variant="outline">
-                      {t.doneAt ? "ยังไม่เสร็จ" : "เสร็จ"}
+                      {t.doneAt ? "เปิด" : "เสร็จ"}
                     </Button>
                   </form>
-                  <EditPanel>
-                    <form action={updateTask} className="grid gap-2">
+                  <ComposerSheet label="แก้" title="แก้งาน" variant="outline" compact>
+                    <NotebookForm action={updateTask}>
                       <input type="hidden" name="id" value={t.id} />
                       <Input name="title" defaultValue={t.title} required />
                       <Input name="dueOn" type="date" defaultValue={t.dueOn ?? ""} />
@@ -87,8 +78,8 @@ export default async function TasksPage({
                       <Button type="submit" size="sm">
                         บันทึก
                       </Button>
-                    </form>
-                  </EditPanel>
+                    </NotebookForm>
+                  </ComposerSheet>
                   <ConfirmDelete action={deleteTask} id={t.id} />
                 </>
               }
