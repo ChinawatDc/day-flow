@@ -10,6 +10,7 @@
 | [../flow.md](../flow.md) | ทางเข้าใช้งาน |
 | [BRANCHING.md](./BRANCHING.md) | สาขา `release/x.y.z` + tag `vX.Y.Z` |
 | [architecture.md](./architecture.md) | สแต็ก โฟลเดอร์ ข้อมูล |
+| [ANALYSIS.md](./ANALYSIS.md) | จุดอ่อนระบบ + แผนสแกน/วัด perf + คลื่นทำความสะอาด |
 | [modules.md](./modules.md) | โมดูล 7 อัน สิ่งที่ทำได้/ยังขาด |
 | [DEPLOY.md](./DEPLOY.md) | Neon / R2 / Vercel |
 | [acceptance.md](./acceptance.md) | เกณฑ์ผ่าน V0.1.0 |

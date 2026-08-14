@@ -4,6 +4,7 @@ import { ConfirmDelete } from "@/components/notebook/confirm-delete";
 import { ComposerSheet } from "@/components/notebook/composer-sheet";
 import { NotebookForm } from "@/components/notebook/notebook-form";
 import { RecordRow } from "@/components/notebook/record-row";
+import { ToggleAction } from "@/components/notebook/toggle-action";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -59,13 +60,13 @@ export default async function TasksPage({
               done={Boolean(t.doneAt)}
               actions={
                 <>
-                  <form action={toggleTask}>
-                    <input type="hidden" name="id" value={t.id} />
-                    <input type="hidden" name="done" value={t.doneAt ? "0" : "1"} />
-                    <Button size="sm" variant="outline">
-                      {t.doneAt ? "เปิด" : "เสร็จ"}
-                    </Button>
-                  </form>
+                  <ToggleAction
+                    action={toggleTask}
+                    id={t.id}
+                    name="done"
+                    value={t.doneAt ? "0" : "1"}
+                    label={t.doneAt ? "เปิด" : "เสร็จ"}
+                  />
                   <ComposerSheet label="แก้" title="แก้งาน" variant="outline" compact>
                     <NotebookForm action={updateTask}>
                       <input type="hidden" name="id" value={t.id} />

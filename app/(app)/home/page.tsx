@@ -7,8 +7,11 @@ import { AmountText } from "@/components/notebook/amount-text";
 import { ChapterTabs } from "@/components/notebook/chapter-tabs";
 import { ConfirmDelete } from "@/components/notebook/confirm-delete";
 import { ComposerSheet } from "@/components/notebook/composer-sheet";
+import { ItemCard } from "@/components/notebook/item-card";
 import { NotebookForm } from "@/components/notebook/notebook-form";
 import { RecordRow } from "@/components/notebook/record-row";
+import { StatCard } from "@/components/notebook/stat-card";
+import { ToggleAction } from "@/components/notebook/toggle-action";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -38,9 +41,9 @@ export default async function HomePage() {
   return (
     <AppShell title="บ้าน">
       <div className="mb-5 grid grid-cols-3 gap-2">
-        <Stat tip="ของในบ้าน" value={String(items.length)} icon={<Package className="size-4" />} />
-        <Stat tip="รอซื้อ" value={String(openShop)} icon={<ShoppingCart className="size-4" />} />
-        <Stat tip="บิลค้าง" value={String(unpaid)} icon={<Receipt className="size-4" />} />
+        <StatCard tip="ของในบ้าน" value={String(items.length)} icon={<Package className="size-4" />} />
+        <StatCard tip="รอซื้อ" value={String(openShop)} icon={<ShoppingCart className="size-4" />} />
+        <StatCard tip="บิลค้าง" value={String(unpaid)} icon={<Receipt className="size-4" />} />
       </div>
 
       <ChapterTabs labels={["ของ", "ซื้อ", "บิล"]}>
@@ -64,38 +67,30 @@ export default async function HomePage() {
           ) : (
             <ul className="grid gap-2.5">
               {items.map((it) => (
-                <li
+                <ItemCard
                   key={it.id}
-                  className="rounded-2xl border border-line bg-gradient-to-br from-paper to-paper-2 p-3.5 shadow-[0_8px_24px_rgba(28,25,23,0.04)]"
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <p className="truncate text-base font-semibold">{it.name}</p>
-                      <p className="text-caption mt-0.5">
-                        {it.location || "ไม่ระบุที่"} · {it.quantity} ชิ้น
-                      </p>
-                    </div>
-                    <span className="rounded-full bg-kaffir/10 px-2.5 py-1 text-xs font-semibold text-kaffir">
-                      ×{it.quantity}
-                    </span>
-                  </div>
-                  <div className="mt-3 flex flex-wrap items-center gap-1.5">
-                    {it.r2Key ? <FileLink r2Key={it.r2Key} label="ดูรูป" /> : null}
-                    <ComposerSheet label="แก้" title="แก้ของ" variant="outline" compact>
-                      <NotebookForm action={updateHomeItem}>
-                        <input type="hidden" name="id" value={it.id} />
-                        <Input name="name" defaultValue={it.name} required />
-                        <Input name="location" defaultValue={it.location} />
-                        <Input name="quantity" type="number" defaultValue={it.quantity} />
-                        <FileField label="รูปใหม่" />
-                        <Button type="submit" size="sm">
-                          บันทึก
-                        </Button>
-                      </NotebookForm>
-                    </ComposerSheet>
-                    <ConfirmDelete action={deleteHomeItem} id={it.id} />
-                  </div>
-                </li>
+                  title={it.name}
+                  hint={`${it.location || "ไม่ระบุที่"} · ${it.quantity} ชิ้น`}
+                  badge={`×${it.quantity}`}
+                  actions={
+                    <>
+                      {it.r2Key ? <FileLink r2Key={it.r2Key} label="ดูรูป" /> : null}
+                      <ComposerSheet label="แก้" title="แก้ของ" variant="outline" compact>
+                        <NotebookForm action={updateHomeItem}>
+                          <input type="hidden" name="id" value={it.id} />
+                          <Input name="name" defaultValue={it.name} required />
+                          <Input name="location" defaultValue={it.location} />
+                          <Input name="quantity" type="number" defaultValue={it.quantity} />
+                          <FileField label="รูปใหม่" />
+                          <Button type="submit" size="sm">
+                            บันทึก
+                          </Button>
+                        </NotebookForm>
+                      </ComposerSheet>
+                      <ConfirmDelete action={deleteHomeItem} id={it.id} />
+                    </>
+                  }
+                />
               ))}
             </ul>
           )}
@@ -124,13 +119,14 @@ export default async function HomePage() {
                   done={s.bought}
                   actions={
                     <>
-                      <form action={toggleShopping}>
-                        <input type="hidden" name="id" value={s.id} />
-                        <input type="hidden" name="bought" value={s.bought ? "0" : "1"} />
-                        <Button size="sm" variant={s.bought ? "outline" : "default"}>
-                          {s.bought ? "ยัง" : "ซื้อแล้ว"}
-                        </Button>
-                      </form>
+                      <ToggleAction
+                        action={toggleShopping}
+                        id={s.id}
+                        name="bought"
+                        value={s.bought ? "0" : "1"}
+                        label={s.bought ? "ยัง" : "ซื้อแล้ว"}
+                        variant={s.bought ? "outline" : "default"}
+                      />
                       <ConfirmDelete action={deleteShopping} id={s.id} />
                     </>
                   }
@@ -166,60 +162,43 @@ export default async function HomePage() {
           ) : (
             <ul className="grid gap-2.5">
               {bills.map((b) => (
-                <li
+                <ItemCard
                   key={b.id}
-                  className={`rounded-2xl border p-3.5 ${
-                    b.paid ? "border-line bg-paper-2/70" : "border-orange/30 bg-orange-soft/20"
-                  }`}
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="min-w-0">
-                      <p className={`truncate font-semibold ${b.paid ? "text-ink-muted line-through" : ""}`}>
-                        {b.title}
-                      </p>
-                      <p className="text-caption mt-0.5">
-                        {isoToThaiShort(b.dueOn) || "ไม่กำหนด"} · {b.paid ? "จ่ายแล้ว" : "ยังไม่จ่าย"}
-                      </p>
-                    </div>
-                    <AmountText satang={b.amountSatang} className="text-base font-bold" />
-                  </div>
-                  <div className="mt-3 flex flex-wrap gap-1.5">
-                    <form action={toggleBill}>
-                      <input type="hidden" name="id" value={b.id} />
-                      <input type="hidden" name="paid" value={b.paid ? "0" : "1"} />
-                      <Button size="sm" variant={b.paid ? "outline" : "orange"}>
-                        {b.paid ? "ยังไม่จ่าย" : "จ่ายแล้ว"}
-                      </Button>
-                    </form>
-                    <ComposerSheet label="แก้" title="แก้บิล" variant="outline" compact>
-                      <NotebookForm action={updateBill}>
-                        <input type="hidden" name="id" value={b.id} />
-                        <Input name="title" defaultValue={b.title} required />
-                        <Input name="amount" defaultValue={String(b.amountSatang / 100)} />
-                        <Input name="dueOn" type="date" defaultValue={b.dueOn ?? ""} />
-                        <Button type="submit" size="sm">
-                          บันทึก
-                        </Button>
-                      </NotebookForm>
-                    </ComposerSheet>
-                    <ConfirmDelete action={deleteBill} id={b.id} />
-                  </div>
-                </li>
+                  title={b.title}
+                  hint={`${isoToThaiShort(b.dueOn) || "ไม่กำหนด"} · ${b.paid ? "จ่ายแล้ว" : "ยังไม่จ่าย"}`}
+                  value={<AmountText satang={b.amountSatang} className="text-base font-bold" />}
+                  muted={b.paid}
+                  warn={!b.paid}
+                  actions={
+                    <>
+                      <ToggleAction
+                        action={toggleBill}
+                        id={b.id}
+                        name="paid"
+                        value={b.paid ? "0" : "1"}
+                        label={b.paid ? "ยังไม่จ่าย" : "จ่ายแล้ว"}
+                        variant={b.paid ? "outline" : "orange"}
+                      />
+                      <ComposerSheet label="แก้" title="แก้บิล" variant="outline" compact>
+                        <NotebookForm action={updateBill}>
+                          <input type="hidden" name="id" value={b.id} />
+                          <Input name="title" defaultValue={b.title} required />
+                          <Input name="amount" defaultValue={String(b.amountSatang / 100)} />
+                          <Input name="dueOn" type="date" defaultValue={b.dueOn ?? ""} />
+                          <Button type="submit" size="sm">
+                            บันทึก
+                          </Button>
+                        </NotebookForm>
+                      </ComposerSheet>
+                      <ConfirmDelete action={deleteBill} id={b.id} />
+                    </>
+                  }
+                />
               ))}
             </ul>
           )}
         </div>
       </ChapterTabs>
     </AppShell>
-  );
-}
-
-function Stat({ tip, value, icon }: { tip: string; value: string; icon: React.ReactNode }) {
-  return (
-    <div className="rounded-2xl border border-line bg-paper-2 px-3 py-3">
-      <div className="mb-1 text-kaffir">{icon}</div>
-      <p className="text-display text-[1.6rem] leading-none">{value}</p>
-      <p className="text-caption mt-1">{tip}</p>
-    </div>
   );
 }

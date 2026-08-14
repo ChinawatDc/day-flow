@@ -1,13 +1,8 @@
-import {
-  Download,
-  KeyRound,
-  LogOut,
-  Trash2,
-  UserRound,
-} from "lucide-react";
+import { Download, KeyRound, LogOut, Trash2, UserRound } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { ChangePasswordForm } from "@/components/change-password-form";
 import { ConfirmDelete } from "@/components/notebook/confirm-delete";
+import { SectionCard } from "@/components/notebook/section-card";
 import { SignOutButton } from "@/components/sign-out-button";
 import { requireUser } from "@/lib/session";
 import { deleteAccount } from "./actions";
@@ -34,36 +29,24 @@ export default async function SettingsPage() {
       </section>
 
       <div className="grid gap-3 md:max-w-xl">
-        <SettingsCard
-          icon={<KeyRound className="size-5" />}
-          title="รหัสผ่าน"
-          hint="เปลี่ยนรหัสเข้าใช้บัญชีนี้"
-        >
+        <SectionCard icon={<KeyRound className="size-5" />} title="รหัสผ่าน" hint="เปลี่ยนรหัสเข้าใช้บัญชีนี้">
           <ChangePasswordForm />
-        </SettingsCard>
+        </SectionCard>
 
-        <SettingsCard
-          icon={<Download className="size-5" />}
-          title="สำรองข้อมูล"
-          hint="ดาวน์โหลดเฉพาะข้อมูลบัญชีนี้"
-        >
+        <SectionCard icon={<Download className="size-5" />} title="สำรองข้อมูล" hint="ดาวน์โหลดเฉพาะข้อมูลบัญชีนี้">
           <div className="grid gap-2">
             <ExportLink href="/api/export?format=json" label="JSON ทั้งบัญชี" />
             <ExportLink href="/api/export?format=csv&kind=money" label="CSV รายจ่าย" />
             <ExportLink href="/api/export?format=csv&kind=tasks" label="CSV งาน" />
           </div>
-        </SettingsCard>
+        </SectionCard>
 
-        <SettingsCard
-          icon={<LogOut className="size-5" />}
-          title="เซสชัน"
-          hint="ออกจากระบบบนเครื่องนี้"
-        >
+        <SectionCard icon={<LogOut className="size-5" />} title="เซสชัน" hint="ออกจากระบบบนเครื่องนี้">
           <SignOutButton />
-        </SettingsCard>
+        </SectionCard>
 
-        <SettingsCard
-          icon={<Trash2 className="size-5 text-orange" />}
+        <SectionCard
+          icon={<Trash2 className="size-5" />}
           title="โซนอันตราย"
           hint="ลบข้อมูลและไฟล์ของบัญชีนี้ถาวร"
           danger
@@ -76,42 +59,9 @@ export default async function SettingsPage() {
             label="ลบบัญชีถาวร"
             message="ลบบัญชีและไฟล์ทั้งหมด?"
           />
-        </SettingsCard>
+        </SectionCard>
       </div>
     </AppShell>
-  );
-}
-
-function SettingsCard({
-  icon,
-  title,
-  hint,
-  children,
-  danger,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  hint: string;
-  children: React.ReactNode;
-  danger?: boolean;
-}) {
-  return (
-    <section
-      className={`rounded-2xl border p-4 ${
-        danger ? "border-orange/35 bg-orange-soft/15" : "border-line bg-paper"
-      }`}
-    >
-      <div className="mb-4 flex items-start gap-3">
-        <div className={`mt-0.5 rounded-xl p-2 ${danger ? "bg-orange/15 text-orange" : "bg-paper-2 text-kaffir"}`}>
-          {icon}
-        </div>
-        <div>
-          <h2 className="text-title text-base">{title}</h2>
-          <p className="text-caption">{hint}</p>
-        </div>
-      </div>
-      {children}
-    </section>
   );
 }
 
