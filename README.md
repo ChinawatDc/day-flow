@@ -2,8 +2,8 @@
 
 สมุดบ้านประจำวัน — Next.js (FE+BE), Neon, better-auth, Cloudflare R2, Vercel
 
-**พร้อมใช้งานไหม:** ยังไม่พร้อมใช้ทุกวัน — โค้ดโมดูลครบ แต่ยังไม่มีฐานข้อมูลจริง  
-แผนปิด V0.1.0 อยู่ที่ [docs/VERSIONS.md](docs/VERSIONS.md) · งานที่ต้องทำ [docs/01-v0.1.0/README.md](docs/01-v0.1.0/README.md)
+**พร้อมใช้งานไหม:** โค้ดถึง `v0.1.0` แล้ว — ยังต้องใส่ Neon (และ R2 ถ้าเก็บไฟล์) แล้ว deploy  
+แผนเวอร์ชัน: [docs/VERSIONS.md](docs/VERSIONS.md) · สาขา/tag: [docs/BRANCHING.md](docs/BRANCHING.md)
 
 ## เอกสาร
 - [GOAL.md](GOAL.md) — เป้าปัจจุบัน + checklist

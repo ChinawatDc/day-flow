@@ -8,7 +8,7 @@
 | **V0.0.2** | เครื่องมือ Neon: `db:push` / `db:apply` + health ตรวจ DB | โค้ดพร้อม — ค้าง human: `DATABASE_URL` |
 | **V0.0.3** | R2 private ใช้ไฟล์ได้จริง | โค้ดพร้อม (`health.r2`) — ค้าง human: bucket + env |
 | **V0.0.4** | อุดช่องว่างที่ทำให้ใช้ทุกวันสะดุด | tagged `v0.0.4` |
-| **V0.1.0** | ขึ้น Vercel + ใช้เอง 7 วัน | ค้าง human deploy + ใช้จริง |
+| **V0.1.0** | ขึ้น Vercel + ใช้เอง 7 วัน | โค้ด tagged `v0.1.0` — ค้าง human: Neon, R2, Vercel, ใช้ 7 วัน |
 
 ไม่ข้าม V0.0.2 — ไม่มี DB แล้วโมดูลไม่มีค่า
 
