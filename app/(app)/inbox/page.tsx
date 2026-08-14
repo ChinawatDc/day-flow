@@ -2,17 +2,19 @@ import { AppShell } from "@/components/app-shell";
 import { FileField } from "@/components/file-field";
 import { FileLink } from "@/components/file-link";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { NativeSelect } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { EmptyState } from "@/components/empty-state";
 import { createCapture, fileCapture } from "./actions";
 import { listCaptures } from "@/lib/data";
+import { expenseCategories } from "@/lib/modules";
 import { requireUser } from "@/lib/session";
 import { env } from "@/lib/env";
 
 const destinations = [
   { kind: "task", label: "งาน" },
-  { kind: "money", label: "เงิน" },
   { kind: "vault", label: "คลัง" },
   { kind: "home", label: "บ้าน" },
   { kind: "journal", label: "บันทึก" },
@@ -55,6 +57,22 @@ export default async function InboxPage() {
                   </form>
                 ))}
               </div>
+              <form action={fileCapture} className="mt-3 grid gap-2 rounded-lg bg-paper-2 p-3">
+                <input type="hidden" name="id" value={row.id} />
+                <input type="hidden" name="kind" value="money" />
+                <Label htmlFor={`amount-${row.id}`}>จัดเป็นรายจ่าย</Label>
+                <Input id={`amount-${row.id}`} name="amount" inputMode="decimal" required placeholder="จำนวนบาท" />
+                <NativeSelect name="category" defaultValue="food">
+                  {expenseCategories.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.label}
+                    </option>
+                  ))}
+                </NativeSelect>
+                <Button type="submit" size="sm" variant="orange">
+                  บันทึกเป็นเงิน
+                </Button>
+              </form>
             </li>
           ))}
         </ul>

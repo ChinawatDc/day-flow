@@ -79,7 +79,15 @@ export default async function VaultPage() {
                     <td className="py-3">{v.title}</td>
                     <td>{label(v.kind)}</td>
                     <td>{isoToThaiShort(v.expiresOn)}</td>
-                    <td>{v.r2Key ? <FileLink r2Key={v.r2Key} /> : null}</td>
+                    <td>
+                      {v.r2Key ? <FileLink r2Key={v.r2Key} /> : null}
+                      <form action={deleteVaultItem} className="ml-2 inline">
+                        <input type="hidden" name="id" value={v.id} />
+                        <Button size="sm" variant="ghost">
+                          ลบ
+                        </Button>
+                      </form>
+                    </td>
                   </tr>
                 ))}
               </tbody>

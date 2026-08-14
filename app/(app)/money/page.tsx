@@ -104,6 +104,12 @@ export default async function MoneyPage() {
                     <td>{isoToThaiShort(e.spentOn)}</td>
                     <td>
                       {e.receiptR2Key ? <FileLink r2Key={e.receiptR2Key} /> : null}
+                      <form action={deleteExpense} className="ml-2 inline">
+                        <input type="hidden" name="id" value={e.id} />
+                        <Button size="sm" variant="ghost">
+                          ลบ
+                        </Button>
+                      </form>
                     </td>
                   </tr>
                 ))}

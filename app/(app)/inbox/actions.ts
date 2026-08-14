@@ -3,15 +3,24 @@
 import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { getDb } from "@/lib/db/client";
-import { captures, homeItems, journalEntries, tasks, vaultItems } from "@/lib/db/schema";
+import {
+  captures,
+  expenses,
+  homeItems,
+  journalEntries,
+  tasks,
+  vaultItems,
+} from "@/lib/db/schema";
+import { deletePrivateObject } from "@/lib/r2/client";
 import { requireUser } from "@/lib/session";
 import { maybeUpload } from "@/lib/upload";
-import { bangkokTodayIso } from "@/lib/utils";
+import { bangkokTodayIso, satangFromBahtInput } from "@/lib/utils";
 
 function refresh() {
   revalidatePath("/inbox");
   revalidatePath("/today");
   revalidatePath("/tasks");
+  revalidatePath("/money");
   revalidatePath("/vault");
   revalidatePath("/home");
   revalidatePath("/journal");
@@ -46,6 +55,7 @@ export async function fileCapture(formData: FormData) {
   if (!row) return;
 
   if (kind === "discard") {
+    if (row.r2Key) await deletePrivateObject(row.r2Key);
     await db.delete(captures).where(eq(captures.id, id));
     refresh();
     return;
@@ -58,6 +68,18 @@ export async function fileCapture(formData: FormData) {
       title: row.note || "จากจดด่วน",
       note: "",
       dueOn: bangkokTodayIso(),
+    });
+  } else if (kind === "money") {
+    const satang = satangFromBahtInput(String(formData.get("amount") ?? ""));
+    if (satang == null) return;
+    await db.insert(expenses).values({
+      id: crypto.randomUUID(),
+      userId: user.id,
+      amountSatang: satang,
+      category: String(formData.get("category") ?? "other"),
+      merchant: String(formData.get("merchant") ?? row.note).trim(),
+      spentOn: bangkokTodayIso(),
+      receiptR2Key: row.r2Key,
     });
   } else if (kind === "vault") {
     await db.insert(vaultItems).values({
@@ -81,7 +103,9 @@ export async function fileCapture(formData: FormData) {
       .from(journalEntries)
       .where(and(eq(journalEntries.userId, user.id), eq(journalEntries.entryOn, today)))
       .limit(1);
-    const extra = row.note ? `${existing[0]?.body ? existing[0].body + "\n" : ""}${row.note}` : existing[0]?.body ?? "";
+    const extra = row.note
+      ? `${existing[0]?.body ? existing[0].body + "\n" : ""}${row.note}`
+      : (existing[0]?.body ?? "");
     if (existing[0]) {
       await db
         .update(journalEntries)
@@ -104,8 +128,14 @@ export async function fileCapture(formData: FormData) {
 
 export async function deleteCapture(formData: FormData) {
   const user = await requireUser();
-  await getDb()
-    .delete(captures)
-    .where(and(eq(captures.id, String(formData.get("id"))), eq(captures.userId, user.id)));
+  const id = String(formData.get("id"));
+  const db = getDb();
+  const [row] = await db
+    .select()
+    .from(captures)
+    .where(and(eq(captures.id, id), eq(captures.userId, user.id)))
+    .limit(1);
+  if (row?.r2Key) await deletePrivateObject(row.r2Key);
+  await db.delete(captures).where(and(eq(captures.id, id), eq(captures.userId, user.id)));
   refresh();
 }

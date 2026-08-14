@@ -97,11 +97,17 @@ export default async function TasksPage({
                     <td className="py-3">{t.title}</td>
                     <td>{isoToThaiShort(t.dueOn)}</td>
                     <td className="text-right">
-                      <form action={toggleTask} className="inline">
+                      <form action={toggleTask} className="mr-2 inline">
                         <input type="hidden" name="id" value={t.id} />
                         <input type="hidden" name="done" value={t.doneAt ? "0" : "1"} />
                         <Button size="sm" variant="outline">
                           {t.doneAt ? "เปิด" : "เสร็จ"}
+                        </Button>
+                      </form>
+                      <form action={deleteTask} className="inline">
+                        <input type="hidden" name="id" value={t.id} />
+                        <Button size="sm" variant="ghost">
+                          ลบ
                         </Button>
                       </form>
                     </td>

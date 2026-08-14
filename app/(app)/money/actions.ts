@@ -4,6 +4,7 @@ import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { getDb } from "@/lib/db/client";
 import { expenses } from "@/lib/db/schema";
+import { deletePrivateObject } from "@/lib/r2/client";
 import { requireUser } from "@/lib/session";
 import { maybeUpload } from "@/lib/upload";
 import { bangkokTodayIso, satangFromBahtInput } from "@/lib/utils";
@@ -34,7 +35,14 @@ export async function createExpense(formData: FormData) {
 export async function deleteExpense(formData: FormData) {
   const user = await requireUser();
   const id = String(formData.get("id"));
-  await getDb().delete(expenses).where(and(eq(expenses.id, id), eq(expenses.userId, user.id)));
+  const db = getDb();
+  const [row] = await db
+    .select()
+    .from(expenses)
+    .where(and(eq(expenses.id, id), eq(expenses.userId, user.id)))
+    .limit(1);
+  if (row?.receiptR2Key) await deletePrivateObject(row.receiptR2Key);
+  await db.delete(expenses).where(and(eq(expenses.id, id), eq(expenses.userId, user.id)));
   revalidatePath("/money");
   revalidatePath("/today");
 }

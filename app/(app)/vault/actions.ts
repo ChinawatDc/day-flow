@@ -4,6 +4,7 @@ import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { getDb } from "@/lib/db/client";
 import { vaultItems } from "@/lib/db/schema";
+import { deletePrivateObject } from "@/lib/r2/client";
 import { requireUser } from "@/lib/session";
 import { maybeUpload } from "@/lib/upload";
 
@@ -29,7 +30,14 @@ export async function createVaultItem(formData: FormData) {
 export async function deleteVaultItem(formData: FormData) {
   const user = await requireUser();
   const id = String(formData.get("id"));
-  await getDb().delete(vaultItems).where(and(eq(vaultItems.id, id), eq(vaultItems.userId, user.id)));
+  const db = getDb();
+  const [row] = await db
+    .select()
+    .from(vaultItems)
+    .where(and(eq(vaultItems.id, id), eq(vaultItems.userId, user.id)))
+    .limit(1);
+  if (row?.r2Key) await deletePrivateObject(row.r2Key);
+  await db.delete(vaultItems).where(and(eq(vaultItems.id, id), eq(vaultItems.userId, user.id)));
   revalidatePath("/vault");
   revalidatePath("/today");
 }

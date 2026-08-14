@@ -4,6 +4,7 @@ import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { getDb } from "@/lib/db/client";
 import { homeBills, homeItems, shoppingItems } from "@/lib/db/schema";
+import { deletePrivateObject } from "@/lib/r2/client";
 import { requireUser } from "@/lib/session";
 import { maybeUpload } from "@/lib/upload";
 import { satangFromBahtInput } from "@/lib/utils";
@@ -32,9 +33,15 @@ export async function createHomeItem(formData: FormData) {
 
 export async function deleteHomeItem(formData: FormData) {
   const user = await requireUser();
-  await getDb()
-    .delete(homeItems)
-    .where(and(eq(homeItems.id, String(formData.get("id"))), eq(homeItems.userId, user.id)));
+  const id = String(formData.get("id"));
+  const db = getDb();
+  const [row] = await db
+    .select()
+    .from(homeItems)
+    .where(and(eq(homeItems.id, id), eq(homeItems.userId, user.id)))
+    .limit(1);
+  if (row?.r2Key) await deletePrivateObject(row.r2Key);
+  await db.delete(homeItems).where(and(eq(homeItems.id, id), eq(homeItems.userId, user.id)));
   refresh();
 }
 
