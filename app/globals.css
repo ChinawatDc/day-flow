@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+:root {
+  --paper: #f4efe6;
+  --paper-2: #ebe4d6;
+  --paper-3: #e0d6c4;
+  --ink: #1c1917;
+  --ink-muted: #57534e;
+  --kaffir: #3d6b4f;
+  --kaffir-dark: #2c4f3a;
+  --orange: #c45c26;
+  --orange-soft: #e8c4ae;
+  --line: #d6cbb8;
+  --font-display: "Cabinet Grotesk Variable", "Cabinet Grotesk", system-ui, sans-serif;
+  --font-body: "Anuphan", system-ui, sans-serif;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-paper-3: var(--paper-3);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-kaffir: var(--kaffir);
+  --color-kaffir-dark: var(--kaffir-dark);
+  --color-orange: var(--orange);
+  --color-orange-soft: var(--orange-soft);
+  --color-line: var(--line);
+  --font-display: var(--font-display);
+  --font-sans: var(--font-body);
+}
+
+html,
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+::selection {
+  background: var(--kaffir);
+  color: var(--paper);
+}
