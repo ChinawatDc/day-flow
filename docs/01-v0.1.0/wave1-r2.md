@@ -17,3 +17,5 @@
 
 ## Done when
 object อยู่ใน `userId/receipts/...` หรือ `captures` / `vault` ตามโมดูล
+
+`GET /api/health` จะมี `"r2": true` เมื่อใส่ `R2_*` ครบ (ยังไม่ยิง HeadBucket — ทดสอบด้วยอัปโหลดใบเสร็จ)

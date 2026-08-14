@@ -13,6 +13,7 @@
 - [x] หน้าโมดูล 7 อันมี CRUD ในโค้ด
 - [x] `.env.local` + `BETTER_AUTH_SECRET`
 - [x] เครื่องมือ schema: `db:push` / `db:apply` (V0.0.2)
+- [x] health รายงาน `r2` (V0.0.3)
 - [ ] Neon `DATABASE_URL` (โปรเจกต์แยกจาก FitKub) + รัน `db:push`
 - [ ] สมัคร/ล็อกอินบนเครื่องตัวเองได้
 - [ ] CRUD ทั้ง 7 โมดูลผ่านมือถือจริง
