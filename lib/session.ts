@@ -20,7 +20,7 @@ export const requireUser = cache(async () => {
     const h = await headers();
     const pathname = h.get("x-pathname") ?? "";
     const search = h.get("x-search") ?? "";
-    const next = pathname.startsWith("/") ? `${pathname}${search}` : "/today";
+    const next = pathname.startsWith("/") ? `${pathname}${search}` : "/menu";
     redirect(`/login?next=${encodeURIComponent(next)}`);
   }
   return session.user;

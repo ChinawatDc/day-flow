@@ -9,7 +9,7 @@ import { authClient } from "@/lib/auth-client";
 
 export function LoginForm({
   googleEnabled,
-  nextPath = "/today",
+  nextPath = "/menu",
 }: {
   googleEnabled: boolean;
   nextPath?: string;

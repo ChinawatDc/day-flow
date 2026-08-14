@@ -29,19 +29,17 @@ export default async function MoneyPage() {
 
   return (
     <AppShell title="เงิน">
-      <div className="mb-4 flex items-end justify-between">
-        <div>
-          <p className="text-caption">วันนี้ / เดือนนี้</p>
-          <p className="text-display">
-            <AmountText satang={todayTotal} />
-            <span className="text-caption mx-2">·</span>
-            <span className="text-title">
-              <AmountText satang={monthTotal} />
-            </span>
-          </p>
-        </div>
-        <div className="w-28">
-          <ComposerSheet label="จ่าย" title="รายจ่าย" variant="orange" compact>
+      <div className="mb-4">
+        <p className="text-caption">วันนี้ / เดือนนี้</p>
+        <p className="text-display mt-1">
+          <AmountText satang={todayTotal} />
+          <span className="text-caption mx-2">·</span>
+          <span className="text-title">
+            <AmountText satang={monthTotal} />
+          </span>
+        </p>
+        <div className="mt-3">
+          <ComposerSheet label="จ่าย" title="รายจ่าย" variant="orange">
             <NotebookForm action={createExpense}>
               <Label htmlFor="amount">จำนวน (บาท)</Label>
               <Input id="amount" name="amount" inputMode="decimal" required placeholder="120" />
@@ -63,14 +61,18 @@ export default async function MoneyPage() {
           </ComposerSheet>
         </div>
       </div>
-      <ul className="mb-5 grid gap-1">
-        {byCat.map((c) => (
-          <li key={c.id} className="flex justify-between text-sm">
-            <span>{c.label}</span>
-            <AmountText satang={c.total} className="font-semibold" />
-          </li>
-        ))}
-      </ul>
+      {monthTotal > 0 ? (
+        <ul className="mb-5 grid gap-1">
+          {byCat
+            .filter((c) => c.total > 0)
+            .map((c) => (
+              <li key={c.id} className="flex justify-between text-sm">
+                <span>{c.label}</span>
+                <AmountText satang={c.total} className="font-semibold" />
+              </li>
+            ))}
+        </ul>
+      ) : null}
       {rows.length === 0 ? (
         <EmptyState title="ยังไม่มีรายจ่าย" hint="กดจ่ายด้านบน" />
       ) : (

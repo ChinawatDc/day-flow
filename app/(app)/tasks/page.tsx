@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { createTask, deleteTask, toggleTask, updateTask } from "./actions";
+import { FilterPills } from "@/components/notebook/filter-pills";
 import { listTasks } from "@/lib/data";
 import { requireUser } from "@/lib/session";
 import { isoToThaiShort } from "@/lib/thai-date";
@@ -39,17 +40,13 @@ export default async function TasksPage({
           </NotebookForm>
         </ComposerSheet>
       </div>
-      <div className="mb-4 flex gap-2 text-sm">
-        <a className={filter === "today" ? "text-kaffir" : "text-ink-muted"} href="/tasks?filter=today">
-          วันนี้
-        </a>
-        <a className={filter === "open" ? "text-kaffir" : "text-ink-muted"} href="/tasks?filter=open">
-          ค้าง
-        </a>
-        <a className={filter === "all" ? "text-kaffir" : "text-ink-muted"} href="/tasks?filter=all">
-          ทั้งหมด
-        </a>
-      </div>
+      <FilterPills
+        items={[
+          { href: "/tasks?filter=today", label: "วันนี้", active: filter === "today" },
+          { href: "/tasks?filter=open", label: "ค้าง", active: filter === "open" },
+          { href: "/tasks?filter=all", label: "ทั้งหมด", active: filter === "all" },
+        ]}
+      />
       {rows.length === 0 ? (
         <EmptyState title="ยังไม่มีงาน" hint="กดเพิ่มงานด้านบน" />
       ) : (

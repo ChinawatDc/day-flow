@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Ably from "ably";
 import { pingLocation, startLocationShare, stopLocationShare } from "@/app/(app)/family/actions";
 import { Button } from "@/components/ui/button";
 import { envHint } from "@/components/family/live-hint";
+import { loadAbly, type RealtimeClient } from "@/lib/family/load-ably";
 
 type Pin = {
   userId: string;
@@ -39,37 +39,42 @@ export function GeoShare({
 
   useEffect(() => {
     if (!live) return;
-    const client = new Ably.Realtime({ authUrl: "/api/realtime/token" });
-    const ch = client.channels.get(channelName);
-    const onShare = (msg: Ably.Message) => {
-      const d = msg.data as Pin;
-      if (!d?.userId) return;
-      setPins((cur) => {
-        const rest = cur.filter((p) => p.userId !== d.userId);
-        return [...rest, { ...d, name: names[d.userId] }];
-      });
-      if (d.userId === meId) setUntil(d.expiresAt);
-    };
-    const onPing = (msg: Ably.Message) => {
-      const d = msg.data as Pin;
-      if (!d?.userId) return;
-      setPins((cur) => {
-        const rest = cur.filter((p) => p.userId !== d.userId);
-        return [...rest, { ...d, name: names[d.userId] ?? cur.find((p) => p.userId === d.userId)?.name }];
-      });
-    };
-    const onStop = (msg: Ably.Message) => {
-      const d = msg.data as { userId?: string };
-      if (!d?.userId) return;
-      setPins((cur) => cur.filter((p) => p.userId !== d.userId));
-      if (d.userId === meId) setUntil(null);
-    };
-    void ch.subscribe("share", onShare);
-    void ch.subscribe("ping", onPing);
-    void ch.subscribe("stop", onStop);
+    let closed = false;
+    let client: RealtimeClient | undefined;
+    void loadAbly().then((Ably) => {
+      if (closed) return;
+      client = new Ably.Realtime({ authUrl: "/api/realtime/token" });
+      const ch = client.channels.get(channelName);
+      const onShare = (msg: { data: unknown }) => {
+        const d = msg.data as Pin;
+        if (!d?.userId) return;
+        setPins((cur) => {
+          const rest = cur.filter((p) => p.userId !== d.userId);
+          return [...rest, { ...d, name: names[d.userId] }];
+        });
+        if (d.userId === meId) setUntil(d.expiresAt);
+      };
+      const onPing = (msg: { data: unknown }) => {
+        const d = msg.data as Pin;
+        if (!d?.userId) return;
+        setPins((cur) => {
+          const rest = cur.filter((p) => p.userId !== d.userId);
+          return [...rest, { ...d, name: names[d.userId] ?? cur.find((p) => p.userId === d.userId)?.name }];
+        });
+      };
+      const onStop = (msg: { data: unknown }) => {
+        const d = msg.data as { userId?: string };
+        if (!d?.userId) return;
+        setPins((cur) => cur.filter((p) => p.userId !== d.userId));
+        if (d.userId === meId) setUntil(null);
+      };
+      void ch.subscribe("share", onShare);
+      void ch.subscribe("ping", onPing);
+      void ch.subscribe("stop", onStop);
+    });
     return () => {
-      ch.unsubscribe();
-      client.close();
+      closed = true;
+      client?.close();
     };
   }, [channelName, live, meId, names]);
 

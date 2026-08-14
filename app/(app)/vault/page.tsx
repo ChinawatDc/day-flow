@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { NativeSelect } from "@/components/ui/select";
 import { createVaultItem, deleteVaultItem, updateVaultItem } from "./actions";
+import { FilterPills } from "@/components/notebook/filter-pills";
 import { listVault } from "@/lib/data";
 import { vaultKinds } from "@/lib/modules";
 import { requireUser } from "@/lib/session";
@@ -31,14 +32,12 @@ export default async function VaultPage({
 
   return (
     <AppShell title="คลัง">
-      <div className="mb-4 flex gap-2 text-sm">
-        <a className={!filter ? "text-kaffir" : "text-ink-muted"} href="/vault">
-          ทั้งหมด
-        </a>
-        <a className={filter === "soon" ? "text-kaffir" : "text-ink-muted"} href="/vault?filter=soon">
-          ใกล้หมดอายุ
-        </a>
-      </div>
+      <FilterPills
+        items={[
+          { href: "/vault", label: "ทั้งหมด", active: !filter },
+          { href: "/vault?filter=soon", label: "ใกล้หมดอายุ", active: filter === "soon" },
+        ]}
+      />
       <div className="mb-4">
         <ComposerSheet label="เก็บเอกสาร" title="เอกสารใหม่">
           <NotebookForm action={createVaultItem}>

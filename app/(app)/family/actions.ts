@@ -54,7 +54,7 @@ export async function joinFamilyByCode(raw: string) {
   if (await getMembership(user.id)) redirect("/family");
   const code = normalizeCode(raw);
   const family = await findFamilyByCode(code);
-  if (!family) return "ไม่พบโค้ดนี้";
+  if (!family) redirect(`/family?err=${encodeURIComponent("ไม่พบโค้ดนี้")}`);
   await getDb().insert(familyMembers).values({
     id: crypto.randomUUID(),
     familyId: family.id,

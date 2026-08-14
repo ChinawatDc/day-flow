@@ -1,4 +1,5 @@
 import { AppShell } from "@/components/app-shell";
+import { EmptyState } from "@/components/empty-state";
 import { FileField } from "@/components/file-field";
 import { FileLink } from "@/components/file-link";
 import { AmountText } from "@/components/notebook/amount-text";
@@ -47,6 +48,11 @@ export default async function HomePage() {
                   </ComposerSheet>
                 </div>
                 <ul className="grid gap-2">
+                  {items.length === 0 ? (
+                    <li>
+                      <EmptyState title="ยังไม่มีของ" hint="กดเพิ่มของด้านบน" />
+                    </li>
+                  ) : null}
                   {items.map((it) => (
                     <RecordRow
                       key={it.id}
@@ -80,6 +86,11 @@ export default async function HomePage() {
                   <Button type="submit">เพิ่ม</Button>
                 </form>
                 <ul className="grid gap-2">
+                  {shopping.length === 0 ? (
+                    <li>
+                      <EmptyState title="ยังไม่มีรายการซื้อ" hint="พิมพ์ของที่จะซื้อด้านบน" />
+                    </li>
+                  ) : null}
                   {shopping.map((s) => (
                     <RecordRow
                       key={s.id}
@@ -121,6 +132,11 @@ export default async function HomePage() {
                   </ComposerSheet>
                 </div>
                 <ul className="grid gap-2">
+                  {bills.length === 0 ? (
+                    <li>
+                      <EmptyState title="ยังไม่มีบิล" hint="กดเพิ่มบิลด้านบน" />
+                    </li>
+                  ) : null}
                   {bills.map((b) => (
                     <RecordRow
                       key={b.id}

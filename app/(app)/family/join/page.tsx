@@ -14,18 +14,11 @@ export default async function FamilyJoinPage({
   if (await getMembership(user.id)) redirect("/family");
   const { code = "" } = await searchParams;
   if (code) {
-    const err = await joinFamilyByCode(code);
-    if (!err) redirect("/family");
-    return (
-      <AppShell title="เข้าร่วมครอบครัว">
-        <p className="mb-4 text-sm text-orange">{err}</p>
-        <JoinPanel defaultCode={code} />
-      </AppShell>
-    );
+    await joinFamilyByCode(code);
   }
   return (
     <AppShell title="เข้าร่วมครอบครัว">
-      <JoinPanel />
+      <JoinPanel defaultCode={code} />
     </AppShell>
   );
 }

@@ -6,11 +6,13 @@ export function EmptyState({
   hint,
   actionHref,
   actionLabel,
+  children,
 }: {
   title: string;
   hint: string;
   actionHref?: string;
   actionLabel?: string;
+  children?: React.ReactNode;
 }) {
   return (
     <div className="rounded-xl border border-dashed border-line bg-paper-2 px-4 py-10">
@@ -21,6 +23,7 @@ export function EmptyState({
           <Link href={actionHref}>{actionLabel}</Link>
         </Button>
       ) : null}
+      {children ? <div className="mt-4 flex flex-wrap gap-2">{children}</div> : null}
     </div>
   );
 }

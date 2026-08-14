@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { NativeSelect } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { EmptyState } from "@/components/empty-state";
 import { ComposerSheet } from "@/components/notebook/composer-sheet";
 import { NotebookForm } from "@/components/notebook/notebook-form";
 import { RecordRow } from "@/components/notebook/record-row";
@@ -32,13 +33,13 @@ export default async function JournalPage({
   return (
     <AppShell title="บันทึกวัน">
       <div className="mb-5 flex items-baseline justify-between gap-3">
-        <Link href={`/journal?day=${prev}`} className="text-sm text-kaffir">
-          วันก่อน
-        </Link>
+        <Button asChild variant="outline" size="sm">
+          <Link href={`/journal?day=${prev}`}>วันก่อน</Link>
+        </Button>
         <p className="text-title">{isoToThaiDisplay(entryOn)}</p>
-        <Link href={`/journal?day=${next}`} className="text-sm text-kaffir">
-          วันถัดไป
-        </Link>
+        <Button asChild variant="outline" size="sm">
+          <Link href={`/journal?day=${next}`}>วันถัดไป</Link>
+        </Button>
       </div>
       <p className="text-caption mb-4">อารมณ์ {moodLabel}</p>
       <div className="mb-4">
@@ -59,7 +60,9 @@ export default async function JournalPage({
           </NotebookForm>
         </ComposerSheet>
       </div>
-      {entry?.body ? <p className="mb-4 whitespace-pre-wrap text-sm">{entry.body}</p> : null}
+      {entry?.body ? <p className="mb-4 whitespace-pre-wrap text-sm">{entry.body}</p> : (
+        <EmptyState title="ยังไม่เขียนวันนี้" hint="กดเขียนด้านบน" />
+      )}
       {photos.length > 0 ? (
         <ul className="grid gap-2">
           {photos.map((p) => (

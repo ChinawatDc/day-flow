@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import jsQR from "jsqr";
 import { Button } from "@/components/ui/button";
 
 function codeFromText(text: string) {
@@ -39,6 +38,7 @@ export function JoinCamera({ onCode }: { onCode: (code: string) => void }) {
         if (!video) return;
         video.srcObject = stream;
         await video.play();
+        const { default: jsQR } = await import("jsqr");
         const tick = () => {
           if (stop || !video || !ctx) return;
           if (video.readyState >= 2) {

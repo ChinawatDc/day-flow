@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
+import { Button } from "@/components/ui/button";
 import { FamilyChat } from "@/components/family/family-chat";
 import { sendDmMessage } from "../../actions";
 import { env } from "@/lib/env";
@@ -28,9 +29,9 @@ export default async function FamilyDmPage({
   return (
     <AppShell title={peer.name || "แชท"}>
       <p className="mb-4">
-        <Link href="/family" className="text-sm text-kaffir">
-          กลับครอบครัว
-        </Link>
+        <Button asChild variant="outline" size="sm">
+          <Link href="/family">กลับครอบครัว</Link>
+        </Button>
       </p>
       <FamilyChat
         channelName={ablyDm(m.familyId, user.id, peerId)}

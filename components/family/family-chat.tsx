@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Ably from "ably";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { envHint } from "@/components/family/live-hint";
+import { loadAbly, type RealtimeClient } from "@/lib/family/load-ably";
 
 export type ChatMsg = {
   id: string;
@@ -43,17 +43,22 @@ export function FamilyChat({
 
   useEffect(() => {
     if (!live) return;
-    const client = new Ably.Realtime({ authUrl: "/api/realtime/token" });
-    const ch = client.channels.get(channelName);
-    const onMsg = (msg: Ably.Message) => {
-      const data = msg.data as ChatMsg | undefined;
-      if (!data?.id) return;
-      setRows((cur) => (cur.some((r) => r.id === data.id) ? cur : [...cur, data]));
-    };
-    void ch.subscribe("message", onMsg);
+    let closed = false;
+    let client: RealtimeClient | undefined;
+    void loadAbly().then((Ably) => {
+      if (closed) return;
+      client = new Ably.Realtime({ authUrl: "/api/realtime/token" });
+      const ch = client.channels.get(channelName);
+      const onMsg = (msg: { data: unknown }) => {
+        const data = msg.data as ChatMsg | undefined;
+        if (!data?.id) return;
+        setRows((cur) => (cur.some((r) => r.id === data.id) ? cur : [...cur, data]));
+      };
+      void ch.subscribe("message", onMsg);
+    });
     return () => {
-      ch.unsubscribe("message", onMsg);
-      client.close();
+      closed = true;
+      client?.close();
     };
   }, [channelName, live]);
 

@@ -37,7 +37,7 @@ export const modules: AppModule[] = [
     id: "today",
     href: "/today",
     label: "วันนี้",
-    blurb: "บ้านสมุด — ทำต่อจากที่ค้าง",
+    blurb: "ยอดจ่ายและของที่ค้างวันนี้",
     icon: Sun,
   },
   {
@@ -95,7 +95,7 @@ export const hubModule: AppModule = {
   id: "hub",
   href: "/menu",
   label: "เมนู",
-  blurb: "ทุกบทในสมุด",
+  blurb: "หน้าหลักทุกบท",
   icon: LayoutGrid,
 };
 

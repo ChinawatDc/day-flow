@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
+import { EmptyState } from "@/components/empty-state";
 import { AmountText } from "@/components/notebook/amount-text";
 import { ComposerSheet } from "@/components/notebook/composer-sheet";
 import { NotebookForm } from "@/components/notebook/notebook-form";
@@ -26,6 +27,12 @@ export default async function TodayPage({
   const { q = "" } = await searchParams;
   const snap = await getTodaySnapshot(user.id);
   const found = q.trim() ? await searchNotebook(user.id, q) : null;
+  const hasWork =
+    snap.todayTasks.length +
+      snap.overdueTasks.length +
+      snap.billsThisMonth.length +
+      snap.expiring.length >
+    0;
 
   return (
     <AppShell title="วันนี้">
@@ -36,26 +43,29 @@ export default async function TodayPage({
             <AmountText satang={snap.spentToday} />
           </p>
         </div>
-        <div className="w-28">
-          <ComposerSheet label="จ่าย" title="จดรายจ่าย" variant="orange" compact>
-            <NotebookForm action={createExpense}>
-              <Label htmlFor="amount">จำนวนบาท</Label>
-              <Input id="amount" name="amount" inputMode="decimal" required placeholder="120" />
-              <NativeSelect name="category" defaultValue="food">
-                {expenseCategories.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.label}
-                  </option>
-                ))}
-              </NativeSelect>
-              <Input name="merchant" placeholder="ร้าน" />
-              <input type="hidden" name="spentOn" value={bangkokTodayIso()} />
-              <Button type="submit" variant="orange">
-                บันทึกจ่าย
-              </Button>
-            </NotebookForm>
-          </ComposerSheet>
-        </div>
+        <ComposerSheet label="จ่าย" title="จดรายจ่าย" variant="orange" compact>
+          <NotebookForm action={createExpense}>
+            <Label htmlFor="amount">จำนวนบาท</Label>
+            <Input id="amount" name="amount" inputMode="decimal" required placeholder="120" />
+            <NativeSelect name="category" defaultValue="food">
+              {expenseCategories.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.label}
+                </option>
+              ))}
+            </NativeSelect>
+            <Input name="merchant" placeholder="ร้าน" />
+            <input type="hidden" name="spentOn" value={bangkokTodayIso()} />
+            <Button type="submit" variant="orange">
+              บันทึกจ่าย
+            </Button>
+          </NotebookForm>
+        </ComposerSheet>
+      </div>
+
+      <div className="mb-5 flex flex-wrap gap-2">
+        <Chip href="/inbox" label="จด" count={snap.unfiledCount} alert={snap.staleCount > 0} />
+        <Chip href="/journal" label={snap.hasJournal ? "บันทึกแล้ว" : "บันทึก"} />
       </div>
 
       <form action="/today" className="mb-5">
@@ -65,53 +75,77 @@ export default async function TodayPage({
       {found ? (
         <section className="mb-6">
           <p className="text-title mb-2">ผลค้น</p>
-          <ul className="grid gap-2">
-            {found.tasks.length + found.expenses.length + found.vault.length + found.captures.length === 0 ? (
-              <li className="text-caption">ไม่พบ</li>
-            ) : null}
-            {found.tasks.map((t) => (
-              <RecordRow key={t.id} title={t.title} hint="งาน" actions={<Link className="text-sm text-kaffir" href="/tasks">เปิด</Link>} />
-            ))}
-            {found.expenses.map((e) => (
-              <RecordRow
-                key={e.id}
-                title={e.merchant || "รายจ่าย"}
-                hint="เงิน"
-                value={<AmountText satang={e.amountSatang} />}
-                actions={<Link className="text-sm text-kaffir" href="/money">เปิด</Link>}
-              />
-            ))}
-            {found.vault.map((v) => (
-              <RecordRow key={v.id} title={v.title} hint="คลัง" actions={<Link className="text-sm text-kaffir" href="/vault">เปิด</Link>} />
-            ))}
-            {found.captures.map((c) => (
-              <RecordRow key={c.id} title={c.note || "จดด่วน"} hint="จด" actions={<Link className="text-sm text-kaffir" href="/inbox">เปิด</Link>} />
-            ))}
-          </ul>
+          {found.tasks.length + found.expenses.length + found.vault.length + found.captures.length === 0 ? (
+            <p className="text-caption">ไม่พบ</p>
+          ) : (
+            <ul className="grid gap-2">
+              {found.tasks.map((t) => (
+                <RecordRow
+                  key={t.id}
+                  title={t.title}
+                  hint="งาน"
+                  actions={
+                    <Button asChild size="sm" variant="outline">
+                      <Link href="/tasks">เปิด</Link>
+                    </Button>
+                  }
+                />
+              ))}
+              {found.expenses.map((e) => (
+                <RecordRow
+                  key={e.id}
+                  title={e.merchant || "รายจ่าย"}
+                  hint="เงิน"
+                  value={<AmountText satang={e.amountSatang} />}
+                  actions={
+                    <Button asChild size="sm" variant="outline">
+                      <Link href="/money">เปิด</Link>
+                    </Button>
+                  }
+                />
+              ))}
+              {found.vault.map((v) => (
+                <RecordRow
+                  key={v.id}
+                  title={v.title}
+                  hint="คลัง"
+                  actions={
+                    <Button asChild size="sm" variant="outline">
+                      <Link href="/vault">เปิด</Link>
+                    </Button>
+                  }
+                />
+              ))}
+              {found.captures.map((c) => (
+                <RecordRow
+                  key={c.id}
+                  title={c.note || "จดด่วน"}
+                  hint="จด"
+                  actions={
+                    <Button asChild size="sm" variant="outline">
+                      <Link href="/inbox">เปิด</Link>
+                    </Button>
+                  }
+                />
+              ))}
+            </ul>
+          )}
         </section>
       ) : null}
 
-      <Group title="งานวันนี้">
-        {snap.todayTasks.length === 0 ? (
-          <p className="text-caption">ไม่มีงานวันนี้</p>
-        ) : (
-          <ul className="grid gap-2">
-            {snap.todayTasks.map((t) => (
-              <RecordRow
-                key={t.id}
-                title={t.title}
-                hint={isoToThaiShort(t.dueOn)}
-                actions={<DoneForm id={t.id} />}
-              />
-            ))}
-          </ul>
-        )}
-      </Group>
+      {!found && !hasWork ? (
+        <EmptyState title="วันนี้โล่ง" hint="ยังไม่มีงาน บิล หรือเอกสารใกล้หมด">
+          <Button asChild variant="outline">
+            <Link href="/inbox">จด</Link>
+          </Button>
+          <Button asChild>
+            <Link href="/tasks">เพิ่มงาน</Link>
+          </Button>
+        </EmptyState>
+      ) : null}
 
-      <Group title="งานค้างข้ามวัน">
-        {snap.overdueTasks.length === 0 ? (
-          <p className="text-caption">ไม่มีค้าง</p>
-        ) : (
+      {!found && snap.overdueTasks.length > 0 ? (
+        <Group title="งานค้างข้ามวัน">
           <ul className="grid gap-2">
             {snap.overdueTasks.map((t) => (
               <RecordRow
@@ -122,23 +156,26 @@ export default async function TodayPage({
               />
             ))}
           </ul>
-        )}
-      </Group>
+        </Group>
+      ) : null}
 
-      <Group title="จดด่วน">
-        <p className="text-caption">
-          ค้าง {snap.unfiledCount}
-          {snap.staleCount > 0 ? ` · เกิน 3 วัน ${snap.staleCount}` : ""} ·{" "}
-          <Link href="/inbox" className="text-kaffir">
-            จัด
-          </Link>
-        </p>
-      </Group>
+      {!found && snap.todayTasks.length > 0 ? (
+        <Group title="งานวันนี้">
+          <ul className="grid gap-2">
+            {snap.todayTasks.map((t) => (
+              <RecordRow
+                key={t.id}
+                title={t.title}
+                hint={isoToThaiShort(t.dueOn)}
+                actions={<DoneForm id={t.id} />}
+              />
+            ))}
+          </ul>
+        </Group>
+      ) : null}
 
-      <Group title="บิลเดือนนี้">
-        {snap.billsThisMonth.length === 0 ? (
-          <p className="text-caption">ไม่มีบิลค้าง</p>
-        ) : (
+      {!found && snap.billsThisMonth.length > 0 ? (
+        <Group title="บิลเดือนนี้">
           <ul className="grid gap-2">
             {snap.billsThisMonth.map((b) => (
               <RecordRow
@@ -158,13 +195,11 @@ export default async function TodayPage({
               />
             ))}
           </ul>
-        )}
-      </Group>
+        </Group>
+      ) : null}
 
-      <Group title="คลังใกล้หมด">
-        {snap.expiring.length === 0 ? (
-          <p className="text-caption">ไม่มีใน 30 วัน</p>
-        ) : (
+      {!found && snap.expiring.length > 0 ? (
+        <Group title="คลังใกล้หมด">
           <ul className="grid gap-2">
             {snap.expiring.map((v) => (
               <RecordRow
@@ -172,23 +207,25 @@ export default async function TodayPage({
                 title={v.title}
                 hint={isoToThaiShort(v.expiresOn)}
                 actions={
-                  <Link className="text-sm text-kaffir" href="/vault?filter=soon">
-                    เปิด
-                  </Link>
+                  <Button asChild size="sm" variant="outline">
+                    <Link href="/vault?filter=soon">เปิด</Link>
+                  </Button>
                 }
               />
             ))}
           </ul>
-        )}
-      </Group>
-
-      <p className="text-caption">
-        บันทึก: {snap.hasJournal ? "เขียนแล้ว" : "ยังไม่เขียน"} ·{" "}
-        <Link href="/journal" className="text-kaffir">
-          เปิด
-        </Link>
-      </p>
+        </Group>
+      ) : null}
     </AppShell>
+  );
+}
+
+function Chip({ href, label, count, alert }: { href: string; label: string; count?: number; alert?: boolean }) {
+  const text = typeof count === "number" ? `${label} ${count}` : label;
+  return (
+    <Button asChild size="sm" variant={alert || (count ?? 0) > 0 ? "orange" : "outline"}>
+      <Link href={href}>{text}</Link>
+    </Button>
   );
 }
 

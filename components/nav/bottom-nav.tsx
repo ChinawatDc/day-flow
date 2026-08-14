@@ -2,40 +2,42 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
 import { bottomNav, hubModule, modules } from "@/lib/modules";
-import { MenuCards } from "@/components/nav/menu-cards";
 import { navTabClass } from "@/components/nav/nav-class";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { cn } from "@/lib/utils";
 
 const left = [bottomNav[0], bottomNav[1]];
 const right = [bottomNav[3], bottomNav[4]];
-const extra = ["/menu", "/settings", "/vault", "/home", "/journal", "/family"];
+const extra = ["/settings", "/vault", "/home", "/journal", "/family"];
 
 export function BottomNav() {
   const pathname = usePathname();
-  const [open, setOpen] = useState(false);
-  const menuActive = open || extra.some((p) => pathname === p || pathname.startsWith(`${p}/`));
+  const menuActive =
+    pathname === "/menu" || extra.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 gap-1 border-t border-line bg-paper px-2 pb-[env(safe-area-inset-bottom)] pt-1 md:hidden">
-      {left.map((m) => (
-        <Tab key={m.id} href={m.href} label={m.label} icon={m.icon} active={isActive(pathname, m.href)} />
-      ))}
-      <Sheet open={open} onOpenChange={setOpen}>
-        <SheetTrigger className={navTabClass(menuActive)}>
-          <hubModule.icon className="size-5" />
-          เมนู
-        </SheetTrigger>
-        <SheetContent title="ทุกบท" className="pb-8">
-          <div className="mt-4">
-            <MenuCards closeOnClick />
-          </div>
-        </SheetContent>
-      </Sheet>
-      {right.map((m) => (
-        <Tab key={m.id} href={m.href} label={m.label} icon={m.icon} active={isActive(pathname, m.href)} />
-      ))}
+    <nav className="fixed inset-x-0 bottom-0 z-40 md:hidden">
+      <div className="mx-2 rounded-t-3xl border border-b-0 border-line bg-paper px-1 pb-[max(0.5rem,env(safe-area-inset-bottom))] pt-2 shadow-[0_-10px_28px_rgba(28,25,23,0.08)]">
+        <div className="grid grid-cols-5 items-end">
+          {left.map((m) => (
+            <Tab key={m.id} href={m.href} label={m.label} icon={m.icon} active={isActive(pathname, m.href)} />
+          ))}
+          <Link href="/menu" className="relative flex flex-col items-center pb-0.5">
+            <span
+              className={cn(
+                "-mt-6 flex size-14 items-center justify-center rounded-full shadow-md transition-transform duration-150 active:scale-95",
+                menuActive ? "bg-kaffir text-paper" : "bg-paper-3 text-ink hover:bg-kaffir hover:text-paper",
+              )}
+            >
+              <hubModule.icon className="size-6" />
+            </span>
+            <span className={cn("mt-1 text-[11px]", menuActive ? "text-kaffir" : "text-ink-muted")}>เมนู</span>
+          </Link>
+          {right.map((m) => (
+            <Tab key={m.id} href={m.href} label={m.label} icon={m.icon} active={isActive(pathname, m.href)} />
+          ))}
+        </div>
+      </div>
     </nav>
   );
 }
