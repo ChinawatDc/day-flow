@@ -93,7 +93,7 @@ export function FamilyChat({
     <div className="df-card flex flex-col overflow-hidden">
       {live ? null : <p className="text-caption px-3 pt-3 text-orange">{envHint}</p>}
       <ul className="mb-0 grid max-h-[52vh] gap-2 overflow-y-auto px-3 py-3">
-        {rows.length === 0 ? <li className="text-caption py-8 text-center">ยังไม่มีข้อความ — พิมพ์ด้านล่าง</li> : null}
+        {rows.length === 0 ? <li className="text-caption py-8 text-center">ยังไม่มีข้อความ</li> : null}
         {rows.map((m) => {
           const mine = m.senderId === meId;
           return (
@@ -102,7 +102,7 @@ export function FamilyChat({
                 className={
                   mine
                     ? "max-w-[85%] rounded-[var(--radius-md)] rounded-br-md bg-kaffir px-3.5 py-2 text-surface shadow-[var(--shadow-sm)]"
-                    : "max-w-[85%] rounded-[var(--radius-md)] rounded-bl-md border border-[var(--stroke)] bg-surface px-3.5 py-2 shadow-[var(--shadow-sm)]"
+                    : "max-w-[85%] rounded-[var(--radius-md)] rounded-bl-md border border-[var(--glass-line)] bg-[color-mix(in_oklch,var(--surface-solid)_78%,transparent)] px-3.5 py-2 shadow-[var(--shadow-sm)] backdrop-blur-[12px]"
                 }
               >
                 <p className={`text-[11px] ${mine ? "text-surface/75" : "text-ink-muted"}`}>
@@ -117,7 +117,7 @@ export function FamilyChat({
       </ul>
       <form
         ref={formRef}
-        className="flex gap-2 border-t border-[var(--stroke)] bg-surface p-3"
+        className="flex gap-2 border-t border-[var(--glass-line)] bg-[color-mix(in_oklch,var(--surface-solid)_55%,transparent)] p-3 backdrop-blur-[12px]"
         onSubmit={(e) => {
           e.preventDefault();
           const fd = new FormData(e.currentTarget);
@@ -130,8 +130,8 @@ export function FamilyChat({
         }}
       >
         {hiddenFields}
-        <Input name="body" placeholder="ข้อความ…" required autoComplete="off" className="rounded-full" />
-        <Button type="submit" disabled={pending} className="rounded-full px-5">
+        <Input name="body" placeholder="ข้อความ…" required autoComplete="off" />
+        <Button type="submit" disabled={pending} className="shrink-0 px-5">
           ส่ง
         </Button>
       </form>

@@ -90,7 +90,7 @@ export function FamilyMap({ pins }: { pins: MapPin[] }) {
           width:40px;height:40px;border-radius:999px;
           display:grid;place-items:center;
           background:hsl(${hue} 48% ${p.me ? "38%" : "46%"});
-          color:#f4efe6;font:700 15px Anuphan,sans-serif;
+          color:#f4efe6;font:700 15px Prompt,Bai Jamjuree,sans-serif;
           border:3px solid ${p.me ? "#f4efe6" : "rgba(244,239,230,.85)"};
           box-shadow:0 6px 16px rgba(28,25,23,.28);
         ">${label}</div>`;
@@ -135,10 +135,10 @@ export function FamilyMap({ pins }: { pins: MapPin[] }) {
   }, [pins]);
 
   return (
-    <div className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--stroke)] shadow-[var(--shadow-md)]">
-      <div ref={host} className="h-[52vh] min-h-[280px] w-full bg-paper-2" />
-      <p className="text-caption border-t border-[var(--stroke)] bg-surface px-3 py-2">
-        OpenStreetMap · หมุดขยับตามคนที่แชร์ (อัปเดตทุกวินาที)
+    <div className="df-card overflow-hidden">
+      <div ref={host} className="h-[52vh] min-h-[280px] w-full bg-[color-mix(in_oklch,var(--surface-2)_70%,transparent)]" />
+      <p className="text-caption border-t border-[var(--glass-line)] bg-[color-mix(in_oklch,var(--surface-solid)_55%,transparent)] px-3 py-2 backdrop-blur-[10px]">
+        OpenStreetMap
       </p>
     </div>
   );

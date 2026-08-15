@@ -5,8 +5,8 @@ import { CategorySelect } from "@/components/notebook/category-select";
 import { ConfirmDelete } from "@/components/notebook/confirm-delete";
 import { ComposerSheet } from "@/components/notebook/composer-sheet";
 import { NotebookForm } from "@/components/notebook/notebook-form";
-import { OverviewCard } from "@/components/notebook/overview-card";
-import { RecordRow, SoftTag } from "@/components/notebook/record-row";
+import { RecordList, RecordRow, SoftTag } from "@/components/notebook/record-row";
+import { StatStrip } from "@/components/notebook/stat-strip";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -30,15 +30,12 @@ export default async function InboxPage() {
   const open = await listUnfiledCaptures(user.id);
 
   return (
-    <AppShell title="จดด่วน" subtitle="โยนไว้ก่อน แล้วค่อยจัด">
+    <AppShell title="จดด่วน">
       {env.r2Configured ? null : (
-        <p className="text-caption mb-3 text-orange">ยังไม่ได้ตั้งค่า R2 — จดข้อความได้</p>
+        <p className="text-caption mb-3 text-orange">ยังไม่ได้ตั้งค่า R2</p>
       )}
 
-      <div className="mb-5 grid grid-cols-2 gap-3">
-        <OverviewCard tone="kaffir" title="ค้างจัด" value={String(open.length)} hint="รายการยังไม่เข้าโมดูล" />
-        <OverviewCard title="วิธีใช้" value="จด → จัด" hint="งาน เงิน คลัง บ้าน บันทึก" />
-      </div>
+      <StatStrip items={[{ label: "ค้างจัด", value: String(open.length), emphasize: true }]} />
 
       <div className="mb-5">
         <ComposerSheet label="จดใหม่" title="โยนเข้า Inbox">
@@ -52,12 +49,13 @@ export default async function InboxPage() {
       </div>
 
       {open.length === 0 ? (
-        <EmptyState title="Inbox ว่าง" hint="กดจดใหม่ด้านบน แล้วค่อยจัดทีหลัง" />
+        <EmptyState title="Inbox ว่าง" />
       ) : (
-        <ul className="grid gap-3">
+        <RecordList>
           {open.map((row) => (
             <RecordRow
               key={row.id}
+              flush
               title={row.note || "มีไฟล์แนบ"}
               tag={<SoftTag tone="orange">ยังไม่จัด</SoftTag>}
               hint={row.r2Key ? <FileLink r2Key={row.r2Key} /> : null}
@@ -98,7 +96,7 @@ export default async function InboxPage() {
               }
             />
           ))}
-        </ul>
+        </RecordList>
       )}
     </AppShell>
   );

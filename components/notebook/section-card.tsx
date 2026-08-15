@@ -3,14 +3,12 @@ import { cn } from "@/lib/utils";
 export function SectionCard({
   icon,
   title,
-  hint,
   children,
   danger,
   className,
 }: {
   icon?: React.ReactNode;
   title: string;
-  hint?: string;
   children: React.ReactNode;
   danger?: boolean;
   className?: string;
@@ -36,7 +34,6 @@ export function SectionCard({
         ) : null}
         <div>
           <h2 className="text-title text-base">{title}</h2>
-          {hint ? <p className="text-caption">{hint}</p> : null}
         </div>
       </div>
       {children}

@@ -10,6 +10,6 @@ export function navTabClass(active: boolean) {
 export function navRailClass(active: boolean) {
   return cn(
     "df-press flex items-center gap-3 rounded-[var(--radius-md)] px-3 py-2.5 text-sm",
-    active ? "bg-kaffir text-surface" : "text-ink hover:bg-paper-2",
+    active ? "bg-kaffir text-surface shadow-[var(--shadow-sm)]" : "text-ink hover:bg-[color-mix(in_oklch,var(--surface-solid)_55%,transparent)]",
   );
 }

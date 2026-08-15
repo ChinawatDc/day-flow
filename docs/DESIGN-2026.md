@@ -1,26 +1,39 @@
 # Design System 2026
 
-day-flow ใช้ชุด token เดียวทั้งแอป — สมุดบ้านทันสมัย ไม่ใช่แดชบอร์ดม่วง
+day-flow — สมุดบ้านอุ่น (kaffir) + liquid glass ตาม [DESIGN.md](./DESIGN.md)
 
 ## หลัก
 - พื้น: `--canvas` + atmosphere (`.df-canvas`)
-- การ์ด: `--surface-solid` + `.df-card` / `.df-card-hero`
-- แบรนด์: `--brand` (kaffir) / `--accent` (orange)
-- ฟอนต์: Anuphan เท่านั้น — display/title ใช้ `clamp()`
-- Motion: `--ease-out`, `.df-press`, `.df-enter` + เคารพ `prefers-reduced-motion`
+- ผิว: liquid glass — gradient โปร่ง + `backdrop-filter` + `--glass-line`
+- การ์ด: `.df-card` / `.df-card-hero` (sheen ครั้งเดียวบน hero)
+- แบรนด์: `--brand` / `--accent`
+- ฟอนต์: **Prompt** + **Bai Jamjuree**
+- ไม่มี blurb/hint/อิโมจิ — Lucide เท่านั้น
+- Motion: `--ease-out` / `--ease-soft` / `--ease-pen`
+
+## Glass tokens
+| Token | บทบาท |
+|-------|--------|
+| `--glass` / `--glass-strong` | พื้นโปร่ง |
+| `--glass-line` | ขอบ frosted |
+| `--blur-glass` / `--blur-glass-strong` / `--blur-nav` / `--blur-sheet` | ความเบลอ |
 
 ## Utilities
-| Class | ใช้เมื่อ |
+| Class / component | ใช้เมื่อ |
 |-------|---------|
 | `.df-canvas` | พื้น shell |
-| `.df-card` | การ์ดรายการ / บล็อก |
-| `.df-card-hero` | overview เขียว |
-| `.df-chip` / `.df-chip-active` | filter segmented |
-| `.df-nav-float` | bottom nav |
-| `.df-field` | input/select/textarea |
-| `.df-press` | ปุ่ม/ลิงก์ที่กดได้ |
+| `.df-card` | รายการ / บล็อก (frosted paper) |
+| `.df-card-hero` | โฟกัสเขียว + sheen |
+| `.df-glass` | แผงโปร่งเสริม (rail / empty) |
+| `.df-track` | แทร็ก filter / chapter tabs |
+| `StatStrip` | สรุปตัวเลขแถบเดียว |
+| `RecordList` + `RecordRow flush` | รายการในแผ่นเดียว |
+| `.df-chip` / `.df-chip-active` | filter |
+| `.df-nav-float` | bottom nav glass |
+| `.df-field` | input |
+| `.df-press` / `.df-stagger` | กด / เข้าทีละอัน |
 
-## Legacy aliases
-`--paper`, `--kaffir`, `--orange`, `--line` ยังชี้ไปที่ token ใหม่ เพื่อไม่พังคลาสเดิมระหว่างย้าย
+## ห้าม
+side-stripe · gradient text · eyebrow · glass ทุกปุ่มจิ๋ว · bounce · ม่วง SaaS · Inter เป็นฟอนต์แอป
 
-อย่า soft-code สีในหน้า — ใช้ token หรือ `.df-*`
+อย่า soft-code สี — ใช้ token / `.df-*`

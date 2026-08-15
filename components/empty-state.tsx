@@ -3,21 +3,18 @@ import { Button } from "@/components/ui/button";
 
 export function EmptyState({
   title,
-  hint,
   actionHref,
   actionLabel,
   children,
 }: {
   title: string;
-  hint: string;
   actionHref?: string;
   actionLabel?: string;
   children?: React.ReactNode;
 }) {
   return (
-    <div className="df-card border-dashed px-5 py-12 text-center">
-      <p className="text-title">{title}</p>
-      <p className="text-caption mx-auto mt-2 max-w-xs">{hint}</p>
+    <div className="df-glass rounded-[var(--radius-lg)] border border-dashed border-[var(--stroke-strong)] px-5 py-14 text-center">
+      <p className="text-title text-ink-muted">{title}</p>
       {actionHref && actionLabel ? (
         <Button asChild className="mt-5">
           <Link href={actionHref}>{actionLabel}</Link>

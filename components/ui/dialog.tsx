@@ -16,10 +16,13 @@ export function DialogContent({
 }: ComponentProps<typeof DialogPrimitive.Content> & { title: string }) {
   return (
     <DialogPrimitive.Portal>
-      <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-ink/35 backdrop-blur-[2px]" />
+      <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-ink/30 backdrop-blur-[4px]" />
       <DialogPrimitive.Content
         className={cn(
-          "fixed left-4 right-4 top-1/2 z-50 max-h-[90vh] -translate-y-1/2 overflow-y-auto rounded-[var(--radius-lg)] border border-[var(--stroke)] bg-surface p-5 shadow-[var(--shadow-lg)] md:left-[max(16rem,calc(50%-20rem))] md:right-auto md:w-[40rem]",
+          "fixed left-4 right-4 top-1/2 z-50 max-h-[90vh] -translate-y-1/2 overflow-y-auto rounded-[var(--radius-lg)] p-5 shadow-[var(--shadow-lg)] outline-none md:left-[max(16rem,calc(50%-20rem))] md:right-auto md:w-[40rem]",
+          "border border-[var(--glass-line)]",
+          "bg-[linear-gradient(180deg,color-mix(in_oklch,var(--surface-solid)_72%,transparent)_0%,color-mix(in_oklch,var(--surface-solid)_90%,transparent)_100%)]",
+          "backdrop-blur-[var(--blur-sheet)] saturate-[118%]",
           className,
         )}
         {...props}

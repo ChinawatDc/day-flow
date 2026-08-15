@@ -1,11 +1,14 @@
 import type { LucideIcon } from "lucide-react";
 import {
   BookOpen,
+  Frown,
   Home,
   Inbox,
   LayoutGrid,
   ListChecks,
+  Meh,
   Settings,
+  Smile,
   Sun,
   Users,
   Wallet,
@@ -28,7 +31,6 @@ export type AppModule = {
   id: ModuleId;
   href: string;
   label: string;
-  blurb: string;
   icon: LucideIcon;
 };
 
@@ -37,56 +39,48 @@ export const modules: AppModule[] = [
     id: "today",
     href: "/today",
     label: "วันนี้",
-    blurb: "ยอดจ่ายและของที่ค้างวันนี้",
     icon: Sun,
   },
   {
     id: "inbox",
     href: "/inbox",
     label: "จดด่วน",
-    blurb: "โยนข้อความหรือรูป แล้วค่อยจัด",
     icon: Inbox,
   },
   {
     id: "tasks",
     href: "/tasks",
     label: "งาน",
-    blurb: "สิ่งที่ต้องทำให้เสร็จ",
     icon: ListChecks,
   },
   {
     id: "money",
     href: "/money",
     label: "เงิน",
-    blurb: "รายจ่ายและใบเสร็จ",
     icon: Wallet,
   },
   {
     id: "vault",
     href: "/vault",
     label: "คลัง",
-    blurb: "บัตร ประกัน สัญญา",
     icon: Warehouse,
   },
   {
     id: "home",
     href: "/home",
     label: "บ้าน",
-    blurb: "ของในบ้าน รายการซื้อ บิล",
     icon: Home,
   },
   {
     id: "journal",
     href: "/journal",
     label: "บันทึกวัน",
-    blurb: "ข้อความ อารมณ์ รูปของวัน",
     icon: BookOpen,
   },
   {
     id: "family",
     href: "/family",
     label: "ครอบครัว",
-    blurb: "บ้าน แชท และโลเคชัน",
     icon: Users,
   },
 ];
@@ -95,7 +89,6 @@ export const hubModule: AppModule = {
   id: "hub",
   href: "/menu",
   label: "เมนู",
-  blurb: "หน้าหลักทุกบท",
   icon: LayoutGrid,
 };
 
@@ -103,7 +96,6 @@ export const settingsModule: AppModule = {
   id: "settings",
   href: "/settings",
   label: "ตั้งค่า",
-  blurb: "รหัส สำรอง ลบบัญชี",
   icon: Settings,
 };
 
@@ -125,7 +117,7 @@ export const vaultKinds = [
 ] as const;
 
 export const moods = [
-  { id: "good", label: "ดี" },
-  { id: "ok", label: "ปกติ" },
-  { id: "bad", label: "แย่" },
+  { id: "good", label: "ดี", icon: Smile },
+  { id: "ok", label: "ปกติ", icon: Meh },
+  { id: "bad", label: "แย่", icon: Frown },
 ] as const;

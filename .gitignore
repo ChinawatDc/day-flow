@@ -12,3 +12,4 @@ screenshots
 *.tsbuildinfo
 next-env.d.ts
 scripts/git-*.sh
+.cursor/

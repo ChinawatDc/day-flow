@@ -1,7 +1,8 @@
+import { Home, UserPlus } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { JoinPanel } from "@/components/family/join-panel";
 import { ComposerSheet } from "@/components/notebook/composer-sheet";
-import { OverviewCard } from "@/components/notebook/overview-card";
+import { StatStrip } from "@/components/notebook/stat-strip";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,11 +21,20 @@ export default async function FamilyPage({
   const { err } = await searchParams;
   if (!m) {
     return (
-      <AppShell title="ครอบครัว" subtitle="สร้างบ้าน หรือเข้าด้วยโค้ด">
-        <div className="mb-5 grid grid-cols-2 gap-3">
-          <OverviewCard tone="kaffir" title="เริ่มต้น" value="สร้าง" hint="คุณเป็นเจ้าของบ้าน" />
-          <OverviewCard title="มีโค้ดแล้ว" value="เข้าร่วม" hint="สแกน QR หรือพิมพ์โค้ด" />
-        </div>
+      <AppShell title="ครอบครัว">
+        <StatStrip
+          items={[
+            {
+              label: "สร้าง",
+              value: <Home className="size-7 text-surface" aria-hidden />,
+              emphasize: true,
+            },
+            {
+              label: "เข้าร่วม",
+              value: <UserPlus className="size-7 text-kaffir" aria-hidden />,
+            },
+          ]}
+        />
         <div className="grid gap-3">
           <ComposerSheet label="สร้างครอบครัว" title="บ้านใหม่">
             <form action={createFamily} className="grid gap-3">

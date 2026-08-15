@@ -12,7 +12,7 @@ export default async function SettingsPage() {
   const initial = (user.name || user.email || "?").slice(0, 1).toUpperCase();
 
   return (
-    <AppShell title="ตั้งค่า" subtitle="บัญชีและความปลอดภัย">
+    <AppShell title="ตั้งค่า">
       <section className="df-card mb-5 flex items-center gap-4 p-5">
         <div className="grid size-14 place-items-center rounded-full bg-kaffir text-xl font-bold text-surface">
           {initial}
@@ -28,11 +28,11 @@ export default async function SettingsPage() {
       </section>
 
       <div className="grid gap-3 md:max-w-xl">
-        <SectionCard icon={<KeyRound className="size-5" />} title="รหัสผ่าน" hint="เปลี่ยนรหัสเข้าใช้บัญชีนี้">
+        <SectionCard icon={<KeyRound className="size-5" />} title="รหัสผ่าน">
           <ChangePasswordForm />
         </SectionCard>
 
-        <SectionCard icon={<Download className="size-5" />} title="สำรองข้อมูล" hint="ดาวน์โหลดเฉพาะข้อมูลบัญชีนี้">
+        <SectionCard icon={<Download className="size-5" />} title="สำรองข้อมูล">
           <div className="grid gap-2">
             <ExportLink href="/api/export?format=json" label="JSON ทั้งบัญชี" />
             <ExportLink href="/api/export?format=csv&kind=money" label="CSV รายจ่าย" />
@@ -40,17 +40,11 @@ export default async function SettingsPage() {
           </div>
         </SectionCard>
 
-        <SectionCard icon={<LogOut className="size-5" />} title="เซสชัน" hint="ออกจากระบบบนเครื่องนี้">
+        <SectionCard icon={<LogOut className="size-5" />} title="เซสชัน">
           <SignOutButton />
         </SectionCard>
 
-        <SectionCard
-          icon={<Trash2 className="size-5" />}
-          title="โซนอันตราย"
-          hint="ลบข้อมูลและไฟล์ของบัญชีนี้ถาวร"
-          danger
-        >
-          <p className="text-caption mb-3">เมลเดิมสมัครใหม่ได้หลังลบ</p>
+        <SectionCard icon={<Trash2 className="size-5" />} title="โซนอันตราย" danger>
           <ConfirmDelete
             action={deleteAccount}
             id="self"
@@ -68,7 +62,7 @@ function ExportLink({ href, label }: { href: string; label: string }) {
   return (
     <a
       href={href}
-      className="df-press flex items-center justify-between rounded-[var(--radius-md)] border border-[var(--stroke)] bg-paper-2 px-3 py-3 text-sm font-medium hover:border-kaffir hover:bg-surface"
+      className="df-press df-glass flex items-center justify-between rounded-[var(--radius-md)] px-3 py-3 text-sm font-medium hover:border-kaffir"
     >
       {label}
       <Download className="size-4 text-kaffir" />

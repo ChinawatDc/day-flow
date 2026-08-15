@@ -18,7 +18,9 @@ export default async function FamilyJoinPage({
   }
   return (
     <AppShell title="เข้าร่วมครอบครัว">
-      <JoinPanel defaultCode={code} />
+      <div className="df-card p-5">
+        <JoinPanel defaultCode={code} />
+      </div>
     </AppShell>
   );
 }

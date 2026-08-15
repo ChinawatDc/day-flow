@@ -8,6 +8,7 @@ export function RecordRow({
   done,
   leading,
   tag,
+  flush,
 }: {
   title: React.ReactNode;
   hint?: React.ReactNode;
@@ -16,16 +17,27 @@ export function RecordRow({
   done?: boolean;
   leading?: React.ReactNode;
   tag?: React.ReactNode;
+  flush?: boolean;
 }) {
   return (
-    <li className={cn("df-card flex items-center gap-3 px-3.5 py-3.5", done && "opacity-70")}>
+    <li
+      className={cn(
+        "flex items-center gap-3",
+        flush
+          ? "border-b border-[var(--stroke)] px-4 py-3.5 last:border-b-0"
+          : "df-card px-3.5 py-3.5",
+        done && "opacity-65",
+      )}
+    >
       {leading ? <div className="shrink-0">{leading}</div> : null}
       <div className="min-w-0 flex-1">
-        <p className={cn("truncate text-[0.95rem] font-semibold", done && "text-ink-muted line-through")}>{title}</p>
+        <p className={cn("truncate text-[0.95rem] font-semibold", done && "text-ink-muted line-through")}>
+          {title}
+        </p>
         {hint ? <div className="text-caption mt-0.5 truncate">{hint}</div> : null}
-        {tag ? <div className="mt-2 flex flex-wrap gap-1.5">{tag}</div> : null}
+        {tag ? <div className="mt-1.5 flex flex-wrap gap-1.5">{tag}</div> : null}
       </div>
-      {value ? <div className="shrink-0">{value}</div> : null}
+      {value ? <div className="shrink-0 text-numeric">{value}</div> : null}
       {actions ? <div className="flex shrink-0 items-center gap-1">{actions}</div> : null}
     </li>
   );
@@ -41,8 +53,9 @@ export function SoftTag({
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-medium",
-        tone === "muted" && "bg-paper-2 text-ink-muted",
+        "inline-flex items-center rounded-[var(--radius-sm)] px-2 py-0.5 text-[11px] font-medium",
+        tone === "muted" &&
+          "border border-[var(--glass-line)] bg-[color-mix(in_oklch,var(--surface-solid)_60%,transparent)] text-ink-muted backdrop-blur-[8px]",
         tone === "kaffir" && "bg-kaffir-soft text-kaffir-dark",
         tone === "orange" && "bg-orange-soft text-orange",
       )}
@@ -50,4 +63,15 @@ export function SoftTag({
       {children}
     </span>
   );
+}
+
+/** One paper surface with divided rows — prefer over a stack of cards. */
+export function RecordList({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return <ul className={cn("df-card df-stagger overflow-hidden p-0", className)}>{children}</ul>;
 }

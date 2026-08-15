@@ -36,12 +36,12 @@ export function FilePreview({
         <button
           type="button"
           aria-label="ปิด"
-          className="absolute right-3 top-3 z-10 rounded-full bg-paper/90 p-2 text-ink-muted shadow"
+          className="absolute right-3 top-3 z-10 rounded-full border border-[var(--glass-line)] bg-[color-mix(in_oklch,var(--surface-solid)_80%,transparent)] p-2 text-ink-muted shadow backdrop-blur-[10px]"
           onClick={() => setOpen(false)}
         >
           <X className="size-4" />
         </button>
-        <p className="text-caption border-b border-line px-5 pb-3">แสดงในแอป</p>
+        <p className="text-caption border-b border-[var(--glass-line)] px-5 pb-3 pt-4">ไฟล์</p>
         <div className="bg-ink/5">
           {kind === "image" ? (
             // eslint-disable-next-line @next/next/no-img-element

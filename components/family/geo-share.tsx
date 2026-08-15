@@ -156,7 +156,6 @@ export function GeoShare({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="text-title text-base">โลเคชันสด</p>
-          <p className="text-caption">แชร์ 1 ชม. · ส่งพิกัดทุกวินาทีบนแผนที่</p>
         </div>
         {active ? (
           <form action={stopLocationShare}>

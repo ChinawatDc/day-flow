@@ -18,23 +18,19 @@ export default async function LoginPage({
   if (session?.user) redirect(dest);
 
   return (
-    <div className="df-canvas grid min-h-dvh md:grid-cols-[minmax(0,22rem)_minmax(0,1fr)]">
-      <section className="df-card-hero flex flex-col justify-between rounded-none px-6 py-10 md:rounded-none md:px-8">
-        <p className="text-title text-3xl text-surface">day-flow</p>
-        <div>
-          <p className="text-display leading-tight text-surface">
-            สมุดบ้าน
-            <br />
-            ไม่ใช่แดชบอร์ด
-          </p>
-          <p className="mt-4 text-surface/80">{isoToThaiDisplay(bangkokTodayIso())}</p>
-        </div>
+    <div className="df-canvas grid min-h-dvh md:grid-cols-[minmax(0,24rem)_minmax(0,1fr)]">
+      <section className="df-card-hero relative flex min-h-[42vh] flex-col justify-between rounded-none px-7 py-10 text-surface md:min-h-dvh md:rounded-none md:px-10 md:py-12">
+        <p className="relative z-[1] text-sm font-medium tracking-wide text-surface/70">
+          {isoToThaiDisplay(bangkokTodayIso())}
+        </p>
+        <p className="relative z-[1] text-display text-[3rem] leading-none tracking-tight text-surface md:text-[3.5rem]">
+          day-flow
+        </p>
       </section>
-      <section className="flex items-start px-5 py-10 md:px-16 md:py-16">
+      <section className="flex items-center px-5 py-10 md:px-16 md:py-16">
         <div className="df-card df-enter w-full max-w-md p-6 md:p-8">
-          <h1 className="text-title text-3xl">เข้าสู่ระบบ</h1>
-          <p className="mt-2 text-ink-muted">ใช้เมลกับรหัสผ่าน หรือ Google ถ้าตั้งค่าไว้</p>
-          <div className="mt-8">
+          <h1 className="text-title text-[1.75rem]">เข้าสู่ระบบ</h1>
+          <div className="mt-7">
             <LoginForm googleEnabled={Boolean(process.env.GOOGLE_CLIENT_ID)} nextPath={dest} />
           </div>
         </div>
