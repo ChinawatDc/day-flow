@@ -1,7 +1,7 @@
 # DESIGN.md
 
 ## World
-สมุดกระดาษอุ่น + หมึกเขียวมะกรูด (kaffir) — organic/natural notebook ไม่ใช่ SaaS dashboard
+สมุดกระดาษอุ่น + หมึกเขียวมะกรูด (kaffir) — organic/natural notebook with **liquid glass** surfaces (adapted from Aurora Weather CSS recipes, light mode)
 
 ## Brand words
 warm · tactile · household-calm
@@ -13,22 +13,23 @@ Light only. Canvas โทนเขียวอ่อนที่ทินต์�
 - Brand / kaffir: deep leaf green
 - Accent: dried-citrus orange (ใช้น้อย)
 - Neutrals tinted toward brand hue
-- 60/30/10 visual weight: surface / muted / accent
+- Glass: `--glass` / `--glass-strong` / `--glass-line` over canvas
 
 ## Type
 - Display / title / numeric: **Prompt**
 - Body / caption: **Bai Jamjuree**
-- App UI uses fixed `rem` role scale (not marketing fluid clamp)
+- App UI uses fixed `rem` role scale
 - No blurbs; hierarchy from size/weight/space
 
 ## Shape & depth
-- Soft paper radii, quiet borders, soft offset shadows
-- No side-stripe accents, no gradient text, no emoji
+- Liquid glass: translucent gradient + `backdrop-filter` blur/saturate + glass-line border
+- Hero cards: brand glass + one specular sheen (`df-sheen`)
+- Soft offset shadows; no side-stripe; no gradient text; no emoji
 - Cards only when they hold interaction or a list item
 
 ## Motion
-- Ease-out expo/quart only (no bounce)
-- `.df-enter` + staggered children; respect reduced motion
+- `--ease-out` / `--ease-soft` / `--ease-pen`
+- `.df-enter` + stagger; hero sheen once; respect reduced motion
 
 ## Anti-references
-Purple SaaS gradients · Inter/Roboto · cream+terracotta brochure · broadsheet newspaper · dark neon glow · icon-above-heading card grids as page structure · uppercase eyebrows above titles
+Purple SaaS · Inter/Roboto · cream+terracotta · broadsheet · dark neon storm UI as product theme · glass on every tiny control

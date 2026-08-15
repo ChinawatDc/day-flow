@@ -43,7 +43,8 @@ export function StatStrip({
         const cell = cn(
           "df-press block px-4 py-3.5",
           i > 0 && "border-l border-[var(--stroke)]",
-          it.emphasize && "bg-[linear-gradient(160deg,var(--brand),var(--brand-strong))] text-surface",
+          it.emphasize &&
+            "bg-[linear-gradient(160deg,color-mix(in_oklch,var(--brand)_85%,white),var(--brand-strong))] text-surface",
         );
         if (it.href) {
           return (

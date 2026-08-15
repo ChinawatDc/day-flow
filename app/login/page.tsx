@@ -19,11 +19,11 @@ export default async function LoginPage({
 
   return (
     <div className="df-canvas grid min-h-dvh md:grid-cols-[minmax(0,24rem)_minmax(0,1fr)]">
-      <section className="relative flex min-h-[42vh] flex-col justify-between overflow-hidden bg-[linear-gradient(165deg,var(--brand)_0%,var(--brand-strong)_100%)] px-7 py-10 text-surface md:min-h-dvh md:px-10 md:py-12">
-        <p className="text-sm font-medium tracking-wide text-surface/70">
+      <section className="df-card-hero relative flex min-h-[42vh] flex-col justify-between rounded-none px-7 py-10 text-surface md:min-h-dvh md:rounded-none md:px-10 md:py-12">
+        <p className="relative z-[1] text-sm font-medium tracking-wide text-surface/70">
           {isoToThaiDisplay(bangkokTodayIso())}
         </p>
-        <p className="text-display text-[3rem] leading-none tracking-tight text-surface md:text-[3.5rem]">
+        <p className="relative z-[1] text-display text-[3rem] leading-none tracking-tight text-surface md:text-[3.5rem]">
           day-flow
         </p>
       </section>

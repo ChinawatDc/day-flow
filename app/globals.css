@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-/* day-flow — warm notebook (impeccable / DESIGN.md) */
+/* day-flow — warm notebook + liquid glass (adapted from Aurora Weather CSS) */
 :root {
   /* OKLCH palette — neutrals tinted toward kaffir green */
   --canvas: oklch(0.955 0.014 150);
@@ -8,7 +8,7 @@
   --surface: oklch(0.985 0.008 95);
   --surface-solid: oklch(0.992 0.006 95);
   --surface-2: oklch(0.945 0.012 100);
-  --elevated: color-mix(in oklch, var(--surface-solid) 88%, transparent);
+  --elevated: color-mix(in oklch, var(--surface-solid) 82%, transparent);
 
   --ink: oklch(0.24 0.02 55);
   --ink-muted: oklch(0.48 0.02 70);
@@ -19,6 +19,12 @@
   --brand-soft: oklch(0.93 0.035 155);
   --accent: oklch(0.58 0.14 45);
   --accent-soft: oklch(0.92 0.04 50);
+
+  /* Liquid glass — light-mode recipe (not storm white glass) */
+  --glass: color-mix(in oklch, var(--surface-solid) 58%, transparent);
+  --glass-strong: color-mix(in oklch, var(--surface-solid) 78%, transparent);
+  --glass-line: color-mix(in oklch, white 65%, var(--stroke));
+  --glass-sheen: color-mix(in oklch, white 55%, transparent);
 
   /* Legacy aliases */
   --paper: var(--canvas);
@@ -34,14 +40,14 @@
   --stroke-strong: color-mix(in oklch, var(--ink) 18%, transparent);
   --focus-ring: color-mix(in oklch, var(--brand) 32%, transparent);
 
-  /* Depth — soft offset, never zero-blur halo */
+  /* Depth */
   --shadow-sm: 0 1px 2px oklch(0.24 0.02 55 / 0.04), 0 4px 14px oklch(0.24 0.02 55 / 0.05);
   --shadow-md: 0 2px 4px oklch(0.24 0.02 55 / 0.04), 0 12px 28px oklch(0.24 0.02 55 / 0.08);
   --shadow-lg: 0 4px 8px oklch(0.24 0.02 55 / 0.05), 0 20px 44px oklch(0.24 0.02 55 / 0.12);
   --shadow-card: var(--shadow-sm);
   --shadow-float: var(--shadow-lg);
 
-  /* Shape — paper soft, not marshmallow */
+  /* Shape */
   --radius-sm: 0.5rem;
   --radius-md: 0.85rem;
   --radius-lg: 1.15rem;
@@ -49,7 +55,7 @@
   --radius-full: 999px;
   --radius-card: var(--radius-lg);
 
-  /* 4pt space scale */
+  /* Space */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -60,15 +66,19 @@
   --space-8: 2.5rem;
   --space-card: var(--space-4);
 
-  /* Motion — expo-out, no bounce */
+  /* Motion — weather easings + expo-out */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-pen: cubic-bezier(0.37, 0.01, 0.2, 1);
+  --ease-spring: var(--ease-out);
   --dur-fast: 160ms;
   --dur-med: 320ms;
-  --blur-nav: 12px;
-  --blur-sheet: 16px;
+  --blur-nav: 16px;
+  --blur-sheet: 22px;
+  --blur-glass: 18px;
+  --blur-glass-strong: 26px;
 
-  /* Type — Prompt display + Bai Jamjuree body; fixed rem for app UI */
+  /* Type */
   --font-title: var(--font-prompt), "Prompt", system-ui, sans-serif;
   --font-body: var(--font-bai), "Bai Jamjuree", system-ui, sans-serif;
   --font-numeric: var(--font-prompt), "Prompt", system-ui, sans-serif;
@@ -166,11 +176,12 @@ body {
   color: var(--surface-solid);
 }
 
-/* —— surfaces —— */
+/* —— canvas atmosphere —— */
 .df-canvas {
   background:
     radial-gradient(110% 60% at 50% -8%, var(--canvas-glow) 0%, transparent 58%),
     radial-gradient(70% 40% at 100% 0%, color-mix(in oklch, var(--brand-soft) 50%, transparent) 0%, transparent 50%),
+    linear-gradient(105deg, color-mix(in oklch, var(--brand-soft) 22%, transparent) 0%, transparent 55%),
     var(--canvas);
   background-attachment: local;
 }
@@ -181,7 +192,7 @@ body {
   position: fixed;
   inset: 0;
   z-index: 0;
-  opacity: 0.035;
+  opacity: 0.03;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
@@ -190,18 +201,65 @@ body {
   z-index: 1;
 }
 
+/* —— liquid glass surfaces —— */
 .df-card {
-  border: 1px solid var(--stroke);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--glass-line);
   border-radius: var(--radius-lg);
-  background: var(--surface-solid);
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklch, var(--surface-solid) 72%, transparent) 0%,
+    color-mix(in oklch, var(--surface-solid) 86%, transparent) 42%,
+    color-mix(in oklch, var(--surface-solid) 90%, transparent) 100%
+  );
   box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(var(--blur-glass)) saturate(118%);
+  -webkit-backdrop-filter: blur(var(--blur-glass)) saturate(118%);
 }
 
 .df-card-hero {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid color-mix(in oklch, white 28%, var(--brand));
   border-radius: var(--radius-lg);
-  background: linear-gradient(160deg, var(--brand) 0%, var(--brand-strong) 100%);
+  background: linear-gradient(
+    160deg,
+    color-mix(in oklch, var(--brand) 82%, white) 0%,
+    var(--brand) 42%,
+    var(--brand-strong) 100%
+  );
   color: var(--surface-solid);
   box-shadow: var(--shadow-md);
+  backdrop-filter: blur(var(--blur-glass-strong)) saturate(120%);
+  -webkit-backdrop-filter: blur(var(--blur-glass-strong)) saturate(120%);
+}
+
+.df-card-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 38%;
+  pointer-events: none;
+  background: linear-gradient(100deg, transparent 0%, var(--glass-sheen) 50%, transparent 100%);
+  transform: translate3d(-150%, 0, 0) skewX(-18deg);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .df-card-hero::after {
+    animation: df-sheen 1.15s var(--ease-soft) 0.85s 1 both;
+  }
+}
+
+.df-glass {
+  border: 1px solid var(--glass-line);
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklch, var(--surface-solid) 55%, transparent) 0%,
+    color-mix(in oklch, var(--surface-solid) 68%, transparent) 100%
+  );
+  backdrop-filter: blur(var(--blur-glass)) saturate(115%);
+  -webkit-backdrop-filter: blur(var(--blur-glass)) saturate(115%);
 }
 
 .df-chip {
@@ -215,22 +273,30 @@ body {
   transition:
     color var(--dur-fast) var(--ease-out),
     background-color var(--dur-fast) var(--ease-out),
-    box-shadow var(--dur-fast) var(--ease-out);
+    box-shadow var(--dur-fast) var(--ease-out),
+    backdrop-filter var(--dur-fast) var(--ease-out);
 }
 
 .df-chip-active {
-  background: var(--surface-solid);
+  border: 1px solid var(--glass-line);
+  background: color-mix(in oklch, var(--surface-solid) 82%, transparent);
   color: var(--ink);
   box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(12px) saturate(115%);
+  -webkit-backdrop-filter: blur(12px) saturate(115%);
 }
 
 .df-nav-float {
-  border: 1px solid var(--stroke);
+  border: 1px solid var(--glass-line);
   border-radius: var(--radius-xl);
-  background: color-mix(in oklch, var(--surface-solid) 92%, transparent);
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklch, var(--surface-solid) 62%, transparent) 0%,
+    color-mix(in oklch, var(--surface-solid) 78%, transparent) 100%
+  );
   box-shadow: var(--shadow-lg);
-  backdrop-filter: blur(var(--blur-nav));
-  -webkit-backdrop-filter: blur(var(--blur-nav));
+  backdrop-filter: blur(var(--blur-nav)) saturate(118%);
+  -webkit-backdrop-filter: blur(var(--blur-nav)) saturate(118%);
 }
 
 .df-field {
@@ -238,11 +304,13 @@ body {
   width: 100%;
   border: 1px solid var(--stroke);
   border-radius: var(--radius-md);
-  background: var(--surface-2);
+  background: color-mix(in oklch, var(--surface-2) 85%, transparent);
   padding: 0 0.9rem;
   font-size: 1rem;
   color: var(--ink);
   outline: none;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   transition:
     border-color var(--dur-fast) var(--ease-out),
     box-shadow var(--dur-fast) var(--ease-out),
@@ -257,6 +325,8 @@ body {
   border-color: color-mix(in oklch, var(--brand) 55%, var(--stroke));
   background: var(--surface-solid);
   box-shadow: 0 0 0 3px var(--focus-ring);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 .df-press {
@@ -309,6 +379,15 @@ body {
   }
 }
 
+@keyframes df-sheen {
+  from {
+    transform: translate3d(-150%, 0, 0) skewX(-18deg);
+  }
+  to {
+    transform: translate3d(260%, 0, 0) skewX(-18deg);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .df-press:active {
     transform: none;
@@ -317,6 +396,10 @@ body {
   .df-enter,
   .df-stagger > * {
     animation: none;
+  }
+
+  .df-card-hero::after {
+    display: none;
   }
 }
 

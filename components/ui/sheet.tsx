@@ -21,13 +21,14 @@ export function SheetContent({
 }) {
   return (
     <DialogPrimitive.Portal>
-      <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-ink/35 backdrop-blur-[2px]" />
+      <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-ink/30 backdrop-blur-[4px]" />
       <DialogPrimitive.Content
         className={cn(
-          "fixed z-50 bg-surface p-5 shadow-[var(--shadow-lg)] outline-none",
-          side === "bottom" &&
-            "inset-x-0 bottom-0 rounded-t-[var(--radius-xl)] border-t border-[var(--stroke)]",
-          side === "left" && "inset-y-0 left-0 w-72 border-r border-[var(--stroke)] bg-surface",
+          "fixed z-50 border border-[var(--glass-line)] p-5 shadow-[var(--shadow-lg)] outline-none",
+          "bg-[linear-gradient(180deg,color-mix(in_oklch,var(--surface-solid)_70%,transparent)_0%,color-mix(in_oklch,var(--surface-solid)_88%,transparent)_100%)]",
+          "backdrop-blur-[var(--blur-sheet)] saturate-[118%]",
+          side === "bottom" && "inset-x-0 bottom-0 rounded-t-[var(--radius-xl)] border-t",
+          side === "left" && "inset-y-0 left-0 w-72 border-r",
           className,
         )}
         {...props}

@@ -10,7 +10,7 @@ export function SideRail() {
   const pathname = usePathname();
   const items = [...modules, settingsModule];
   return (
-    <aside className="hidden border-r border-[var(--stroke)] bg-[color-mix(in_oklch,var(--surface-solid)_70%,var(--canvas))] md:sticky md:top-0 md:flex md:h-dvh md:flex-col md:px-4 md:py-7">
+    <aside className="df-glass hidden border-r border-[var(--glass-line)] md:sticky md:top-0 md:flex md:h-dvh md:flex-col md:px-4 md:py-7">
       <p className="text-title px-2 text-[1.65rem] tracking-tight">day-flow</p>
       <nav className="mt-8 flex-1 overflow-y-auto">
         <div className="grid gap-0.5">

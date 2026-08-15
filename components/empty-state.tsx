@@ -13,7 +13,7 @@ export function EmptyState({
   children?: React.ReactNode;
 }) {
   return (
-    <div className="rounded-[var(--radius-lg)] border border-dashed border-[var(--stroke-strong)] bg-[color-mix(in_oklch,var(--surface-2)_70%,transparent)] px-5 py-14 text-center">
+    <div className="df-glass rounded-[var(--radius-lg)] border border-dashed border-[var(--stroke-strong)] px-5 py-14 text-center">
       <p className="text-title text-ink-muted">{title}</p>
       {actionHref && actionLabel ? (
         <Button asChild className="mt-5">
