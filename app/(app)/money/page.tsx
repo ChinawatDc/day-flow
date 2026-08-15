@@ -3,6 +3,7 @@ import { EmptyState } from "@/components/empty-state";
 import { FileField } from "@/components/file-field";
 import { FileLink } from "@/components/file-link";
 import { AmountText } from "@/components/notebook/amount-text";
+import { CategorySelect } from "@/components/notebook/category-select";
 import { ConfirmDelete } from "@/components/notebook/confirm-delete";
 import { ComposerSheet } from "@/components/notebook/composer-sheet";
 import { NotebookForm } from "@/components/notebook/notebook-form";
@@ -10,7 +11,6 @@ import { RecordRow } from "@/components/notebook/record-row";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { NativeSelect } from "@/components/ui/select";
 import { createExpense, deleteExpense, updateExpense } from "./actions";
 import { listExpenses, monthSummaryFromRows } from "@/lib/data";
 import { expenseCategories } from "@/lib/modules";
@@ -43,14 +43,7 @@ export default async function MoneyPage() {
             <NotebookForm action={createExpense}>
               <Label htmlFor="amount">จำนวน (บาท)</Label>
               <Input id="amount" name="amount" inputMode="decimal" required placeholder="120" />
-              <Label htmlFor="category">หมวด</Label>
-              <NativeSelect id="category" name="category" defaultValue="food">
-                {expenseCategories.map((c) => (
-                  <option key={c.id} value={c.id}>
-                    {c.label}
-                  </option>
-                ))}
-              </NativeSelect>
+              <CategorySelect />
               <Input name="merchant" placeholder="ร้าน" />
               <Input name="spentOn" type="date" defaultValue={today} />
               <FileField label="ใบเสร็จ" />
@@ -90,13 +83,7 @@ export default async function MoneyPage() {
                     <NotebookForm action={updateExpense}>
                       <input type="hidden" name="id" value={e.id} />
                       <Input name="amount" defaultValue={String(e.amountSatang / 100)} required />
-                      <NativeSelect name="category" defaultValue={e.category}>
-                        {expenseCategories.map((c) => (
-                          <option key={c.id} value={c.id}>
-                            {c.label}
-                          </option>
-                        ))}
-                      </NativeSelect>
+                      <CategorySelect label={null} defaultValue={e.category} id={`cat-${e.id}`} />
                       <Input name="merchant" defaultValue={e.merchant} />
                       <Input name="spentOn" type="date" defaultValue={String(e.spentOn)} />
                       <FileField label="ใบเสร็จใหม่" />

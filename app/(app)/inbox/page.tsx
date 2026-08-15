@@ -1,6 +1,7 @@
 import { AppShell } from "@/components/app-shell";
 import { FileField } from "@/components/file-field";
 import { FileLink } from "@/components/file-link";
+import { CategorySelect } from "@/components/notebook/category-select";
 import { ConfirmDelete } from "@/components/notebook/confirm-delete";
 import { ComposerSheet } from "@/components/notebook/composer-sheet";
 import { NotebookForm } from "@/components/notebook/notebook-form";
@@ -8,12 +9,10 @@ import { RecordRow } from "@/components/notebook/record-row";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { NativeSelect } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { EmptyState } from "@/components/empty-state";
 import { createCapture, deleteCapture, fileCapture, updateCapture } from "./actions";
 import { listUnfiledCaptures } from "@/lib/data";
-import { expenseCategories } from "@/lib/modules";
 import { requireUser } from "@/lib/session";
 import { env } from "@/lib/env";
 
@@ -73,13 +72,7 @@ export default async function InboxPage() {
                       <input type="hidden" name="kind" value="money" />
                       <Label htmlFor={`amount-${row.id}`}>เป็นรายจ่าย</Label>
                       <Input id={`amount-${row.id}`} name="amount" inputMode="decimal" required placeholder="บาท" />
-                      <NativeSelect name="category" defaultValue="food">
-                        {expenseCategories.map((c) => (
-                          <option key={c.id} value={c.id}>
-                            {c.label}
-                          </option>
-                        ))}
-                      </NativeSelect>
+                      <CategorySelect label={null} id={`cat-${row.id}`} />
                       <Button type="submit" size="sm" variant="orange">
                         บันทึกเป็นเงิน
                       </Button>

@@ -42,26 +42,26 @@ export default async function VaultPage({
         <ComposerSheet label="เก็บเอกสาร" title="เอกสารใหม่">
           <NotebookForm action={createVaultItem}>
             <Label htmlFor="title">ชื่อเอกสาร</Label>
-            <Input id="title" name="title" required />
+            <Input id="title" name="title" required placeholder="เช่น บัตรประชาชน / ประกันรถ" />
             <Label htmlFor="kind">ประเภท</Label>
-            <NativeSelect id="kind" name="kind">
+            <NativeSelect id="kind" name="kind" defaultValue="id">
               {vaultKinds.map((k) => (
                 <option key={k.id} value={k.id}>
                   {k.label}
                 </option>
               ))}
             </NativeSelect>
-            <Label htmlFor="expiresOn">วันหมดอายุ</Label>
+            <Label htmlFor="expiresOn">วันหมดอายุ (ไม่บังคับ)</Label>
             <Input id="expiresOn" name="expiresOn" type="date" />
-            <FileField label="ไฟล์" />
-            <Button type="submit">เก็บ</Button>
+            <FileField label="ไฟล์ / รูป (ไม่บังคับ)" />
+            <Button type="submit">เก็บเข้าคลัง</Button>
           </NotebookForm>
         </ComposerSheet>
       </div>
       {all.length === 0 ? (
-        <EmptyState title="คลังว่าง" hint="เก็บบัตร ประกัน สัญญา ไว้ที่นี่" />
+        <EmptyState title="คลังว่าง" hint="เก็บบัตร ประกัน สัญญา — กดเก็บเอกสารด้านบน" />
       ) : (
-        <ul className="grid gap-2">
+        <ul className="grid gap-2.5">
           {all.map((v) => (
             <RecordRow
               key={v.id}
@@ -69,7 +69,7 @@ export default async function VaultPage({
               hint={`${label(v.kind)} · หมด ${isoToThaiShort(v.expiresOn) || "—"}`}
               actions={
                 <>
-                  {v.r2Key ? <FileLink r2Key={v.r2Key} /> : null}
+                  {v.r2Key ? <FileLink r2Key={v.r2Key} label="ดู" /> : null}
                   <ComposerSheet label="แก้" title="แก้เอกสาร" variant="outline" compact>
                     <NotebookForm action={updateVaultItem}>
                       <input type="hidden" name="id" value={v.id} />

@@ -107,14 +107,6 @@ export async function getTodaySnapshot(userId: string) {
   };
 }
 
-export async function listCaptures(userId: string) {
-  return getDb()
-    .select()
-    .from(captures)
-    .where(eq(captures.userId, userId))
-    .orderBy(desc(captures.createdAt));
-}
-
 export async function listUnfiledCaptures(userId: string) {
   return getDb()
     .select({ id: captures.id, note: captures.note, r2Key: captures.r2Key })
@@ -166,11 +158,6 @@ export async function listExpenses(userId: string) {
     .orderBy(desc(expenses.spentOn), desc(expenses.createdAt));
 }
 
-export async function monthExpenseTotal(userId: string, dayIso: string) {
-  const byCat = await monthExpensesByCategory(userId, dayIso);
-  return byCat.reduce((s, c) => s + c.total, 0);
-}
-
 export function monthSummaryFromRows(
   rows: { spentOn: string; category: string; amountSatang: number }[],
   dayIso: string,
@@ -186,11 +173,6 @@ export function monthSummaryFromRows(
     label: c.label,
     total: map.get(c.id) ?? 0,
   }));
-}
-
-export async function monthExpensesByCategory(userId: string, dayIso: string) {
-  const rows = await listExpenses(userId);
-  return monthSummaryFromRows(rows, dayIso);
 }
 
 export async function listVault(

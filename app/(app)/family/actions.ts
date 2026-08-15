@@ -11,7 +11,7 @@ import {
   familyMessages,
 } from "@/lib/db/schema";
 import { ablyDm, ablyGeo, ablyGroup, dmChannel, newJoinCode, publishFamily } from "@/lib/family/channels";
-import { findFamilyByCode, getMembership } from "@/lib/family/data";
+import { findFamilyByCode, getMembership, listLiveLocations, listMessages } from "@/lib/family/data";
 import { requireUser } from "@/lib/session";
 
 function normalizeCode(raw: string) {
@@ -220,4 +220,44 @@ export async function stopLocationShare() {
     .where(and(eq(familyLocationShares.familyId, m.familyId), eq(familyLocationShares.userId, user.id)));
   await publishFamily(ablyGeo(m.familyId), "stop", { userId: user.id });
   revalidatePath("/family");
+}
+
+export async function pollGroupMessages() {
+  const user = await requireUser();
+  const m = await getMembership(user.id);
+  if (!m) return [];
+  const rows = await listMessages(m.familyId, "group");
+  return rows.map((x) => ({
+    id: x.id,
+    senderId: x.senderId,
+    body: x.body,
+    createdAt: x.createdAt instanceof Date ? x.createdAt.toISOString() : String(x.createdAt),
+  }));
+}
+
+export async function pollDmMessages(peerId: string) {
+  const user = await requireUser();
+  const m = await getMembership(user.id);
+  if (!m || !peerId) return [];
+  const rows = await listMessages(m.familyId, dmChannel(user.id, peerId));
+  return rows.map((x) => ({
+    id: x.id,
+    senderId: x.senderId,
+    body: x.body,
+    createdAt: x.createdAt instanceof Date ? x.createdAt.toISOString() : String(x.createdAt),
+  }));
+}
+
+export async function pollLiveLocations() {
+  const user = await requireUser();
+  const m = await getMembership(user.id);
+  if (!m) return [];
+  const rows = await listLiveLocations(m.familyId);
+  return rows.map((l) => ({
+    userId: l.userId,
+    name: l.name,
+    lat: l.lat,
+    lng: l.lng,
+    expiresAt: new Date(l.expiresAt).toISOString(),
+  }));
 }

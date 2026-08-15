@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { envHint } from "@/components/family/live-hint";
@@ -21,6 +21,7 @@ export function FamilyChat({
   initial,
   action,
   hiddenFields,
+  poll,
 }: {
   channelName: string;
   live: boolean;
@@ -29,9 +30,13 @@ export function FamilyChat({
   initial: ChatMsg[];
   action: (formData: FormData) => void | Promise<void>;
   hiddenFields?: React.ReactNode;
+  /** Optional 1s poll when Ably is off or as backup */
+  poll?: () => Promise<ChatMsg[]>;
 }) {
   const [rows, setRows] = useState(initial);
+  const [pending, start] = useTransition();
   const bottom = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     setRows(initial);
@@ -62,30 +67,73 @@ export function FamilyChat({
     };
   }, [channelName, live]);
 
+  useEffect(() => {
+    if (!poll) return;
+    let alive = true;
+    const tick = async () => {
+      try {
+        const next = await poll();
+        if (!alive || !next) return;
+        setRows((cur) => {
+          if (next.length === cur.length && next.every((m, i) => m.id === cur[i]?.id)) return cur;
+          return next;
+        });
+      } catch {
+        /* ignore poll errors */
+      }
+    };
+    const id = window.setInterval(tick, 1000);
+    return () => {
+      alive = false;
+      window.clearInterval(id);
+    };
+  }, [poll]);
+
   return (
-    <div>
-      {live ? null : <p className="text-caption mb-3 text-orange">{envHint}</p>}
-      <ul className="mb-4 grid max-h-[50vh] gap-2 overflow-y-auto">
-        {rows.length === 0 ? <li className="text-caption">ยังไม่มีข้อความ</li> : null}
-        {rows.map((m) => (
-          <li
-            key={m.id}
-            className={
-              m.senderId === meId
-                ? "ml-8 rounded-xl bg-kaffir px-3 py-2 text-paper"
-                : "mr-8 rounded-xl border border-line bg-paper-2 px-3 py-2"
-            }
-          >
-            <p className="text-caption opacity-80">{names[m.senderId] ?? "สมาชิก"}</p>
-            <p className="text-sm whitespace-pre-wrap">{m.body}</p>
-          </li>
-        ))}
+    <div className="flex flex-col rounded-2xl border border-line bg-paper-2/60">
+      {live ? null : <p className="text-caption px-3 pt-3 text-orange">{envHint}</p>}
+      <ul className="mb-0 grid max-h-[52vh] gap-2 overflow-y-auto px-3 py-3">
+        {rows.length === 0 ? <li className="text-caption py-8 text-center">ยังไม่มีข้อความ — พิมพ์ด้านล่าง</li> : null}
+        {rows.map((m) => {
+          const mine = m.senderId === meId;
+          return (
+            <li key={m.id} className={mine ? "ml-10 flex justify-end" : "mr-10 flex justify-start"}>
+              <div
+                className={
+                  mine
+                    ? "max-w-[85%] rounded-2xl rounded-br-md bg-kaffir px-3.5 py-2 text-paper shadow-sm"
+                    : "max-w-[85%] rounded-2xl rounded-bl-md border border-line bg-paper px-3.5 py-2 shadow-sm"
+                }
+              >
+                <p className={`text-[11px] ${mine ? "text-paper/75" : "text-ink-muted"}`}>
+                  {names[m.senderId] ?? "สมาชิก"}
+                </p>
+                <p className="text-sm whitespace-pre-wrap leading-snug">{m.body}</p>
+              </div>
+            </li>
+          );
+        })}
         <div ref={bottom} />
       </ul>
-      <form action={action} className="flex gap-2">
+      <form
+        ref={formRef}
+        className="flex gap-2 border-t border-line bg-paper p-3"
+        onSubmit={(e) => {
+          e.preventDefault();
+          const fd = new FormData(e.currentTarget);
+          const body = String(fd.get("body") ?? "").trim();
+          if (!body) return;
+          start(async () => {
+            await action(fd);
+            formRef.current?.reset();
+          });
+        }}
+      >
         {hiddenFields}
-        <Input name="body" placeholder="ข้อความ" required autoComplete="off" />
-        <Button type="submit">ส่ง</Button>
+        <Input name="body" placeholder="ข้อความ…" required autoComplete="off" className="rounded-full bg-paper-2" />
+        <Button type="submit" disabled={pending} className="rounded-full px-5">
+          ส่ง
+        </Button>
       </form>
     </div>
   );

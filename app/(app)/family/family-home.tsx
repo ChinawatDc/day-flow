@@ -1,18 +1,13 @@
 import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
-import { FamilyChat } from "@/components/family/family-chat";
+import { GroupChatLive } from "@/components/family/chat-live";
 import { GeoShare } from "@/components/family/geo-share";
 import { InviteQr } from "@/components/family/invite-qr";
 import { ChapterTabs } from "@/components/notebook/chapter-tabs";
 import { ConfirmDelete } from "@/components/notebook/confirm-delete";
 import { RecordRow } from "@/components/notebook/record-row";
 import { Button } from "@/components/ui/button";
-import {
-  leaveFamily,
-  removeMember,
-  rotateJoinCode,
-  sendGroupMessage,
-} from "./actions";
+import { leaveFamily, removeMember, rotateJoinCode } from "./actions";
 import { env } from "@/lib/env";
 import { ablyGeo, ablyGroup } from "@/lib/family/channels";
 import { listLiveLocations, listMembers, listMessages } from "@/lib/family/data";
@@ -87,7 +82,7 @@ export async function FamilyHome({
             </Button>
           </form>
         </div>
-        <FamilyChat
+        <GroupChatLive
           channelName={ablyGroup(familyId)}
           live={live}
           meId={userId}
@@ -98,7 +93,6 @@ export async function FamilyHome({
             body: x.body,
             createdAt: x.createdAt,
           }))}
-          action={sendGroupMessage}
         />
         <ul className="grid gap-2">
           {members

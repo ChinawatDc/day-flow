@@ -2,8 +2,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
 import { Button } from "@/components/ui/button";
-import { FamilyChat } from "@/components/family/family-chat";
-import { sendDmMessage } from "../../actions";
+import { DmChatLive } from "@/components/family/chat-live";
 import { env } from "@/lib/env";
 import { ablyDm, dmChannel } from "@/lib/family/channels";
 import { getMembership, listMembers, listMessages } from "@/lib/family/data";
@@ -33,10 +32,11 @@ export default async function FamilyDmPage({
           <Link href="/family">กลับครอบครัว</Link>
         </Button>
       </p>
-      <FamilyChat
+      <DmChatLive
         channelName={ablyDm(m.familyId, user.id, peerId)}
         live={env.ablyConfigured}
         meId={user.id}
+        peerId={peerId}
         names={names}
         initial={messages.map((x) => ({
           id: x.id,
@@ -44,8 +44,6 @@ export default async function FamilyDmPage({
           body: x.body,
           createdAt: x.createdAt,
         }))}
-        action={sendDmMessage}
-        hiddenFields={<input type="hidden" name="peerId" value={peerId} />}
       />
     </AppShell>
   );

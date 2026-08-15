@@ -1,8 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { pingLocation, startLocationShare, stopLocationShare } from "@/app/(app)/family/actions";
+import { useEffect, useMemo, useState } from "react";
+import {
+  pingLocation,
+  pollLiveLocations,
+  startLocationShare,
+  stopLocationShare,
+} from "@/app/(app)/family/actions";
 import { Button } from "@/components/ui/button";
+import { FamilyMap } from "@/components/family/family-map";
 import { envHint } from "@/components/family/live-hint";
 import { loadAbly, type RealtimeClient } from "@/lib/family/load-ably";
 
@@ -45,22 +51,13 @@ export function GeoShare({
       if (closed) return;
       client = new Ably.Realtime({ authUrl: "/api/realtime/token" });
       const ch = client.channels.get(channelName);
-      const onShare = (msg: { data: unknown }) => {
-        const d = msg.data as Pin;
+      const merge = (d: Pin) => {
         if (!d?.userId) return;
         setPins((cur) => {
           const rest = cur.filter((p) => p.userId !== d.userId);
-          return [...rest, { ...d, name: names[d.userId] }];
+          return [...rest, { ...d, name: names[d.userId] ?? d.name ?? cur.find((p) => p.userId === d.userId)?.name }];
         });
-        if (d.userId === meId) setUntil(d.expiresAt);
-      };
-      const onPing = (msg: { data: unknown }) => {
-        const d = msg.data as Pin;
-        if (!d?.userId) return;
-        setPins((cur) => {
-          const rest = cur.filter((p) => p.userId !== d.userId);
-          return [...rest, { ...d, name: names[d.userId] ?? cur.find((p) => p.userId === d.userId)?.name }];
-        });
+        if (d.userId === meId && d.expiresAt) setUntil(d.expiresAt);
       };
       const onStop = (msg: { data: unknown }) => {
         const d = msg.data as { userId?: string };
@@ -68,8 +65,8 @@ export function GeoShare({
         setPins((cur) => cur.filter((p) => p.userId !== d.userId));
         if (d.userId === meId) setUntil(null);
       };
-      void ch.subscribe("share", onShare);
-      void ch.subscribe("ping", onPing);
+      void ch.subscribe("share", (msg) => merge(msg.data as Pin));
+      void ch.subscribe("ping", (msg) => merge(msg.data as Pin));
       void ch.subscribe("stop", onStop);
     });
     return () => {
@@ -80,60 +77,119 @@ export function GeoShare({
 
   const active = until ? new Date(until).getTime() > Date.now() : false;
 
+  // Backup poll every 1s so pins stay fresh even if a realtime event is missed
+  useEffect(() => {
+    let alive = true;
+    const tick = async () => {
+      try {
+        const next = await pollLiveLocations();
+        if (!alive) return;
+        setPins(next);
+        const mine = next.find((p) => p.userId === meId);
+        setUntil(mine?.expiresAt ?? null);
+      } catch {
+        /* ignore */
+      }
+    };
+    const id = window.setInterval(tick, 1000);
+    return () => {
+      alive = false;
+      window.clearInterval(id);
+    };
+  }, [meId]);
+
+  // Broadcast location every 1 second while sharing
   useEffect(() => {
     if (!active) return;
     let watch = 0;
-    let last = 0;
+    let lastPos: GeolocationPosition | null = null;
+    let timer = 0;
+
     watch = navigator.geolocation.watchPosition(
       (pos) => {
-        const now = Date.now();
-        if (now - last < 12000) return;
-        last = now;
-        const fd = new FormData();
-        fd.set("lat", String(pos.coords.latitude));
-        fd.set("lng", String(pos.coords.longitude));
-        void pingLocation(fd);
+        lastPos = pos;
       },
       () => undefined,
-      { enableHighAccuracy: true, maximumAge: 10000 },
+      { enableHighAccuracy: true, maximumAge: 800, timeout: 8000 },
     );
-    return () => navigator.geolocation.clearWatch(watch);
+
+    const send = () => {
+      if (!lastPos) return;
+      const fd = new FormData();
+      fd.set("lat", String(lastPos.coords.latitude));
+      fd.set("lng", String(lastPos.coords.longitude));
+      void pingLocation(fd);
+    };
+
+    timer = window.setInterval(send, 1000);
+    // first ping ASAP once we have a fix
+    const kick = window.setInterval(() => {
+      if (lastPos) {
+        send();
+        window.clearInterval(kick);
+      }
+    }, 250);
+
+    return () => {
+      navigator.geolocation.clearWatch(watch);
+      window.clearInterval(timer);
+      window.clearInterval(kick);
+    };
   }, [active]);
 
-  const visible = pins.filter((p) => p.expiresAt && new Date(p.expiresAt).getTime() > Date.now());
+  const visible = useMemo(
+    () => pins.filter((p) => p.expiresAt && new Date(p.expiresAt).getTime() > Date.now() && p.lat && p.lng),
+    [pins],
+  );
+
+  const mapPins = visible.map((p) => ({
+    userId: p.userId,
+    name: p.name ?? names[p.userId],
+    lat: p.lat,
+    lng: p.lng,
+    me: p.userId === meId,
+  }));
 
   return (
-    <div className="grid gap-3">
+    <div className="grid gap-4">
       {live ? null : <p className="text-caption text-orange">{envHint}</p>}
-      <p className="text-caption">แชร์ได้ 1 ชั่วโมง แล้วปิดเอง — เปิดหน้านี้ไว้ตอนส่งพิกัด</p>
-      {active ? (
-        <form action={stopLocationShare}>
-          <Button type="submit" variant="outline">
-            หยุดแชร์
-          </Button>
-        </form>
-      ) : (
-        <form action={startLocationShare}>
-          <Button type="submit">แชร์โลเคชัน 1 ชม.</Button>
-        </form>
-      )}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <p className="text-title text-base">โลเคชันสด</p>
+          <p className="text-caption">แชร์ 1 ชม. · ส่งพิกัดทุกวินาทีบนแผนที่</p>
+        </div>
+        {active ? (
+          <form action={stopLocationShare}>
+            <Button type="submit" variant="outline">
+              หยุดแชร์
+            </Button>
+          </form>
+        ) : (
+          <form action={startLocationShare}>
+            <Button type="submit">แชร์โลเคชัน</Button>
+          </form>
+        )}
+      </div>
+
+      <FamilyMap pins={mapPins} />
+
       <ul className="grid gap-2">
-        {visible.length === 0 ? <li className="text-caption">ยังไม่มีคนแชร์</li> : null}
+        {visible.length === 0 ? <li className="text-caption">ยังไม่มีคนแชร์ — กดแชร์แล้วเปิดหน้านี้ไว้</li> : null}
         {visible.map((p) => (
-          <li key={p.userId} className="rounded-xl border border-line px-3 py-2">
-            <p className="text-sm font-medium">{p.name ?? names[p.userId] ?? "สมาชิก"}</p>
-            {p.lat && p.lng ? (
-              <a
-                className="text-caption text-kaffir"
-                href={`https://maps.google.com/?q=${p.lat},${p.lng}`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {p.lat}, {p.lng} · แผนที่
-              </a>
-            ) : (
-              <p className="text-caption">รอพิกัด</p>
-            )}
+          <li key={p.userId} className="flex items-center justify-between rounded-2xl border border-line bg-paper-2 px-3 py-2.5">
+            <div>
+              <p className="text-sm font-medium">
+                {p.name ?? names[p.userId] ?? "สมาชิก"}
+                {p.userId === meId ? " · คุณ" : ""}
+              </p>
+              <p className="text-caption tabular">
+                {Number(p.lat).toFixed(5)}, {Number(p.lng).toFixed(5)}
+              </p>
+            </div>
+            <span className="inline-flex items-center gap-1.5 text-xs text-kaffir">
+              <span className="size-2 animate-pulse rounded-full bg-kaffir" />
+              สด
+            </span>
           </li>
         ))}
       </ul>

@@ -2,18 +2,18 @@ import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
 import { EmptyState } from "@/components/empty-state";
 import { AmountText } from "@/components/notebook/amount-text";
+import { CategorySelect } from "@/components/notebook/category-select";
 import { ComposerSheet } from "@/components/notebook/composer-sheet";
 import { NotebookForm } from "@/components/notebook/notebook-form";
 import { RecordRow } from "@/components/notebook/record-row";
+import { ToggleAction } from "@/components/notebook/toggle-action";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { NativeSelect } from "@/components/ui/select";
 import { createExpense } from "@/app/(app)/money/actions";
 import { toggleTask } from "@/app/(app)/tasks/actions";
 import { toggleBill } from "@/app/(app)/home/actions";
 import { getTodaySnapshot, searchNotebook } from "@/lib/data";
-import { expenseCategories } from "@/lib/modules";
 import { requireUser } from "@/lib/session";
 import { isoToThaiDisplay, isoToThaiShort } from "@/lib/thai-date";
 import { bangkokTodayIso } from "@/lib/utils";
@@ -47,13 +47,7 @@ export default async function TodayPage({
           <NotebookForm action={createExpense}>
             <Label htmlFor="amount">จำนวนบาท</Label>
             <Input id="amount" name="amount" inputMode="decimal" required placeholder="120" />
-            <NativeSelect name="category" defaultValue="food">
-              {expenseCategories.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.label}
-                </option>
-              ))}
-            </NativeSelect>
+            <CategorySelect label={null} />
             <Input name="merchant" placeholder="ร้าน" />
             <input type="hidden" name="spentOn" value={bangkokTodayIso()} />
             <Button type="submit" variant="orange">
@@ -184,13 +178,7 @@ export default async function TodayPage({
                 hint={isoToThaiShort(b.dueOn)}
                 value={<AmountText satang={b.amountSatang} />}
                 actions={
-                  <form action={toggleBill}>
-                    <input type="hidden" name="id" value={b.id} />
-                    <input type="hidden" name="paid" value="1" />
-                    <Button size="sm" variant="outline">
-                      จ่าย
-                    </Button>
-                  </form>
+                  <ToggleAction action={toggleBill} id={b.id} name="paid" value="1" label="จ่าย" />
                 }
               />
             ))}
@@ -239,11 +227,5 @@ function Group({ title, children }: { title: string; children: React.ReactNode }
 }
 
 function DoneForm({ id }: { id: string }) {
-  return (
-    <form action={toggleTask}>
-      <input type="hidden" name="id" value={id} />
-      <input type="hidden" name="done" value="1" />
-      <Button size="sm">เสร็จ</Button>
-    </form>
-  );
+  return <ToggleAction action={toggleTask} id={id} name="done" value="1" label="เสร็จ" variant="default" />;
 }

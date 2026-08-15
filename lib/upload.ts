@@ -8,9 +8,14 @@ export async function maybeUpload(
 ) {
   if (!file || file.size === 0) return null;
   if (!env.r2Configured) return null;
-  const safe = file.name.replace(/[^\w.\-ก-๙]+/g, "_");
-  const key = objectKey(userId, module, safe || "file");
-  const buf = Buffer.from(await file.arrayBuffer());
-  await uploadPrivateObject(key, buf, file.type || "application/octet-stream");
-  return key;
+  try {
+    const safe = file.name.replace(/[^\w.\-ก-๙]+/g, "_");
+    const key = objectKey(userId, module, safe || "file");
+    const buf = Buffer.from(await file.arrayBuffer());
+    await uploadPrivateObject(key, buf, file.type || "application/octet-stream");
+    return key;
+  } catch (err) {
+    console.error("upload failed", err);
+    return null;
+  }
 }
