@@ -36,19 +36,11 @@ export default async function TasksPage({
   const progress = total === 0 ? 0 : (doneCount / total) * 100;
 
   return (
-    <AppShell
-      title="งาน"
-      subtitle={`${openRows.length} ค้าง · ${doneCount} เสร็จแล้ว`}
-      trailing={<ProgressRing value={progress} size={58} stroke={6} />}
-    >
+    <AppShell title="งาน" trailing={<ProgressRing value={progress} size={58} stroke={6} />}>
       <section className="df-card-hero mb-5 overflow-hidden p-5">
         <div className="flex items-center justify-between gap-4">
-          <div>
-            <p className="text-sm text-surface/75">ภาพรวมงาน</p>
-            <p className="text-display mt-1 text-[2rem] text-surface">{openRows.length}</p>
-            <p className="mt-1 text-sm text-surface/85">รายการที่ยังต้องทำ</p>
-          </div>
-          <ProgressRing value={progress} size={84} stroke={8} label="สำเร็จ" />
+          <p className="text-display text-[2rem] text-surface">{openRows.length}</p>
+          <ProgressRing value={progress} size={84} stroke={8} />
         </div>
         <div className="mt-4">
           <ComposerSheet label="เพิ่มงานใหม่" title="งานใหม่" variant="soft">
@@ -74,7 +66,7 @@ export default async function TasksPage({
       />
 
       {rows.length === 0 ? (
-        <EmptyState title="ยังไม่มีงาน" hint="กดเพิ่มงานใหม่ด้านบน แล้วติดตามจากที่นี่" />
+        <EmptyState title="ยังไม่มีงาน" />
       ) : (
         <ul className="grid gap-3">
           {rows.map((t) => {

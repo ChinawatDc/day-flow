@@ -1,17 +1,24 @@
 import type { Metadata, Viewport } from "next";
-import { Anuphan } from "next/font/google";
+import { IBM_Plex_Sans_Thai, Prompt } from "next/font/google";
 import "./globals.css";
 
-const anuphan = Anuphan({
+const prompt = Prompt({
   subsets: ["thai", "latin"],
-  weight: ["400", "600", "700"],
-  variable: "--font-anuphan",
+  weight: ["500", "600", "700"],
+  variable: "--font-prompt",
+  display: "swap",
+});
+
+const plexThai = IBM_Plex_Sans_Thai({
+  subsets: ["thai", "latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-plex-thai",
   display: "swap",
 });
 
 export const metadata: Metadata = {
   title: "day-flow",
-  description: "สมุดบ้านประจำวัน",
+  description: "day-flow",
   manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
@@ -36,7 +43,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="th">
-      <body className={`${anuphan.variable} min-h-dvh bg-paper text-ink antialiased`}>
+      <body className={`${prompt.variable} ${plexThai.variable} min-h-dvh bg-paper text-ink antialiased`}>
         {children}
       </body>
     </html>

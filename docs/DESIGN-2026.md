@@ -6,7 +6,8 @@ day-flow ใช้ชุด token เดียวทั้งแอป — ส�
 - พื้น: `--canvas` + atmosphere (`.df-canvas`)
 - การ์ด: `--surface-solid` + `.df-card` / `.df-card-hero`
 - แบรนด์: `--brand` (kaffir) / `--accent` (orange)
-- ฟอนต์: Anuphan เท่านั้น — display/title ใช้ `clamp()`
+- ฟอนต์: Prompt (หัว/ตัวเลข) + IBM Plex Sans Thai (เนื้อ) — display/title ใช้ `clamp()`
+- ไม่ใช้คำอธิบาย/blurb/hint บน UI — ชื่อโมดูล + ไอคอน Lucide
 - Motion: `--ease-out`, `.df-press`, `.df-enter` + เคารพ `prefers-reduced-motion`
 
 ## Utilities

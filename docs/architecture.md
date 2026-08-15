@@ -15,7 +15,7 @@
 | ชั้น | ของที่ใช้ |
 |------|-----------|
 | UI | Tailwind 4, shadcn-style (คัดลอกใน `components/ui`), Radix Sheet/Dialog, cva, lucide, motion |
-| ฟอนต์ | Anuphan (`next/font/google`) ทั้ง title / body / numeric — token ใน `app/globals.css` (`.text-display` `.text-title` `.text-body` `.text-caption` `.text-numeric`) |
+| ฟอนต์ | Prompt (title/numeric) + IBM Plex Sans Thai (body) ผ่าน `next/font/google` — token ใน `app/globals.css` |
 | Auth | better-auth + Drizzle adapter, cookie session, `nextCookies` |
 | DB | Drizzle + `drizzle-orm/neon-http` (`neon()` HTTP ไม่ใช้ WebSocket Pool) |
 | ไฟล์ | S3 API ของ R2, key `userId/{module}/...` |

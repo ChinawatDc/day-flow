@@ -34,15 +34,10 @@ export default async function VaultPage({
   const label = (id: string) => vaultKinds.find((k) => k.id === id)?.label ?? id;
 
   return (
-    <AppShell title="คลัง" subtitle="บัตร ประกัน สัญญา">
+    <AppShell title="คลัง">
       <div className="mb-5 grid grid-cols-2 gap-3">
         <OverviewCard tone="kaffir" title="เอกสาร" value={String(all.length)} />
-        <OverviewCard
-          href="/vault?filter=soon"
-          title="ใกล้หมดอายุ"
-          value={String(soonRows.length)}
-          hint="30 วันข้างหน้า"
-        />
+        <OverviewCard href="/vault?filter=soon" title="ใกล้หมดอายุ" value={String(soonRows.length)} />
       </div>
 
       <FilterPills
@@ -74,7 +69,7 @@ export default async function VaultPage({
       </div>
 
       {rows.length === 0 ? (
-        <EmptyState title="คลังว่าง" hint="เก็บบัตร ประกัน สัญญา — กดเก็บเอกสารด้านบน" />
+        <EmptyState title="คลังว่าง" />
       ) : (
         <ul className="grid gap-3">
           {rows.map((v) => {

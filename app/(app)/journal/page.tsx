@@ -30,6 +30,7 @@ export default async function JournalPage({
   const next = addDaysIso(entryOn, 1);
   const today = bangkokTodayIso();
   const mood = moods.find((m) => m.id === entry?.mood);
+  const MoodIcon = mood?.icon;
 
   return (
     <AppShell title="บันทึกวัน" subtitle={entryOn === today ? "วันนี้" : isoToThaiDisplay(entryOn)}>
@@ -41,7 +42,6 @@ export default async function JournalPage({
             </Link>
           </Button>
           <div className="text-center">
-            <p className="text-sm text-surface/75">{entryOn === today ? "วันนี้" : "บันทึก"}</p>
             <p className="text-title text-xl text-surface">{isoToThaiDisplay(entryOn)}</p>
           </div>
           <Button asChild variant="soft" size="icon" className="bg-surface/15 text-surface hover:bg-surface/25">
@@ -50,9 +50,15 @@ export default async function JournalPage({
             </Link>
           </Button>
         </div>
-        <div className="mt-5">
-          <p className="text-sm text-surface/70">อารมณ์</p>
-          <p className="text-display text-[2rem] text-surface">{mood?.label ?? "—"}</p>
+        <div className="mt-5 flex items-center justify-center gap-2">
+          {MoodIcon ? (
+            <>
+              <MoodIcon className="size-8 text-surface" aria-hidden />
+              <p className="text-display text-[2rem] text-surface">{mood?.label}</p>
+            </>
+          ) : (
+            <p className="text-display text-[2rem] text-surface">—</p>
+          )}
         </div>
       </section>
 
@@ -62,21 +68,25 @@ export default async function JournalPage({
             <input type="hidden" name="entryOn" value={entryOn} />
             <Label>อารมณ์</Label>
             <div className="grid grid-cols-3 gap-2">
-              {moods.map((m) => (
-                <label
-                  key={m.id}
-                  className="df-card df-press flex cursor-pointer flex-col items-center gap-1 px-2 py-3 has-[:checked]:border-kaffir has-[:checked]:bg-kaffir has-[:checked]:text-surface"
-                >
-                  <input
-                    type="radio"
-                    name="mood"
-                    value={m.id}
-                    defaultChecked={(entry?.mood ?? "ok") === m.id}
-                    className="sr-only"
-                  />
-                  <span className="text-sm font-semibold">{m.label}</span>
-                </label>
-              ))}
+              {moods.map((m) => {
+                const MoodIcon = m.icon;
+                return (
+                  <label
+                    key={m.id}
+                    className="df-card df-press flex cursor-pointer flex-col items-center gap-1.5 px-2 py-3 has-[:checked]:border-kaffir has-[:checked]:bg-kaffir has-[:checked]:text-surface"
+                  >
+                    <input
+                      type="radio"
+                      name="mood"
+                      value={m.id}
+                      defaultChecked={(entry?.mood ?? "ok") === m.id}
+                      className="sr-only"
+                    />
+                    <MoodIcon className="size-6" aria-hidden />
+                    <span className="text-sm font-semibold">{m.label}</span>
+                  </label>
+                );
+              })}
             </div>
             <Label htmlFor="body">เรื่องราว</Label>
             <Textarea
@@ -101,7 +111,7 @@ export default async function JournalPage({
           <p className="whitespace-pre-wrap text-[1.05rem] leading-relaxed">{entry.body}</p>
         </article>
       ) : (
-        <EmptyState title="ยังไม่เขียนวันนี้" hint="กดเขียนบันทึกด้านบน เลือกอารมณ์แล้วเล่าสั้นๆ" />
+        <EmptyState title="ยังไม่เขียนวันนี้" />
       )}
 
       {photos.length > 0 ? (

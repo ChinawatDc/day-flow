@@ -5,14 +5,12 @@ export function OverviewCard({
   href,
   title,
   value,
-  hint,
   tone = "surface",
   className,
 }: {
   href?: string;
   title: string;
   value: React.ReactNode;
-  hint?: React.ReactNode;
   tone?: "surface" | "kaffir" | "orange";
   className?: string;
 }) {
@@ -22,9 +20,6 @@ export function OverviewCard({
       <div className={cn("mt-2 text-display text-[1.75rem] leading-none", tone === "surface" ? "text-ink" : "text-surface")}>
         {value}
       </div>
-      {hint ? (
-        <div className={cn("mt-2 text-sm", tone === "surface" ? "text-caption" : "text-surface/85")}>{hint}</div>
-      ) : null}
     </>
   );
 

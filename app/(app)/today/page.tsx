@@ -50,34 +50,23 @@ export default async function TodayPage({
       trailing={<ProgressRing value={progress} size={54} stroke={6} />}
     >
       <div className="mb-5 grid grid-cols-2 gap-3">
-        <OverviewCard
-          tone="kaffir"
-          title="จ่ายวันนี้"
-          value={<AmountText satang={snap.spentToday} />}
-          hint={
-            <ComposerSheet label="จ่าย" title="จดรายจ่าย" variant="soft" compact>
-              <NotebookForm action={createExpense}>
-                <Label htmlFor="amount">จำนวนบาท</Label>
-                <Input id="amount" name="amount" inputMode="decimal" required placeholder="120" />
-                <CategorySelect label={null} />
-                <Input name="merchant" placeholder="ร้าน" />
-                <input type="hidden" name="spentOn" value={today} />
-                <Button type="submit" variant="orange">
-                  บันทึกจ่าย
-                </Button>
-              </NotebookForm>
-            </ComposerSheet>
-          }
-        />
-        <OverviewCard
-          href="/tasks"
-          title="งานค้าง"
-          value={String(openTasks)}
-          hint={snap.overdueTasks.length > 0 ? `ข้ามวัน ${snap.overdueTasks.length}` : "ตามแผน"}
-        />
+        <OverviewCard tone="kaffir" title="จ่ายวันนี้" value={<AmountText satang={snap.spentToday} />} />
+        <OverviewCard href="/tasks" title="งานค้าง" value={String(openTasks)} />
       </div>
 
-      <div className="mb-5 flex flex-wrap gap-2">
+      <div className="mb-5 flex flex-wrap items-center gap-2">
+        <ComposerSheet label="จ่าย" title="จดรายจ่าย" variant="soft" compact>
+          <NotebookForm action={createExpense}>
+            <Label htmlFor="amount">จำนวนบาท</Label>
+            <Input id="amount" name="amount" inputMode="decimal" required placeholder="120" />
+            <CategorySelect label={null} />
+            <Input name="merchant" placeholder="ร้าน" />
+            <input type="hidden" name="spentOn" value={today} />
+            <Button type="submit" variant="orange">
+              บันทึกจ่าย
+            </Button>
+          </NotebookForm>
+        </ComposerSheet>
         <Chip href="/inbox" label="จด" count={snap.unfiledCount} alert={snap.staleCount > 0} />
         <Chip href="/journal" label={snap.hasJournal ? "บันทึกแล้ว" : "บันทึก"} />
       </div>
@@ -154,7 +143,7 @@ export default async function TodayPage({
       ) : null}
 
       {!found && !hasWork ? (
-        <EmptyState title="วันนี้โล่ง" hint="ยังไม่มีงาน บิล หรือเอกสารใกล้หมด">
+        <EmptyState title="วันนี้โล่ง">
           <Button asChild variant="outline">
             <Link href="/inbox">จด</Link>
           </Button>

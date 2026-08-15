@@ -13,14 +13,11 @@ export function MenuCards({
         const Icon = m.icon;
         return (
           <li key={m.id}>
-            <Link href={m.href} className={cn("df-card df-press flex h-full flex-col gap-3 p-4")}>
-              <span className="flex size-11 items-center justify-center rounded-[var(--radius-md)] bg-kaffir-soft text-kaffir">
+            <Link href={m.href} className={cn("df-card df-press flex h-full items-center gap-3 p-4")}>
+              <span className="flex size-11 shrink-0 items-center justify-center rounded-[var(--radius-md)] bg-kaffir-soft text-kaffir">
                 <Icon className="size-5" />
               </span>
-              <span className="min-w-0">
-                <span className="text-title block text-[1.05rem]">{m.label}</span>
-                <span className="text-caption mt-1 block line-clamp-2">{m.blurb}</span>
-              </span>
+              <span className="text-title truncate text-[1.05rem]">{m.label}</span>
             </Link>
           </li>
         );

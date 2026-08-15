@@ -40,7 +40,7 @@ export async function FamilyHome({
     <AppShell title="ครอบครัว" subtitle={name}>
       <div className="mb-5 grid grid-cols-2 gap-3">
         <OverviewCard tone="kaffir" title="สมาชิก" value={String(members.length)} />
-        <OverviewCard title="กำลังแชร์โลเคชัน" value={String(locations.length)} hint={live ? "สด" : "โหมดสำรอง"} />
+        <OverviewCard title="กำลังแชร์โลเคชัน" value={String(locations.length)} />
       </div>
       <ChapterTabs labels={["บ้าน", "กลุ่ม", "คน", "โลเคชัน"]}>
         <div className="grid gap-4">

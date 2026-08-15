@@ -29,10 +29,10 @@ export default async function MoneyPage() {
   const label = (id: string) => expenseCategories.find((c) => c.id === id)?.label ?? id;
 
   return (
-    <AppShell title="เงิน" subtitle="รายจ่ายและใบเสร็จ">
+    <AppShell title="เงิน">
       <div className="mb-5 grid grid-cols-2 gap-3">
         <OverviewCard tone="kaffir" title="วันนี้" value={<AmountText satang={todayTotal} />} />
-        <OverviewCard title="เดือนนี้" value={<AmountText satang={monthTotal} />} hint={`${rows.length} รายการ`} />
+        <OverviewCard title="เดือนนี้" value={<AmountText satang={monthTotal} />} />
       </div>
 
       <div className="mb-5">
@@ -65,7 +65,7 @@ export default async function MoneyPage() {
       ) : null}
 
       {rows.length === 0 ? (
-        <EmptyState title="ยังไม่มีรายจ่าย" hint="กดจ่ายด้านบน แล้วติดตามยอดวันนี้/เดือนนี้" />
+        <EmptyState title="ยังไม่มีรายจ่าย" />
       ) : (
         <ul className="grid gap-3">
           {rows.map((e) => (

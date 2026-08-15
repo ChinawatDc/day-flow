@@ -38,11 +38,11 @@ export default async function HomePage() {
   const unpaid = bills.filter((b) => !b.paid).length;
 
   return (
-    <AppShell title="บ้าน" subtitle="ของ · ซื้อ · บิล">
+    <AppShell title="บ้าน">
       <div className="mb-5 grid grid-cols-3 gap-2">
         <OverviewCard title="ของ" value={String(items.length)} />
         <OverviewCard title="รอซื้อ" value={String(openShop)} />
-        <OverviewCard title="บิลค้าง" value={String(unpaid)} hint={unpaid > 0 ? "ยังไม่จ่าย" : "โล่ง"} />
+        <OverviewCard title="บิลค้าง" value={String(unpaid)} />
       </div>
 
       <ChapterTabs labels={["ของ", "ซื้อ", "บิล"]}>
@@ -62,7 +62,7 @@ export default async function HomePage() {
             </ComposerSheet>
           </div>
           {items.length === 0 ? (
-            <EmptyState title="บ้านยังว่าง" hint="เพิ่มของที่ใช้ประจำ ให้รู้ว่าอยู่ไหน กี่ชิ้น" />
+            <EmptyState title="บ้านยังว่าง" />
           ) : (
             <ul className="grid gap-3">
               {items.map((it) => (
@@ -109,7 +109,7 @@ export default async function HomePage() {
             </Button>
           </form>
           {shopping.length === 0 ? (
-            <EmptyState title="รายการซื้อว่าง" hint="พิมพ์ของที่จะซื้อด้านบน ติ๊กเมื่อซื้อแล้ว" />
+            <EmptyState title="รายการซื้อว่าง" />
           ) : (
             <ul className="grid gap-3">
               {shopping.map((s) => (
@@ -160,7 +160,7 @@ export default async function HomePage() {
             </ComposerSheet>
           </div>
           {bills.length === 0 ? (
-            <EmptyState title="ยังไม่มีบิล" hint="เพิ่มบิลเดือนนี้ หรือคัดลอกจากเดือนที่แล้ว" />
+            <EmptyState title="ยังไม่มีบิล" />
           ) : (
             <ul className="grid gap-3">
               {bills.map((b) => (

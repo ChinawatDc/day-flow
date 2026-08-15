@@ -70,10 +70,10 @@
   --blur-nav: 14px;
   --blur-sheet: 18px;
 
-  /* Type */
-  --font-title: var(--font-anuphan), "Anuphan", system-ui, sans-serif;
-  --font-body: var(--font-anuphan), "Anuphan", system-ui, sans-serif;
-  --font-numeric: var(--font-anuphan), "Anuphan", system-ui, sans-serif;
+  /* Type — Prompt (display) + IBM Plex Sans Thai (body) */
+  --font-title: var(--font-prompt), "Prompt", system-ui, sans-serif;
+  --font-body: var(--font-plex-thai), "IBM Plex Sans Thai", system-ui, sans-serif;
+  --font-numeric: var(--font-prompt), "Prompt", system-ui, sans-serif;
   --text-display: clamp(1.85rem, 1.5rem + 1.6vw, 2.5rem);
   --text-title: clamp(1.15rem, 1.05rem + 0.4vw, 1.35rem);
   --text-body: 1rem;

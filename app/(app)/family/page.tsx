@@ -1,3 +1,4 @@
+import { Home, UserPlus } from "lucide-react";
 import { AppShell } from "@/components/app-shell";
 import { JoinPanel } from "@/components/family/join-panel";
 import { ComposerSheet } from "@/components/notebook/composer-sheet";
@@ -20,10 +21,17 @@ export default async function FamilyPage({
   const { err } = await searchParams;
   if (!m) {
     return (
-      <AppShell title="ครอบครัว" subtitle="สร้างบ้าน หรือเข้าด้วยโค้ด">
+      <AppShell title="ครอบครัว">
         <div className="mb-5 grid grid-cols-2 gap-3">
-          <OverviewCard tone="kaffir" title="เริ่มต้น" value="สร้าง" hint="คุณเป็นเจ้าของบ้าน" />
-          <OverviewCard title="มีโค้ดแล้ว" value="เข้าร่วม" hint="สแกน QR หรือพิมพ์โค้ด" />
+          <OverviewCard
+            tone="kaffir"
+            title="สร้าง"
+            value={<Home className="size-8 text-surface" aria-hidden />}
+          />
+          <OverviewCard
+            title="เข้าร่วม"
+            value={<UserPlus className="size-8 text-kaffir" aria-hidden />}
+          />
         </div>
         <div className="grid gap-3">
           <ComposerSheet label="สร้างครอบครัว" title="บ้านใหม่">

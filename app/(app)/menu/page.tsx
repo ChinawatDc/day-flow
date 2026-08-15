@@ -20,12 +20,6 @@ export default async function MenuPage() {
   const openTasks = allTasks.filter((t) => !t.doneAt).length;
   const doneTasks = allTasks.filter((t) => t.doneAt).length;
   const progress = allTasks.length === 0 ? 0 : (doneTasks / allTasks.length) * 100;
-  const pending =
-    snap.todayTasks.length +
-    snap.overdueTasks.length +
-    snap.billsThisMonth.length +
-    snap.expiring.length +
-    snap.unfiledCount;
   const rest = [...modules.filter((m) => m.id !== "today"), settingsModule];
   const initial = (user.name || user.email || "?").slice(0, 1).toUpperCase();
 
@@ -41,11 +35,9 @@ export default async function MenuPage() {
     >
       <section className="df-card mb-5 flex items-center justify-between gap-4 p-4">
         <div>
-          <p className="text-caption">ความคืบหน้างาน</p>
           <p className="text-title mt-1 text-lg">
-            {doneTasks}/{allTasks.length || 0} เสร็จแล้ว
+            {doneTasks}/{allTasks.length || 0}
           </p>
-          <p className="text-caption mt-1">{openTasks} รายการยังค้าง</p>
         </div>
         <ProgressRing value={progress} size={76} stroke={8} />
       </section>
@@ -56,17 +48,10 @@ export default async function MenuPage() {
           tone="kaffir"
           title="วันนี้"
           value={<AmountText satang={snap.spentToday} />}
-          hint={pending > 0 ? `${pending} อย่างที่ต้องทำ` : "โล่งแล้ว"}
         />
-        <OverviewCard
-          href="/tasks"
-          title="งานค้าง"
-          value={String(openTasks)}
-          hint={snap.overdueTasks.length > 0 ? `ค้างข้ามวัน ${snap.overdueTasks.length}` : "ตามแผน"}
-        />
+        <OverviewCard href="/tasks" title="งานค้าง" value={String(openTasks)} />
       </div>
 
-      <p className="text-title mb-3 text-base">โมดูล</p>
       <MenuCards items={rest} />
     </AppShell>
   );

@@ -90,7 +90,7 @@ export function FamilyMap({ pins }: { pins: MapPin[] }) {
           width:40px;height:40px;border-radius:999px;
           display:grid;place-items:center;
           background:hsl(${hue} 48% ${p.me ? "38%" : "46%"});
-          color:#f4efe6;font:700 15px Anuphan,sans-serif;
+          color:#f4efe6;font:700 15px Prompt,sans-serif;
           border:3px solid ${p.me ? "#f4efe6" : "rgba(244,239,230,.85)"};
           box-shadow:0 6px 16px rgba(28,25,23,.28);
         ">${label}</div>`;

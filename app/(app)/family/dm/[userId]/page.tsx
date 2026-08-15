@@ -26,7 +26,7 @@ export default async function FamilyDmPage({
   const names = Object.fromEntries(members.map((p) => [p.userId, p.name || p.email]));
 
   return (
-    <AppShell title={peer.name || "แชท"} subtitle="ข้อความส่วนตัว">
+    <AppShell title={peer.name || "แชท"}>
       <p className="mb-4">
         <Button asChild variant="outline" size="sm">
           <Link href="/family">กลับครอบครัว</Link>

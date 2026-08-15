@@ -2,7 +2,7 @@
 
 สมุดบ้านประจำวัน — Next.js (FE+BE), Neon, better-auth, Cloudflare R2, Vercel
 
-**พร้อมใช้งานไหม:** โค้ดถึงเกณฑ์ V1.0 (บ้าน = `/menu`, Anuphan, Design 2026) — ยังต้องใส่ Neon (และ R2 ถ้าเก็บไฟล์) แล้ว deploy  
+**พร้อมใช้งานไหม:** โค้ดถึงเกณฑ์ V1.0 (บ้าน = `/menu`, Prompt + IBM Plex Sans Thai, Design 2026) — ยังต้องใส่ Neon (และ R2 ถ้าเก็บไฟล์) แล้ว deploy  
 แผนเวอร์ชัน: [docs/VERSIONS.md](docs/VERSIONS.md) · จนถึง V1.0.0: [docs/ROADMAP.md](docs/ROADMAP.md) · สไตล์: [docs/DESIGN-2026.md](docs/DESIGN-2026.md) · คลื่นลงมือ: [docs/02-v1.0.0/README.md](docs/02-v1.0.0/README.md)
 
 ## เอกสาร
