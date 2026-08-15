@@ -9,22 +9,21 @@ import { deleteAccount } from "./actions";
 
 export default async function SettingsPage() {
   const user = await requireUser();
+  const initial = (user.name || user.email || "?").slice(0, 1).toUpperCase();
 
   return (
-    <AppShell title="ตั้งค่า">
-      <section className="mb-5 overflow-hidden rounded-[1.5rem] border border-line bg-gradient-to-br from-paper to-paper-2 p-5 shadow-[0_12px_32px_rgba(28,25,23,0.05)]">
-        <div className="flex items-center gap-4">
-          <div className="grid size-14 place-items-center rounded-full bg-kaffir text-xl font-bold text-paper">
-            {(user.name || user.email || "?").slice(0, 1).toUpperCase()}
-          </div>
-          <div className="min-w-0">
-            <p className="text-caption flex items-center gap-1.5">
-              <UserRound className="size-3.5" />
-              บัญชี
-            </p>
-            <p className="truncate text-title text-lg">{user.name || "ไม่มีชื่อ"}</p>
-            <p className="text-caption truncate">{user.email}</p>
-          </div>
+    <AppShell title="ตั้งค่า" subtitle="บัญชีและความปลอดภัย">
+      <section className="df-card mb-5 flex items-center gap-4 p-5">
+        <div className="grid size-14 place-items-center rounded-full bg-kaffir text-xl font-bold text-surface">
+          {initial}
+        </div>
+        <div className="min-w-0">
+          <p className="text-caption flex items-center gap-1.5">
+            <UserRound className="size-3.5" />
+            บัญชี
+          </p>
+          <p className="truncate text-title text-lg">{user.name || "ไม่มีชื่อ"}</p>
+          <p className="text-caption truncate">{user.email}</p>
         </div>
       </section>
 
@@ -69,7 +68,7 @@ function ExportLink({ href, label }: { href: string; label: string }) {
   return (
     <a
       href={href}
-      className="flex items-center justify-between rounded-xl border border-line bg-paper-2 px-3 py-3 text-sm font-medium transition-colors hover:border-kaffir hover:bg-paper"
+      className="df-press flex items-center justify-between rounded-[var(--radius-md)] border border-[var(--stroke)] bg-paper-2 px-3 py-3 text-sm font-medium hover:border-kaffir hover:bg-surface"
     >
       {label}
       <Download className="size-4 text-kaffir" />

@@ -18,30 +18,21 @@ export function OverviewCard({
 }) {
   const body = (
     <>
-      <p className={cn("text-sm", tone === "kaffir" || tone === "orange" ? "text-paper/75" : "text-ink-muted")}>
-        {title}
-      </p>
-      <div
-        className={cn(
-          "mt-2 text-display text-[1.75rem] leading-none",
-          tone === "kaffir" || tone === "orange" ? "text-paper" : "text-ink",
-        )}
-      >
+      <p className={cn("text-sm", tone === "surface" ? "text-ink-muted" : "text-surface/75")}>{title}</p>
+      <div className={cn("mt-2 text-display text-[1.75rem] leading-none", tone === "surface" ? "text-ink" : "text-surface")}>
         {value}
       </div>
       {hint ? (
-        <p className={cn("mt-2 text-sm", tone === "kaffir" || tone === "orange" ? "text-paper/80" : "text-caption")}>
-          {hint}
-        </p>
+        <div className={cn("mt-2 text-sm", tone === "surface" ? "text-caption" : "text-surface/85")}>{hint}</div>
       ) : null}
     </>
   );
 
   const cls = cn(
-    "block rounded-[1.35rem] p-4 shadow-[var(--shadow-card)] transition-transform duration-150 active:scale-[0.99]",
-    tone === "surface" && "border border-line/80 bg-surface",
-    tone === "kaffir" && "bg-kaffir",
-    tone === "orange" && "bg-orange",
+    "df-press block p-4",
+    tone === "surface" && "df-card",
+    tone === "kaffir" && "df-card-hero",
+    tone === "orange" && "rounded-[var(--radius-lg)] bg-orange text-surface shadow-[var(--shadow-md)]",
     className,
   );
 

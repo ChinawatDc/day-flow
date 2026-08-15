@@ -13,14 +13,8 @@ export function MenuCards({
         const Icon = m.icon;
         return (
           <li key={m.id}>
-            <Link
-              href={m.href}
-              className={cn(
-                "flex h-full flex-col gap-3 rounded-[1.35rem] border border-line/70 bg-surface p-4 shadow-[var(--shadow-card)]",
-                "transition-transform duration-150 hover:border-kaffir/30 active:scale-[0.98]",
-              )}
-            >
-              <span className="flex size-11 items-center justify-center rounded-2xl bg-kaffir-soft text-kaffir">
+            <Link href={m.href} className={cn("df-card df-press flex h-full flex-col gap-3 p-4")}>
+              <span className="flex size-11 items-center justify-center rounded-[var(--radius-md)] bg-kaffir-soft text-kaffir">
                 <Icon className="size-5" />
               </span>
               <span className="min-w-0">

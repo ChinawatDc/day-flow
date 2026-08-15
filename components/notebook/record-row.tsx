@@ -18,12 +18,7 @@ export function RecordRow({
   tag?: React.ReactNode;
 }) {
   return (
-    <li
-      className={cn(
-        "flex items-center gap-3 rounded-[var(--radius-card)] border border-line/70 bg-surface px-3.5 py-3.5 shadow-[var(--shadow-card)]",
-        done && "opacity-70",
-      )}
-    >
+    <li className={cn("df-card flex items-center gap-3 px-3.5 py-3.5", done && "opacity-70")}>
       {leading ? <div className="shrink-0">{leading}</div> : null}
       <div className="min-w-0 flex-1">
         <p className={cn("truncate text-[0.95rem] font-semibold", done && "text-ink-muted line-through")}>{title}</p>
@@ -36,7 +31,13 @@ export function RecordRow({
   );
 }
 
-export function SoftTag({ children, tone = "muted" }: { children: React.ReactNode; tone?: "muted" | "kaffir" | "orange" }) {
+export function SoftTag({
+  children,
+  tone = "muted",
+}: {
+  children: React.ReactNode;
+  tone?: "muted" | "kaffir" | "orange";
+}) {
   return (
     <span
       className={cn(

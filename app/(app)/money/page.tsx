@@ -7,7 +7,8 @@ import { CategorySelect } from "@/components/notebook/category-select";
 import { ConfirmDelete } from "@/components/notebook/confirm-delete";
 import { ComposerSheet } from "@/components/notebook/composer-sheet";
 import { NotebookForm } from "@/components/notebook/notebook-form";
-import { RecordRow } from "@/components/notebook/record-row";
+import { OverviewCard } from "@/components/notebook/overview-card";
+import { RecordRow, SoftTag } from "@/components/notebook/record-row";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,54 +29,56 @@ export default async function MoneyPage() {
   const label = (id: string) => expenseCategories.find((c) => c.id === id)?.label ?? id;
 
   return (
-    <AppShell title="เงิน">
-      <div className="mb-4">
-        <p className="text-caption">วันนี้ / เดือนนี้</p>
-        <p className="text-display mt-1">
-          <AmountText satang={todayTotal} />
-          <span className="text-caption mx-2">·</span>
-          <span className="text-title">
-            <AmountText satang={monthTotal} />
-          </span>
-        </p>
-        <div className="mt-3">
-          <ComposerSheet label="จ่าย" title="รายจ่าย" variant="orange">
-            <NotebookForm action={createExpense}>
-              <Label htmlFor="amount">จำนวน (บาท)</Label>
-              <Input id="amount" name="amount" inputMode="decimal" required placeholder="120" />
-              <CategorySelect />
-              <Input name="merchant" placeholder="ร้าน" />
-              <Input name="spentOn" type="date" defaultValue={today} />
-              <FileField label="ใบเสร็จ" />
-              <Button type="submit" variant="orange">
-                บันทึกรายจ่าย
-              </Button>
-            </NotebookForm>
-          </ComposerSheet>
-        </div>
+    <AppShell title="เงิน" subtitle="รายจ่ายและใบเสร็จ">
+      <div className="mb-5 grid grid-cols-2 gap-3">
+        <OverviewCard tone="kaffir" title="วันนี้" value={<AmountText satang={todayTotal} />} />
+        <OverviewCard title="เดือนนี้" value={<AmountText satang={monthTotal} />} hint={`${rows.length} รายการ`} />
       </div>
+
+      <div className="mb-5">
+        <ComposerSheet label="จ่าย" title="รายจ่าย" variant="orange">
+          <NotebookForm action={createExpense}>
+            <Label htmlFor="amount">จำนวน (บาท)</Label>
+            <Input id="amount" name="amount" inputMode="decimal" required placeholder="120" />
+            <CategorySelect />
+            <Input name="merchant" placeholder="ร้าน" />
+            <Input name="spentOn" type="date" defaultValue={today} />
+            <FileField label="ใบเสร็จ" />
+            <Button type="submit" variant="orange">
+              บันทึกรายจ่าย
+            </Button>
+          </NotebookForm>
+        </ComposerSheet>
+      </div>
+
       {monthTotal > 0 ? (
-        <ul className="mb-5 grid gap-1">
+        <ul className="df-card mb-5 grid gap-2 p-3">
           {byCat
             .filter((c) => c.total > 0)
             .map((c) => (
               <li key={c.id} className="flex justify-between text-sm">
-                <span>{c.label}</span>
+                <span className="text-ink-muted">{c.label}</span>
                 <AmountText satang={c.total} className="font-semibold" />
               </li>
             ))}
         </ul>
       ) : null}
+
       {rows.length === 0 ? (
-        <EmptyState title="ยังไม่มีรายจ่าย" hint="กดจ่ายด้านบน" />
+        <EmptyState title="ยังไม่มีรายจ่าย" hint="กดจ่ายด้านบน แล้วติดตามยอดวันนี้/เดือนนี้" />
       ) : (
-        <ul className="grid gap-2">
+        <ul className="grid gap-3">
           {rows.map((e) => (
             <RecordRow
               key={e.id}
               title={e.merchant || label(e.category)}
-              hint={`${label(e.category)} · ${isoToThaiShort(e.spentOn)}`}
               value={<AmountText satang={e.amountSatang} />}
+              tag={
+                <>
+                  <SoftTag tone="kaffir">{label(e.category)}</SoftTag>
+                  <SoftTag>{isoToThaiShort(e.spentOn)}</SoftTag>
+                </>
+              }
               actions={
                 <>
                   {e.receiptR2Key ? <FileLink r2Key={e.receiptR2Key} label="ใบเสร็จ" /> : null}

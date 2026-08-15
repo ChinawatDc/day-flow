@@ -16,16 +16,16 @@ export function BottomNav() {
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 px-3 pb-[max(0.65rem,env(safe-area-inset-bottom))] md:hidden">
-      <div className="mx-auto max-w-lg rounded-[1.75rem] border border-line/60 bg-surface/95 px-2 pt-2 shadow-[var(--shadow-float)] backdrop-blur-md">
+      <div className="df-nav-float mx-auto max-w-lg px-2 pt-2">
         <div className="grid grid-cols-5 items-end pb-1">
           {left.map((m) => (
             <Tab key={m.id} href={m.href} label={m.label} icon={m.icon} active={isActive(pathname, m.href)} />
           ))}
-          <Link href="/menu" className="relative flex flex-col items-center pb-0.5">
+          <Link href="/menu" className="df-press relative flex flex-col items-center pb-0.5">
             <span
               className={cn(
-                "-mt-7 flex size-14 items-center justify-center rounded-full shadow-[var(--shadow-float)] transition-transform duration-150 active:scale-95",
-                menuActive ? "bg-kaffir text-paper" : "bg-ink text-paper",
+                "-mt-7 flex size-14 items-center justify-center rounded-full shadow-[var(--shadow-lg)]",
+                menuActive ? "bg-kaffir text-surface" : "bg-ink text-surface",
               )}
             >
               <hubModule.icon className="size-6" />
@@ -62,7 +62,7 @@ function Tab({
     <Link
       href={href}
       className={cn(
-        "flex flex-col items-center justify-center gap-0.5 rounded-2xl px-1 py-2 text-[11px] font-medium transition-colors duration-150 active:scale-95",
+        "df-press flex flex-col items-center justify-center gap-0.5 rounded-2xl px-1 py-2 text-[11px] font-medium",
         active ? "text-kaffir" : "text-ink-muted hover:text-ink",
       )}
     >

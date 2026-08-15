@@ -39,7 +39,7 @@ export default async function MenuPage() {
         </div>
       }
     >
-      <section className="mb-5 flex items-center justify-between gap-4 rounded-[1.5rem] border border-line/70 bg-surface p-4 shadow-[var(--shadow-card)]">
+      <section className="df-card mb-5 flex items-center justify-between gap-4 p-4">
         <div>
           <p className="text-caption">ความคืบหน้างาน</p>
           <p className="text-title mt-1 text-lg">

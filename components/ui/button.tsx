@@ -4,20 +4,20 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 rounded-xl text-sm font-medium transition-[color,background-color,transform,filter] duration-150 disabled:pointer-events-none disabled:opacity-50 hover:brightness-[0.97] active:scale-95 active:brightness-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-kaffir",
+  "df-press inline-flex items-center justify-center gap-2 rounded-[var(--radius-md)] text-sm font-medium disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--focus-ring)]",
   {
     variants: {
       variant: {
-        default: "bg-kaffir text-paper hover:bg-kaffir-dark",
-        orange: "bg-orange text-paper hover:bg-orange/90",
+        default: "bg-kaffir text-surface hover:bg-kaffir-dark",
+        orange: "bg-orange text-surface hover:bg-orange/90",
         outline: "border border-line bg-surface hover:bg-paper-2",
-        ghost: "hover:bg-paper-3",
-        ink: "bg-ink text-paper hover:bg-ink/90",
-        soft: "bg-surface text-kaffir shadow-sm hover:bg-paper",
+        ghost: "hover:bg-paper-2",
+        ink: "bg-ink text-surface hover:bg-ink/90",
+        soft: "bg-surface text-kaffir shadow-[var(--shadow-sm)] hover:bg-paper-2",
       },
       size: {
         default: "h-11 px-4",
-        sm: "h-8 px-3 text-xs",
+        sm: "h-9 px-3 text-xs",
         lg: "h-12 px-5 text-base",
         icon: "size-11",
       },

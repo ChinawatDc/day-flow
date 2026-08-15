@@ -41,12 +41,12 @@ export default async function TasksPage({
       subtitle={`${openRows.length} ค้าง · ${doneCount} เสร็จแล้ว`}
       trailing={<ProgressRing value={progress} size={58} stroke={6} />}
     >
-      <section className="mb-5 overflow-hidden rounded-[1.5rem] bg-kaffir p-5 text-paper shadow-[var(--shadow-card)]">
+      <section className="df-card-hero mb-5 overflow-hidden p-5">
         <div className="flex items-center justify-between gap-4">
           <div>
-            <p className="text-sm text-paper/75">ภาพรวมงาน</p>
-            <p className="text-display mt-1 text-[2rem] text-paper">{openRows.length}</p>
-            <p className="mt-1 text-sm text-paper/85">รายการที่ยังต้องทำ</p>
+            <p className="text-sm text-surface/75">ภาพรวมงาน</p>
+            <p className="text-display mt-1 text-[2rem] text-surface">{openRows.length}</p>
+            <p className="mt-1 text-sm text-surface/85">รายการที่ยังต้องทำ</p>
           </div>
           <ProgressRing value={progress} size={84} stroke={8} label="สำเร็จ" />
         </div>

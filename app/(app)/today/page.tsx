@@ -88,7 +88,7 @@ export default async function TodayPage({
           name="q"
           defaultValue={q}
           placeholder="ค้นงาน เงิน คลัง จด"
-          className="h-12 rounded-2xl border-line/70 bg-surface shadow-[var(--shadow-card)]"
+          className="df-field h-12 shadow-[var(--shadow-sm)]"
         />
       </form>
 

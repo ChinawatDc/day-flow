@@ -18,8 +18,8 @@ export function SectionCard({
   return (
     <section
       className={cn(
-        "rounded-2xl border p-4",
-        danger ? "border-orange/35 bg-orange-soft/15" : "border-line bg-paper",
+        "df-card p-4",
+        danger && "border-orange/35 bg-orange-soft/20",
         className,
       )}
     >
@@ -27,8 +27,8 @@ export function SectionCard({
         {icon ? (
           <div
             className={cn(
-              "mt-0.5 rounded-xl p-2",
-              danger ? "bg-orange/15 text-orange" : "bg-paper-2 text-kaffir",
+              "mt-0.5 rounded-[var(--radius-sm)] p-2",
+              danger ? "bg-orange/15 text-orange" : "bg-kaffir-soft text-kaffir",
             )}
           >
             {icon}
