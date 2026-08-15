@@ -44,9 +44,6 @@ export default function ErrorPage({
       >
         ลองใหม่
       </Button>
-      <Button asChild variant="outline" size="lg" className="mt-2 w-full">
-        <a href="/api/health">เปิด /api/health</a>
-      </Button>
     </div>
   );
 }
