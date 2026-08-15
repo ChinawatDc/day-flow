@@ -14,11 +14,11 @@ import { requireUser } from "@/lib/session";
 export default async function FamilyPage({
   searchParams,
 }: {
-  searchParams: Promise<{ err?: string }>;
+  searchParams: Promise<{ err?: string; tab?: string; sub?: string }>;
 }) {
   const user = await requireUser();
   const m = await getMembership(user.id);
-  const { err } = await searchParams;
+  const { err, tab, sub } = await searchParams;
   if (!m) {
     return (
       <AppShell title="ครอบครัว">
@@ -65,6 +65,8 @@ export default async function FamilyPage({
         joinCode={m.joinCode}
         joinCodeExpiresAt={m.joinCodeExpiresAt}
         role={m.role}
+        tab={tab}
+        sub={sub}
       />
     </>
   );

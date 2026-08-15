@@ -3,6 +3,7 @@ import { getDb } from "@/lib/db/client";
 import {
   families,
   familyChannelReads,
+  familyAppointments,
   familyChores,
   familyLocationShares,
   familyMembers,
@@ -200,6 +201,7 @@ export async function listFamilyShopping(familyId: string) {
       id: familyShoppingItems.id,
       name: familyShoppingItems.name,
       bought: familyShoppingItems.bought,
+      shopOn: familyShoppingItems.shopOn,
       assigneeId: familyShoppingItems.assigneeId,
       createdAt: familyShoppingItems.createdAt,
     })
@@ -221,6 +223,21 @@ export async function listFamilyChores(familyId: string) {
     .from(familyChores)
     .where(eq(familyChores.familyId, familyId))
     .orderBy(asc(familyChores.done), desc(familyChores.createdAt));
+}
+
+export async function listFamilyAppointments(familyId: string) {
+  return getDb()
+    .select({
+      id: familyAppointments.id,
+      title: familyAppointments.title,
+      startsAt: familyAppointments.startsAt,
+      endsAt: familyAppointments.endsAt,
+      place: familyAppointments.place,
+      assigneeId: familyAppointments.assigneeId,
+    })
+    .from(familyAppointments)
+    .where(eq(familyAppointments.familyId, familyId))
+    .orderBy(asc(familyAppointments.startsAt));
 }
 
 export function inviteExpiryFromNow(days = 7) {

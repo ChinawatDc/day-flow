@@ -32,3 +32,9 @@ export function isoToThaiShort(iso: string | null | undefined) {
   const [, y, mo, d] = m;
   return `${d}/${mo}/${toBuddhistYear(Number(y))}`;
 }
+
+export function isoMonthThai(ym: string) {
+  const m = /^(\d{4})-(\d{2})/.exec(ym);
+  if (!m) return "";
+  return `${THAI_MONTHS[Number(m[2]) - 1]} ${toBuddhistYear(Number(m[1]))}`;
+}

@@ -1,3 +1,4 @@
+import { CalendarDays, MessageCircle } from "lucide-react";
 import { AmountText } from "@/components/notebook/amount-text";
 import { AppShell } from "@/components/app-shell";
 import { MenuCards } from "@/components/nav/menu-cards";
@@ -19,7 +20,7 @@ export default async function MenuPage() {
   const openTasks = allTasks.filter((t) => !t.doneAt).length;
   const doneTasks = allTasks.filter((t) => t.doneAt).length;
   const progress = allTasks.length === 0 ? 0 : (doneTasks / allTasks.length) * 100;
-  const rest = [...modules.filter((m) => m.id !== "today"), settingsModule];
+  const byId = Object.fromEntries(modules.map((m) => [m.id, m]));
   const initial = (user.name || user.email || "?").slice(0, 1).toUpperCase();
   const first = user.name?.split(" ")[0];
 
@@ -44,7 +45,36 @@ export default async function MenuPage() {
         <ProgressRing value={progress} size={72} stroke={7} onDark />
       </section>
 
-      <MenuCards items={rest} />
+      <MenuCards
+        groups={[
+          {
+            title: "ครอบครัว",
+            items: [
+              { ...byId.family, hint: "บ้านและสมาชิก" },
+              {
+                href: "/family?tab=plan",
+                label: "วางแผนบ้าน",
+                hint: "งาน · ซื้อของ · นัดหมาย",
+                icon: CalendarDays,
+              },
+              {
+                href: "/family?tab=talk",
+                label: "คุยกับบ้าน",
+                hint: "กลุ่มและแชทรายคน",
+                icon: MessageCircle,
+              },
+            ],
+          },
+          {
+            title: "สมุด",
+            items: [byId.inbox, byId.tasks, byId.money, byId.vault, byId.home, byId.journal],
+          },
+          {
+            title: "ระบบ",
+            items: [settingsModule],
+          },
+        ]}
+      />
     </AppShell>
   );
 }

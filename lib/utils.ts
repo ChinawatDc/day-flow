@@ -9,6 +9,10 @@ export function bangkokTodayIso() {
   return new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Bangkok" });
 }
 
+export function bangkokIsoFromDate(value: Date | string) {
+  return new Date(value).toLocaleDateString("en-CA", { timeZone: "Asia/Bangkok" });
+}
+
 export function addDaysIso(iso: string, days: number) {
   const [y, m, d] = iso.split("-").map(Number);
   const date = new Date(Date.UTC(y, m - 1, d + days));

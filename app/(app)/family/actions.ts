@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { getDb } from "@/lib/db/client";
 import {
   families,
+  familyAppointments,
   familyChores,
   familyLocationShares,
   familyMembers,
@@ -19,6 +20,7 @@ import {
   findFamilyByCode,
   getMembership,
   inviteExpiryFromNow,
+  listFamilyAppointments,
   listFamilyChores,
   listFamilyShopping,
   listLiveLocations,
@@ -524,10 +526,12 @@ export async function createFamilyShopping(formData: FormData) {
   const name = String(formData.get("name") ?? "").trim().slice(0, 120);
   if (!name) return;
   const assigneeId = String(formData.get("assigneeId") ?? "") || null;
+  const shopOn = String(formData.get("shopOn") ?? "") || null;
   await getDb().insert(familyShoppingItems).values({
     id: crypto.randomUUID(),
     familyId: m.familyId,
     name,
+    shopOn,
     assigneeId,
     createdBy: user.id,
   });
@@ -612,4 +616,60 @@ export async function pollFamilyChores() {
   const m = await getMembership(user.id);
   if (!m) return [];
   return listFamilyChores(m.familyId);
+}
+
+function bangkokDateTime(raw: string) {
+  const t = raw.trim();
+  if (!t) return null;
+  if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}/.test(t)) {
+    const base = t.length === 16 ? `${t}:00` : t.slice(0, 19);
+    return new Date(`${base}+07:00`);
+  }
+  return new Date(t);
+}
+
+export async function createFamilyAppointment(formData: FormData) {
+  const user = await requireUser();
+  const m = await requireMember(user.id);
+  const title = String(formData.get("title") ?? "").trim().slice(0, 120);
+  const startsAt = bangkokDateTime(String(formData.get("startsAt") ?? ""));
+  if (!title || !startsAt || Number.isNaN(startsAt.getTime())) return;
+  const endsRaw = String(formData.get("endsAt") ?? "");
+  const endsAt = endsRaw ? bangkokDateTime(endsRaw) : null;
+  const place = String(formData.get("place") ?? "").trim().slice(0, 160);
+  const assigneeId = String(formData.get("assigneeId") ?? "") || null;
+  await getDb().insert(familyAppointments).values({
+    id: crypto.randomUUID(),
+    familyId: m.familyId,
+    title,
+    startsAt,
+    endsAt: endsAt && !Number.isNaN(endsAt.getTime()) ? endsAt : null,
+    place,
+    assigneeId,
+    createdBy: user.id,
+  });
+  refreshFamily();
+}
+
+export async function deleteFamilyAppointment(formData: FormData) {
+  const user = await requireUser();
+  const m = await requireMember(user.id);
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+  await getDb()
+    .delete(familyAppointments)
+    .where(and(eq(familyAppointments.id, id), eq(familyAppointments.familyId, m.familyId)));
+  refreshFamily();
+}
+
+export async function pollFamilyAppointments() {
+  const user = await requireUser();
+  const m = await getMembership(user.id);
+  if (!m) return [];
+  const rows = await listFamilyAppointments(m.familyId);
+  return rows.map((a) => ({
+    ...a,
+    startsAt: new Date(a.startsAt).toISOString(),
+    endsAt: a.endsAt ? new Date(a.endsAt).toISOString() : null,
+  }));
 }

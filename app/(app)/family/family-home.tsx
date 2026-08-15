@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { AppShell } from "@/components/app-shell";
 import { GroupChatLive } from "@/components/family/chat-live";
-import { FamilyChoresPanel } from "@/components/family/family-chores";
-import { FamilyShoppingPanel } from "@/components/family/family-shopping";
+import { FamilyPlan } from "@/components/family/family-plan";
 import { GeoShare } from "@/components/family/geo-share";
 import { InviteQr } from "@/components/family/invite-qr";
 import { ChapterTabs } from "@/components/notebook/chapter-tabs";
@@ -22,6 +21,7 @@ import { env } from "@/lib/env";
 import { ablyGeo, ablyGroup } from "@/lib/family/channels";
 import {
   countUnread,
+  listFamilyAppointments,
   listFamilyChores,
   listFamilyShopping,
   listLiveLocations,
@@ -36,6 +36,8 @@ export async function FamilyHome({
   joinCode,
   joinCodeExpiresAt,
   role,
+  tab,
+  sub,
 }: {
   userId: string;
   familyId: string;
@@ -43,13 +45,16 @@ export async function FamilyHome({
   joinCode: string;
   joinCodeExpiresAt: Date | string | null;
   role: string;
+  tab?: string;
+  sub?: string;
 }) {
-  const [members, messages, locations, shopping, chores, unread] = await Promise.all([
+  const [members, messages, locations, shopping, chores, appointments, unread] = await Promise.all([
     listMembers(familyId),
     listMessages(familyId, "group"),
     listLiveLocations(familyId),
     listFamilyShopping(familyId),
     listFamilyChores(familyId),
+    listFamilyAppointments(familyId),
     countUnread(familyId, userId, "group"),
   ]);
   const names = Object.fromEntries(members.map((p) => [p.userId, p.name || p.email]));
@@ -76,7 +81,16 @@ export async function FamilyHome({
           { label: "แชร์โลเคชัน", value: String(locations.length) },
         ]}
       />
-      <ChapterTabs labels={["บ้าน", "กลุ่ม", "คน", "โลเคชัน", "ซื้อของ", "งาน"]}>
+      <ChapterTabs
+        param="tab"
+        value={tab || "house"}
+        items={[
+          { key: "house", label: "บ้าน", unset: ["sub"] },
+          { key: "talk", label: "คุย", set: { sub: "group" } },
+          { key: "plan", label: "วางแผน", set: { sub: "month" } },
+          { key: "geo", label: "โลเคชัน", unset: ["sub"] },
+        ]}
+      >
         <div className="grid gap-4">
           {role === "owner" ? (
             <>
@@ -183,34 +197,69 @@ export async function FamilyHome({
             </form>
           )}
         </div>
-        <GroupChatLive
-          channelName={ablyGroup(familyId)}
-          live={live}
-          meId={userId}
-          names={names}
-          initial={messages.map((x) => ({
-            id: x.id,
-            senderId: x.senderId,
-            body: x.body,
-            createdAt: x.createdAt,
-            imageR2Key: x.imageR2Key,
-            deletedAt: x.deletedAt,
+        <ChapterTabs
+          param="sub"
+          value={sub === "people" ? "people" : "group"}
+          items={[
+            { key: "group", label: "กลุ่ม" },
+            { key: "people", label: "คน" },
+          ]}
+        >
+          <GroupChatLive
+            channelName={ablyGroup(familyId)}
+            live={live}
+            meId={userId}
+            names={names}
+            initial={messages.map((x) => ({
+              id: x.id,
+              senderId: x.senderId,
+              body: x.body,
+              createdAt: new Date(x.createdAt).toISOString(),
+              imageR2Key: x.imageR2Key,
+              deletedAt: x.deletedAt ? new Date(x.deletedAt).toISOString() : null,
+            }))}
+          />
+          <RecordList>
+            {others.map((p) => (
+              <RecordRow
+                key={p.userId}
+                flush
+                title={p.name || p.email}
+                actions={
+                  <Button asChild size="sm" variant="outline">
+                    <Link href={`/family/dm/${p.userId}`}>แชท</Link>
+                  </Button>
+                }
+              />
+            ))}
+          </RecordList>
+        </ChapterTabs>
+        <FamilyPlan
+          sub={sub}
+          members={memberOpts}
+          chores={chores.map((c) => ({
+            id: c.id,
+            title: c.title,
+            dueOn: c.dueOn ? String(c.dueOn) : null,
+            done: c.done,
+            assigneeId: c.assigneeId,
+          }))}
+          shopping={shopping.map((s) => ({
+            id: s.id,
+            name: s.name,
+            bought: s.bought,
+            shopOn: s.shopOn ? String(s.shopOn) : null,
+            assigneeId: s.assigneeId,
+          }))}
+          appointments={appointments.map((a) => ({
+            id: a.id,
+            title: a.title,
+            startsAt: new Date(a.startsAt).toISOString(),
+            endsAt: a.endsAt ? new Date(a.endsAt).toISOString() : null,
+            place: a.place,
+            assigneeId: a.assigneeId,
           }))}
         />
-        <RecordList>
-          {others.map((p) => (
-            <RecordRow
-              key={p.userId}
-              flush
-              title={p.name || p.email}
-              actions={
-                <Button asChild size="sm" variant="outline">
-                  <Link href={`/family/dm/${p.userId}`}>แชท</Link>
-                </Button>
-              }
-            />
-          ))}
-        </RecordList>
         <GeoShare
           channelName={ablyGeo(familyId)}
           live={live}
@@ -225,14 +274,6 @@ export async function FamilyHome({
             lng: l.lng,
             expiresAt: new Date(l.expiresAt).toISOString(),
           }))}
-        />
-        <FamilyShoppingPanel items={shopping} members={memberOpts} />
-        <FamilyChoresPanel
-          items={chores.map((c) => ({
-            ...c,
-            dueOn: c.dueOn ? String(c.dueOn) : null,
-          }))}
-          members={memberOpts}
         />
       </ChapterTabs>
     </AppShell>

@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS "family_shopping_items" (
   "family_id" text NOT NULL REFERENCES "families"("id") ON DELETE CASCADE,
   "name" text NOT NULL,
   "bought" boolean NOT NULL DEFAULT false,
+  "shop_on" date,
   "assignee_id" text REFERENCES "user"("id") ON DELETE SET NULL,
   "created_by" text NOT NULL REFERENCES "user"("id") ON DELETE CASCADE,
   "created_at" timestamp NOT NULL DEFAULT now(),

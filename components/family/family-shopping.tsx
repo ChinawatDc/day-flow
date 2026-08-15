@@ -16,21 +16,25 @@ type Item = {
   id: string;
   name: string;
   bought: boolean;
+  shopOn: string | null;
   assigneeId: string | null;
 };
 
 export function FamilyShoppingPanel({
   items,
   members,
+  defaultDay,
 }: {
   items: Item[];
   members: { userId: string; name: string }[];
+  defaultDay?: string;
 }) {
   const names = Object.fromEntries(members.map((m) => [m.userId, m.name]));
   return (
     <div className="grid gap-4">
       <form action={createFamilyShopping} className="df-card flex flex-wrap gap-2 p-2">
         <Input name="name" placeholder="ของที่ต้องซื้อ…" required className="min-w-[10rem] flex-1" />
+        <Input name="shopOn" type="date" defaultValue={defaultDay} className="w-[11rem]" />
         <select
           name="assigneeId"
           className="h-11 rounded-[var(--radius-md)] border border-[var(--glass-line)] bg-[color-mix(in_oklch,var(--surface-solid)_70%,transparent)] px-2 text-sm backdrop-blur-[10px]"
@@ -58,7 +62,9 @@ export function FamilyShoppingPanel({
               done={s.bought}
               title={s.name}
               leading={<ShoppingCart className="size-5 text-kaffir" strokeWidth={2.1} />}
-              hint={s.assigneeId ? names[s.assigneeId] : undefined}
+              hint={[s.shopOn ? `ซื้อ ${s.shopOn}` : "ยังไม่ลงวัน", s.assigneeId ? names[s.assigneeId] : null]
+                .filter(Boolean)
+                .join(" · ")}
               tag={s.bought ? <Check className="size-4 text-kaffir" strokeWidth={2.2} /> : null}
               actions={
                 <div className="flex items-center gap-1">

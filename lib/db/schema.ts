@@ -258,6 +258,7 @@ export const familyShoppingItems = pgTable("family_shopping_items", {
     .references(() => families.id, { onDelete: "cascade" }),
   name: text("name").notNull(),
   bought: boolean("bought").notNull().default(false),
+  shopOn: date("shop_on"),
   assigneeId: text("assignee_id").references(() => user.id, { onDelete: "set null" }),
   createdBy: text("created_by")
     .notNull()
@@ -280,4 +281,20 @@ export const familyChores = pgTable("family_chores", {
     .references(() => user.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const familyAppointments = pgTable("family_appointments", {
+  id: text("id").primaryKey(),
+  familyId: text("family_id")
+    .notNull()
+    .references(() => families.id, { onDelete: "cascade" }),
+  title: text("title").notNull(),
+  startsAt: timestamp("starts_at").notNull(),
+  endsAt: timestamp("ends_at"),
+  place: text("place").notNull().default(""),
+  assigneeId: text("assignee_id").references(() => user.id, { onDelete: "set null" }),
+  createdBy: text("created_by")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
 });

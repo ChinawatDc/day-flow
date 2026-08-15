@@ -23,16 +23,18 @@ type Chore = {
 export function FamilyChoresPanel({
   items,
   members,
+  defaultDay,
 }: {
   items: Chore[];
   members: { userId: string; name: string }[];
+  defaultDay?: string;
 }) {
   const names = Object.fromEntries(members.map((m) => [m.userId, m.name]));
   return (
     <div className="grid gap-4">
       <form action={createFamilyChore} className="df-card grid gap-2 p-3 sm:grid-cols-[1fr_auto_auto_auto]">
         <Input name="title" placeholder="งานบ้าน…" required />
-        <Input name="dueOn" type="date" className="min-w-[9rem]" />
+        <Input name="dueOn" type="date" className="min-w-[9rem]" defaultValue={defaultDay} />
         <select
           name="assigneeId"
           className="h-11 rounded-[var(--radius-md)] border border-[var(--glass-line)] bg-[color-mix(in_oklch,var(--surface-solid)_70%,transparent)] px-2 text-sm backdrop-blur-[10px]"
