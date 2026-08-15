@@ -25,6 +25,7 @@ day-flow — สมุดบ้านอุ่น (kaffir) + liquid glass ตา
 | `.df-card` | รายการ / บล็อก (frosted paper) |
 | `.df-card-hero` | โฟกัสเขียว + sheen |
 | `.df-glass` | แผงโปร่งเสริม (rail / empty) |
+| `.df-track` | แทร็ก filter / chapter tabs |
 | `StatStrip` | สรุปตัวเลขแถบเดียว |
 | `RecordList` + `RecordRow flush` | รายการในแผ่นเดียว |
 | `.df-chip` / `.df-chip-active` | filter |

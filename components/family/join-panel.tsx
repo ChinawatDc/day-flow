@@ -6,13 +6,22 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { joinFamily } from "@/app/(app)/family/actions";
+import { cn } from "@/lib/utils";
 
-export function JoinPanel({ defaultCode = "", error }: { defaultCode?: string; error?: string }) {
+export function JoinPanel({
+  defaultCode = "",
+  error,
+  className,
+}: {
+  defaultCode?: string;
+  error?: string;
+  className?: string;
+}) {
   const formRef = useRef<HTMLFormElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   return (
-    <form ref={formRef} action={joinFamily} className="grid gap-3">
+    <form ref={formRef} action={joinFamily} className={cn("grid gap-3", className)}>
       <Label htmlFor="code">โค้ดครอบครัว</Label>
       <Input
         ref={inputRef}

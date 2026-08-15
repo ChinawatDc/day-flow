@@ -84,7 +84,7 @@ export default async function TasksPage({
                     className={
                       done
                         ? "grid size-9 place-items-center rounded-full bg-kaffir text-surface"
-                        : "grid size-9 place-items-center rounded-full border border-[var(--stroke-strong)] bg-paper-2 text-transparent"
+                        : "grid size-9 place-items-center rounded-full border border-[var(--glass-line)] bg-[color-mix(in_oklch,var(--surface-solid)_55%,transparent)] text-transparent backdrop-blur-[8px]"
                     }
                     aria-hidden
                   >

@@ -21,7 +21,7 @@ export function MenuCards({
                 "hover:bg-[color-mix(in_oklch,var(--brand-soft)_45%,transparent)]",
               )}
             >
-              <span className="grid size-10 shrink-0 place-items-center rounded-[var(--radius-md)] bg-kaffir-soft text-kaffir">
+              <span className="grid size-10 shrink-0 place-items-center rounded-[var(--radius-md)] border border-[var(--glass-line)] bg-[color-mix(in_oklch,var(--brand-soft)_75%,transparent)] text-kaffir backdrop-blur-[8px]">
                 <Icon className="size-[1.15rem]" strokeWidth={2.1} />
               </span>
               <span className="text-title min-w-0 flex-1 truncate text-[1.05rem]">{m.label}</span>

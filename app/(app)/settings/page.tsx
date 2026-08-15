@@ -62,7 +62,7 @@ function ExportLink({ href, label }: { href: string; label: string }) {
   return (
     <a
       href={href}
-      className="df-press flex items-center justify-between rounded-[var(--radius-md)] border border-[var(--stroke)] bg-paper-2 px-3 py-3 text-sm font-medium hover:border-kaffir hover:bg-surface"
+      className="df-press df-glass flex items-center justify-between rounded-[var(--radius-md)] px-3 py-3 text-sm font-medium hover:border-kaffir"
     >
       {label}
       <Download className="size-4 text-kaffir" />

@@ -10,10 +10,12 @@ const buttonVariants = cva(
       variant: {
         default: "bg-kaffir text-surface hover:bg-kaffir-dark",
         orange: "bg-orange text-surface hover:bg-orange/90",
-        outline: "border border-[var(--stroke)] bg-surface text-ink hover:bg-paper-2",
-        ghost: "text-ink hover:bg-paper-2",
+        outline:
+          "border border-[var(--glass-line)] bg-[color-mix(in_oklch,var(--surface-solid)_70%,transparent)] text-ink backdrop-blur-[10px] hover:bg-[color-mix(in_oklch,var(--surface-solid)_88%,transparent)]",
+        ghost: "text-ink hover:bg-[color-mix(in_oklch,var(--surface-solid)_55%,transparent)]",
         ink: "bg-ink text-surface hover:bg-ink/90",
-        soft: "bg-surface text-kaffir shadow-[var(--shadow-sm)] hover:bg-paper-2",
+        soft:
+          "border border-[var(--glass-line)] bg-[color-mix(in_oklch,var(--surface-solid)_78%,transparent)] text-kaffir shadow-[var(--shadow-sm)] backdrop-blur-[12px] hover:bg-[color-mix(in_oklch,var(--surface-solid)_92%,transparent)]",
       },
       size: {
         default: "h-11 px-4",

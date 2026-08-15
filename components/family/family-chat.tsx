@@ -102,7 +102,7 @@ export function FamilyChat({
                 className={
                   mine
                     ? "max-w-[85%] rounded-[var(--radius-md)] rounded-br-md bg-kaffir px-3.5 py-2 text-surface shadow-[var(--shadow-sm)]"
-                    : "max-w-[85%] rounded-[var(--radius-md)] rounded-bl-md border border-[var(--stroke)] bg-surface px-3.5 py-2 shadow-[var(--shadow-sm)]"
+                    : "max-w-[85%] rounded-[var(--radius-md)] rounded-bl-md border border-[var(--glass-line)] bg-[color-mix(in_oklch,var(--surface-solid)_78%,transparent)] px-3.5 py-2 shadow-[var(--shadow-sm)] backdrop-blur-[12px]"
                 }
               >
                 <p className={`text-[11px] ${mine ? "text-surface/75" : "text-ink-muted"}`}>
@@ -117,7 +117,7 @@ export function FamilyChat({
       </ul>
       <form
         ref={formRef}
-        className="flex gap-2 border-t border-[var(--stroke)] bg-surface p-3"
+        className="flex gap-2 border-t border-[var(--glass-line)] bg-[color-mix(in_oklch,var(--surface-solid)_55%,transparent)] p-3 backdrop-blur-[12px]"
         onSubmit={(e) => {
           e.preventDefault();
           const fd = new FormData(e.currentTarget);

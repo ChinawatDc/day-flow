@@ -14,7 +14,7 @@ export function ChapterTabs({
   const [i, setI] = useState(0);
   return (
     <div>
-      <div className="mb-5 flex gap-1 overflow-x-auto rounded-[var(--radius-md)] bg-paper-2 p-1">
+      <div className="df-track mb-5 flex gap-1 overflow-x-auto">
         {labels.map((label, idx) => (
           <button
             key={label}

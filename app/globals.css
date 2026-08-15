@@ -262,6 +262,15 @@ body {
   -webkit-backdrop-filter: blur(var(--blur-glass)) saturate(115%);
 }
 
+.df-track {
+  border: 1px solid var(--glass-line);
+  border-radius: var(--radius-md);
+  background: color-mix(in oklch, var(--surface-2) 55%, transparent);
+  backdrop-filter: blur(10px) saturate(112%);
+  -webkit-backdrop-filter: blur(10px) saturate(112%);
+  padding: 0.25rem;
+}
+
 .df-chip {
   display: inline-flex;
   align-items: center;
