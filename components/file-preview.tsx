@@ -41,7 +41,7 @@ export function FilePreview({
         >
           <X className="size-4" />
         </button>
-        <p className="text-caption border-b border-line px-5 pb-3">แสดงในแอป</p>
+        <p className="text-caption border-b border-[var(--glass-line)] px-5 pb-3 pt-4">ไฟล์</p>
         <div className="bg-ink/5">
           {kind === "image" ? (
             // eslint-disable-next-line @next/next/no-img-element
