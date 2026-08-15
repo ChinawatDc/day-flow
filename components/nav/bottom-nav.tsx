@@ -15,8 +15,8 @@ export function BottomNav() {
     pathname === "/menu" || extra.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 px-3 pb-[max(0.65rem,env(safe-area-inset-bottom))] md:hidden">
-      <div className="df-nav-float mx-auto max-w-lg px-2 pt-2">
+    <nav className="fixed inset-x-0 bottom-0 z-40 px-3 pb-[max(0.55rem,env(safe-area-inset-bottom))] md:hidden">
+      <div className="df-nav-float mx-auto max-w-lg px-1.5 pt-1.5">
         <div className="grid grid-cols-5 items-end pb-1">
           {left.map((m) => (
             <Tab key={m.id} href={m.href} label={m.label} icon={m.icon} active={isActive(pathname, m.href)} />
@@ -24,13 +24,13 @@ export function BottomNav() {
           <Link href="/menu" className="df-press relative flex flex-col items-center pb-0.5">
             <span
               className={cn(
-                "-mt-7 flex size-14 items-center justify-center rounded-full shadow-[var(--shadow-lg)]",
+                "-mt-6 flex size-12 items-center justify-center rounded-full shadow-[var(--shadow-md)]",
                 menuActive ? "bg-kaffir text-surface" : "bg-ink text-surface",
               )}
             >
-              <hubModule.icon className="size-6" />
+              <hubModule.icon className="size-5" strokeWidth={2.1} />
             </span>
-            <span className={cn("mt-1 text-[11px] font-medium", menuActive ? "text-kaffir" : "text-ink-muted")}>
+            <span className={cn("mt-1 text-[10px] font-medium", menuActive ? "text-kaffir" : "text-ink-muted")}>
               เมนู
             </span>
           </Link>
@@ -62,17 +62,17 @@ function Tab({
     <Link
       href={href}
       className={cn(
-        "df-press flex flex-col items-center justify-center gap-0.5 rounded-2xl px-1 py-2 text-[11px] font-medium",
+        "df-press flex flex-col items-center justify-center gap-0.5 rounded-[var(--radius-md)] px-1 py-2 text-[10px] font-medium",
         active ? "text-kaffir" : "text-ink-muted hover:text-ink",
       )}
     >
       <span
         className={cn(
-          "grid size-9 place-items-center rounded-2xl transition-colors",
+          "grid size-8 place-items-center rounded-[var(--radius-md)] transition-colors",
           active ? "bg-kaffir-soft" : "bg-transparent",
         )}
       >
-        <Icon className="size-5" />
+        <Icon className="size-[1.15rem]" strokeWidth={2.1} />
       </span>
       {label}
     </Link>

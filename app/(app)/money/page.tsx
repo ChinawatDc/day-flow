@@ -7,8 +7,8 @@ import { CategorySelect } from "@/components/notebook/category-select";
 import { ConfirmDelete } from "@/components/notebook/confirm-delete";
 import { ComposerSheet } from "@/components/notebook/composer-sheet";
 import { NotebookForm } from "@/components/notebook/notebook-form";
-import { OverviewCard } from "@/components/notebook/overview-card";
-import { RecordRow, SoftTag } from "@/components/notebook/record-row";
+import { RecordList, RecordRow, SoftTag } from "@/components/notebook/record-row";
+import { StatStrip } from "@/components/notebook/stat-strip";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -30,10 +30,12 @@ export default async function MoneyPage() {
 
   return (
     <AppShell title="เงิน">
-      <div className="mb-5 grid grid-cols-2 gap-3">
-        <OverviewCard tone="kaffir" title="วันนี้" value={<AmountText satang={todayTotal} />} />
-        <OverviewCard title="เดือนนี้" value={<AmountText satang={monthTotal} />} />
-      </div>
+      <StatStrip
+        items={[
+          { label: "วันนี้", value: <AmountText satang={todayTotal} />, emphasize: true },
+          { label: "เดือนนี้", value: <AmountText satang={monthTotal} /> },
+        ]}
+      />
 
       <div className="mb-5">
         <ComposerSheet label="จ่าย" title="รายจ่าย" variant="orange">
@@ -52,11 +54,11 @@ export default async function MoneyPage() {
       </div>
 
       {monthTotal > 0 ? (
-        <ul className="df-card mb-5 grid gap-2 p-3">
+        <ul className="df-card mb-5 divide-y divide-[var(--stroke)] overflow-hidden">
           {byCat
             .filter((c) => c.total > 0)
             .map((c) => (
-              <li key={c.id} className="flex justify-between text-sm">
+              <li key={c.id} className="flex justify-between px-4 py-2.5 text-sm">
                 <span className="text-ink-muted">{c.label}</span>
                 <AmountText satang={c.total} className="font-semibold" />
               </li>
@@ -67,10 +69,11 @@ export default async function MoneyPage() {
       {rows.length === 0 ? (
         <EmptyState title="ยังไม่มีรายจ่าย" />
       ) : (
-        <ul className="grid gap-3">
+        <RecordList>
           {rows.map((e) => (
             <RecordRow
               key={e.id}
+              flush
               title={e.merchant || label(e.category)}
               value={<AmountText satang={e.amountSatang} />}
               tag={
@@ -100,7 +103,7 @@ export default async function MoneyPage() {
               }
             />
           ))}
-        </ul>
+        </RecordList>
       )}
     </AppShell>
   );

@@ -93,7 +93,7 @@ export function FamilyChat({
     <div className="df-card flex flex-col overflow-hidden">
       {live ? null : <p className="text-caption px-3 pt-3 text-orange">{envHint}</p>}
       <ul className="mb-0 grid max-h-[52vh] gap-2 overflow-y-auto px-3 py-3">
-        {rows.length === 0 ? <li className="text-caption py-8 text-center">ยังไม่มีข้อความ — พิมพ์ด้านล่าง</li> : null}
+        {rows.length === 0 ? <li className="text-caption py-8 text-center">ยังไม่มีข้อความ</li> : null}
         {rows.map((m) => {
           const mine = m.senderId === meId;
           return (
@@ -130,8 +130,8 @@ export function FamilyChat({
         }}
       >
         {hiddenFields}
-        <Input name="body" placeholder="ข้อความ…" required autoComplete="off" className="rounded-full" />
-        <Button type="submit" disabled={pending} className="rounded-full px-5">
+        <Input name="body" placeholder="ข้อความ…" required autoComplete="off" />
+        <Button type="submit" disabled={pending} className="shrink-0 px-5">
           ส่ง
         </Button>
       </form>

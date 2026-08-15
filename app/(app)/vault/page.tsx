@@ -6,8 +6,8 @@ import { ConfirmDelete } from "@/components/notebook/confirm-delete";
 import { ComposerSheet } from "@/components/notebook/composer-sheet";
 import { FilterPills } from "@/components/notebook/filter-pills";
 import { NotebookForm } from "@/components/notebook/notebook-form";
-import { OverviewCard } from "@/components/notebook/overview-card";
-import { RecordRow, SoftTag } from "@/components/notebook/record-row";
+import { RecordList, RecordRow, SoftTag } from "@/components/notebook/record-row";
+import { StatStrip } from "@/components/notebook/stat-strip";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -35,10 +35,12 @@ export default async function VaultPage({
 
   return (
     <AppShell title="คลัง">
-      <div className="mb-5 grid grid-cols-2 gap-3">
-        <OverviewCard tone="kaffir" title="เอกสาร" value={String(all.length)} />
-        <OverviewCard href="/vault?filter=soon" title="ใกล้หมดอายุ" value={String(soonRows.length)} />
-      </div>
+      <StatStrip
+        items={[
+          { label: "เอกสาร", value: String(all.length), emphasize: true },
+          { label: "ใกล้หมดอายุ", value: String(soonRows.length), href: "/vault?filter=soon" },
+        ]}
+      />
 
       <FilterPills
         items={[
@@ -71,12 +73,13 @@ export default async function VaultPage({
       {rows.length === 0 ? (
         <EmptyState title="คลังว่าง" />
       ) : (
-        <ul className="grid gap-3">
+        <RecordList>
           {rows.map((v) => {
             const expiring = Boolean(v.expiresOn && v.expiresOn <= soon && v.expiresOn >= today);
             return (
               <RecordRow
                 key={v.id}
+                flush
                 title={v.title}
                 tag={
                   <>
@@ -113,7 +116,7 @@ export default async function VaultPage({
               />
             );
           })}
-        </ul>
+        </RecordList>
       )}
     </AppShell>
   );

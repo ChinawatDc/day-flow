@@ -8,8 +8,8 @@ import { ChapterTabs } from "@/components/notebook/chapter-tabs";
 import { ConfirmDelete } from "@/components/notebook/confirm-delete";
 import { ComposerSheet } from "@/components/notebook/composer-sheet";
 import { NotebookForm } from "@/components/notebook/notebook-form";
-import { OverviewCard } from "@/components/notebook/overview-card";
-import { RecordRow, SoftTag } from "@/components/notebook/record-row";
+import { RecordList, RecordRow, SoftTag } from "@/components/notebook/record-row";
+import { StatStrip } from "@/components/notebook/stat-strip";
 import { ToggleAction } from "@/components/notebook/toggle-action";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,11 +39,13 @@ export default async function HomePage() {
 
   return (
     <AppShell title="บ้าน">
-      <div className="mb-5 grid grid-cols-3 gap-2">
-        <OverviewCard title="ของ" value={String(items.length)} />
-        <OverviewCard title="รอซื้อ" value={String(openShop)} />
-        <OverviewCard title="บิลค้าง" value={String(unpaid)} />
-      </div>
+      <StatStrip
+        items={[
+          { label: "ของ", value: String(items.length), emphasize: true },
+          { label: "รอซื้อ", value: String(openShop) },
+          { label: "บิลค้าง", value: String(unpaid) },
+        ]}
+      />
 
       <ChapterTabs labels={["ของ", "ซื้อ", "บิล"]}>
         <div>
@@ -64,14 +66,15 @@ export default async function HomePage() {
           {items.length === 0 ? (
             <EmptyState title="บ้านยังว่าง" />
           ) : (
-            <ul className="grid gap-3">
+            <RecordList>
               {items.map((it) => (
                 <RecordRow
                   key={it.id}
+                  flush
                   title={it.name}
                   hint={it.location || "ไม่ระบุที่"}
                   tag={<SoftTag tone="kaffir">×{it.quantity}</SoftTag>}
-                  leading={<Package className="size-5 text-kaffir" />}
+                  leading={<Package className="size-5 text-kaffir" strokeWidth={2.1} />}
                   actions={
                     <>
                       {it.r2Key ? <FileLink r2Key={it.r2Key} label="ดูรูป" /> : null}
@@ -92,7 +95,7 @@ export default async function HomePage() {
                   }
                 />
               ))}
-            </ul>
+            </RecordList>
           )}
         </div>
 
@@ -111,13 +114,14 @@ export default async function HomePage() {
           {shopping.length === 0 ? (
             <EmptyState title="รายการซื้อว่าง" />
           ) : (
-            <ul className="grid gap-3">
+            <RecordList>
               {shopping.map((s) => (
                 <RecordRow
                   key={s.id}
+                  flush
                   title={s.name}
                   done={s.bought}
-                  leading={<ShoppingCart className="size-5 text-kaffir" />}
+                  leading={<ShoppingCart className="size-5 text-kaffir" strokeWidth={2.1} />}
                   tag={s.bought ? <SoftTag>ซื้อแล้ว</SoftTag> : <SoftTag tone="orange">รอซื้อ</SoftTag>}
                   actions={
                     <>
@@ -134,7 +138,7 @@ export default async function HomePage() {
                   }
                 />
               ))}
-            </ul>
+            </RecordList>
           )}
         </div>
 
@@ -162,14 +166,15 @@ export default async function HomePage() {
           {bills.length === 0 ? (
             <EmptyState title="ยังไม่มีบิล" />
           ) : (
-            <ul className="grid gap-3">
+            <RecordList>
               {bills.map((b) => (
                 <RecordRow
                   key={b.id}
+                  flush
                   title={b.title}
                   done={b.paid}
                   value={<AmountText satang={b.amountSatang} />}
-                  leading={<Receipt className="size-5 text-kaffir" />}
+                  leading={<Receipt className="size-5 text-kaffir" strokeWidth={2.1} />}
                   tag={
                     <>
                       <SoftTag tone={b.paid ? "muted" : "orange"}>
@@ -204,7 +209,7 @@ export default async function HomePage() {
                   }
                 />
               ))}
-            </ul>
+            </RecordList>
           )}
         </div>
       </ChapterTabs>

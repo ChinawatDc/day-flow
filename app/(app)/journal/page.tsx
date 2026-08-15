@@ -104,7 +104,8 @@ export default async function JournalPage({
 
       {entry?.body ? (
         <article className="df-card mb-5 px-4 py-5">
-          <div className="mb-2 flex gap-2">
+          <div className="mb-2 flex items-center gap-2">
+            {MoodIcon ? <MoodIcon className="size-4 text-kaffir" aria-hidden /> : null}
             <SoftTag tone="kaffir">{mood?.label ?? "—"}</SoftTag>
             <SoftTag>{isoToThaiDisplay(entryOn)}</SoftTag>
           </div>

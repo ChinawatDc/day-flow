@@ -6,7 +6,7 @@ import { ComposerSheet } from "@/components/notebook/composer-sheet";
 import { FilterPills } from "@/components/notebook/filter-pills";
 import { NotebookForm } from "@/components/notebook/notebook-form";
 import { ProgressRing } from "@/components/notebook/progress-ring";
-import { RecordRow, SoftTag } from "@/components/notebook/record-row";
+import { RecordList, RecordRow, SoftTag } from "@/components/notebook/record-row";
 import { ToggleAction } from "@/components/notebook/toggle-action";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -36,14 +36,14 @@ export default async function TasksPage({
   const progress = total === 0 ? 0 : (doneCount / total) * 100;
 
   return (
-    <AppShell title="งาน" trailing={<ProgressRing value={progress} size={58} stroke={6} />}>
-      <section className="df-card-hero mb-5 overflow-hidden p-5">
-        <div className="flex items-center justify-between gap-4">
+    <AppShell title="งาน" trailing={<ProgressRing value={progress} size={52} stroke={6} />}>
+      <section className="df-card-hero mb-5 flex items-center justify-between gap-4 p-5">
+        <div>
           <p className="text-display text-[2rem] text-surface">{openRows.length}</p>
-          <ProgressRing value={progress} size={84} stroke={8} />
         </div>
-        <div className="mt-4">
-          <ComposerSheet label="เพิ่มงานใหม่" title="งานใหม่" variant="soft">
+        <div className="flex items-center gap-3">
+          <ProgressRing value={progress} size={64} stroke={7} onDark />
+          <ComposerSheet label="เพิ่ม" title="งานใหม่" variant="soft" compact>
             <NotebookForm action={createTask}>
               <Label htmlFor="title">ชื่องาน</Label>
               <Input id="title" name="title" required placeholder="เช่น จ่ายค่าไฟ" />
@@ -68,13 +68,14 @@ export default async function TasksPage({
       {rows.length === 0 ? (
         <EmptyState title="ยังไม่มีงาน" />
       ) : (
-        <ul className="grid gap-3">
+        <RecordList>
           {rows.map((t) => {
             const done = Boolean(t.doneAt);
             const overdue = !done && t.dueOn && t.dueOn < today;
             return (
               <RecordRow
                 key={t.id}
+                flush
                 title={t.title}
                 hint={t.note || undefined}
                 done={done}
@@ -82,12 +83,12 @@ export default async function TasksPage({
                   <span
                     className={
                       done
-                        ? "grid size-10 place-items-center rounded-full bg-kaffir text-paper"
-                        : "grid size-10 place-items-center rounded-full border-2 border-line bg-paper-2 text-transparent"
+                        ? "grid size-9 place-items-center rounded-full bg-kaffir text-surface"
+                        : "grid size-9 place-items-center rounded-full border border-[var(--stroke-strong)] bg-paper-2 text-transparent"
                     }
                     aria-hidden
                   >
-                    <Check className="size-5" />
+                    <Check className="size-4" strokeWidth={2.5} />
                   </span>
                 }
                 tag={
@@ -126,7 +127,7 @@ export default async function TasksPage({
               />
             );
           })}
-        </ul>
+        </RecordList>
       )}
     </AppShell>
   );

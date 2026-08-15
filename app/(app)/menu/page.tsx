@@ -41,7 +41,7 @@ export default async function MenuPage() {
           </p>
           <p className="mt-2 text-sm text-surface/80">{openTasks} งานค้าง</p>
         </div>
-        <ProgressRing value={progress} size={72} stroke={7} />
+        <ProgressRing value={progress} size={72} stroke={7} onDark />
       </section>
 
       <MenuCards items={rest} />

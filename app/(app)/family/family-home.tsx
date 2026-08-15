@@ -5,8 +5,8 @@ import { GeoShare } from "@/components/family/geo-share";
 import { InviteQr } from "@/components/family/invite-qr";
 import { ChapterTabs } from "@/components/notebook/chapter-tabs";
 import { ConfirmDelete } from "@/components/notebook/confirm-delete";
-import { OverviewCard } from "@/components/notebook/overview-card";
-import { RecordRow, SoftTag } from "@/components/notebook/record-row";
+import { RecordList, RecordRow, SoftTag } from "@/components/notebook/record-row";
+import { StatStrip } from "@/components/notebook/stat-strip";
 import { Button } from "@/components/ui/button";
 import { leaveFamily, removeMember, rotateJoinCode } from "./actions";
 import { env } from "@/lib/env";
@@ -38,10 +38,12 @@ export async function FamilyHome({
 
   return (
     <AppShell title="ครอบครัว" subtitle={name}>
-      <div className="mb-5 grid grid-cols-2 gap-3">
-        <OverviewCard tone="kaffir" title="สมาชิก" value={String(members.length)} />
-        <OverviewCard title="กำลังแชร์โลเคชัน" value={String(locations.length)} />
-      </div>
+      <StatStrip
+        items={[
+          { label: "สมาชิก", value: String(members.length), emphasize: true },
+          { label: "แชร์โลเคชัน", value: String(locations.length) },
+        ]}
+      />
       <ChapterTabs labels={["บ้าน", "กลุ่ม", "คน", "โลเคชัน"]}>
         <div className="grid gap-4">
           {role === "owner" ? (
@@ -59,12 +61,17 @@ export async function FamilyHome({
           ) : (
             <p className="text-caption">ให้เจ้าของบ้านส่ง QR หรือโค้ด</p>
           )}
-          <ul className="grid gap-3">
+          <RecordList>
             {members.map((p) => (
               <RecordRow
                 key={p.userId}
+                flush
                 title={p.name || p.email}
-                tag={<SoftTag tone={p.role === "owner" ? "kaffir" : "muted"}>{p.role === "owner" ? "เจ้าของ" : "สมาชิก"}</SoftTag>}
+                tag={
+                  <SoftTag tone={p.role === "owner" ? "kaffir" : "muted"}>
+                    {p.role === "owner" ? "เจ้าของ" : "สมาชิก"}
+                  </SoftTag>
+                }
                 actions={
                   role === "owner" && p.userId !== userId ? (
                     <ConfirmDelete
@@ -78,7 +85,7 @@ export async function FamilyHome({
                 }
               />
             ))}
-          </ul>
+          </RecordList>
           <form action={leaveFamily}>
             <Button type="submit" variant="outline">
               ออกจากครอบครัว
@@ -97,12 +104,13 @@ export async function FamilyHome({
             createdAt: x.createdAt,
           }))}
         />
-        <ul className="grid gap-3">
+        <RecordList>
           {members
             .filter((p) => p.userId !== userId)
             .map((p) => (
               <RecordRow
                 key={p.userId}
+                flush
                 title={p.name || p.email}
                 actions={
                   <Button asChild size="sm" variant="outline">
@@ -111,7 +119,7 @@ export async function FamilyHome({
                 }
               />
             ))}
-        </ul>
+        </RecordList>
         <GeoShare
           channelName={ablyGeo(familyId)}
           live={live}

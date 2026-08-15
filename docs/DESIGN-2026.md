@@ -11,11 +11,13 @@ day-flow — สมุดบ้านอุ่น (kaffir) ตาม [DESIGN.md]
 - Motion: `--ease-out` expo, `.df-enter` / `.df-stagger`, เคารพ `prefers-reduced-motion`
 
 ## Utilities
-| Class | ใช้เมื่อ |
+| Class / component | ใช้เมื่อ |
 |-------|---------|
 | `.df-canvas` | พื้น shell |
 | `.df-card` | รายการ / บล็อก |
 | `.df-card-hero` | โฟกัสเขียว |
+| `StatStrip` | สรุปตัวเลขแบบแถบเดียว (ไม่ใช่การ์ด metric แยก) |
+| `RecordList` + `RecordRow flush` | รายการในแผ่นเดียว |
 | `.df-chip` / `.df-chip-active` | filter |
 | `.df-nav-float` | bottom nav |
 | `.df-field` | input |
