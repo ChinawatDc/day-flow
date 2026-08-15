@@ -41,7 +41,7 @@ export function SoftTag({
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-medium",
+        "inline-flex items-center rounded-[var(--radius-sm)] px-2 py-0.5 text-[11px] font-medium",
         tone === "muted" && "bg-paper-2 text-ink-muted",
         tone === "kaffir" && "bg-kaffir-soft text-kaffir-dark",
         tone === "orange" && "bg-orange-soft text-orange",

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Sans_Thai, Prompt } from "next/font/google";
+import { Bai_Jamjuree, Prompt } from "next/font/google";
 import "./globals.css";
 
 const prompt = Prompt({
@@ -9,10 +9,10 @@ const prompt = Prompt({
   display: "swap",
 });
 
-const plexThai = IBM_Plex_Sans_Thai({
+const baiJamjuree = Bai_Jamjuree({
   subsets: ["thai", "latin"],
   weight: ["400", "500", "600", "700"],
-  variable: "--font-plex-thai",
+  variable: "--font-bai",
   display: "swap",
 });
 
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#eef3ef",
+  themeColor: "#e8f0ea",
   width: "device-width",
   initialScale: 1,
 };
@@ -43,7 +43,7 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="th">
-      <body className={`${prompt.variable} ${plexThai.variable} min-h-dvh bg-paper text-ink antialiased`}>
+      <body className={`${prompt.variable} ${baiJamjuree.variable} min-h-dvh bg-paper text-ink antialiased`}>
         {children}
       </body>
     </html>

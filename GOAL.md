@@ -3,13 +3,13 @@
 ## Focus
 เว็บพอร์ทัลชีวิตประจำวันบนมือถือ: ล็อกอินแล้วเห็นเมนูทุกโมดูล กดเข้าใช้ได้เลย
 
-สถานะตอนนี้: **โค้ดมุ่งเกณฑ์ V1.0.0** บ้านแอป = `/menu` ตัวพิมพ์ = Prompt + IBM Plex Sans Thai — ยังต้องมี Neon + R2 + deploy ถึงใช้จริง ดู [docs/VERSIONS.md](docs/VERSIONS.md) และ [docs/02-v1.0.0/README.md](docs/02-v1.0.0/README.md)
+สถานะตอนนี้: **โค้ดมุ่งเกณฑ์ V1.0.0** บ้านแอป = `/menu` ตัวพิมพ์ = Prompt + Bai Jamjuree — ยังต้องมี Neon + R2 + deploy ถึงใช้จริง ดู [docs/VERSIONS.md](docs/VERSIONS.md) และ [docs/02-v1.0.0/README.md](docs/02-v1.0.0/README.md)
 
 เป้าถัดไป: ปิด human gates + Evidence ใช้จริง แล้วค่อย tag `v1.0.0`
 
 ## Current target: เกณฑ์โค้ด V1.0.0
 
-บ้านแอป = เมนู (`/menu`) · ตัวพิมพ์ = Prompt + IBM Plex Sans Thai · งานคลื่น: [docs/02-v1.0.0/README.md](docs/02-v1.0.0/README.md) · สไตล์: [docs/DESIGN-2026.md](docs/DESIGN-2026.md)
+บ้านแอป = เมนู (`/menu`) · ตัวพิมพ์ = Prompt + Bai Jamjuree · งานคลื่น: [docs/02-v1.0.0/README.md](docs/02-v1.0.0/README.md) · สไตล์: [docs/DESIGN-2026.md](docs/DESIGN-2026.md)
 
 ### โค้ด V1.0 (กำลังทำ)
 - [x] สมุดใบเดียว: token + ชุด UI + เมนูเป็นบ้าน

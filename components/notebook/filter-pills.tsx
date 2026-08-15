@@ -7,7 +7,7 @@ export function FilterPills({
   items: { href: string; label: string; active: boolean }[];
 }) {
   return (
-    <div className="mb-4 flex gap-1 overflow-x-auto rounded-[var(--radius-full)] bg-paper-2 p-1">
+    <div className="mb-5 flex gap-1 overflow-x-auto rounded-[var(--radius-md)] bg-paper-2 p-1">
       {items.map((it) => (
         <Link
           key={it.href}

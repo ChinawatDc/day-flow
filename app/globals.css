@@ -1,57 +1,55 @@
 @import "tailwindcss";
 
-/* day-flow Design System 2026 — warm notebook, modern surfaces */
+/* day-flow — warm notebook (impeccable / DESIGN.md) */
 :root {
-  /* Semantic canvas / surfaces */
-  --canvas: #eef3ef;
-  --canvas-glow: #d7e8dc;
-  --surface: color-mix(in srgb, #fffcf8 92%, #2f6a4a 8%);
-  --surface-solid: #fffcf8;
-  --surface-2: #f1ebe3;
-  --elevated: color-mix(in srgb, #fffcf8 88%, transparent);
+  /* OKLCH palette — neutrals tinted toward kaffir green */
+  --canvas: oklch(0.955 0.014 150);
+  --canvas-glow: oklch(0.92 0.035 152);
+  --surface: oklch(0.985 0.008 95);
+  --surface-solid: oklch(0.992 0.006 95);
+  --surface-2: oklch(0.945 0.012 100);
+  --elevated: color-mix(in oklch, var(--surface-solid) 88%, transparent);
 
-  /* Ink */
-  --ink: #171412;
-  --ink-muted: #6a635c;
-  --ink-faint: #9a9289;
+  --ink: oklch(0.24 0.02 55);
+  --ink-muted: oklch(0.48 0.02 70);
+  --ink-faint: oklch(0.62 0.015 80);
 
-  /* Brand (kaffir) + accent */
-  --brand: #2a6848;
-  --brand-strong: #1f4f36;
-  --brand-soft: #d4ebdc;
-  --accent: #c24f1f;
-  --accent-soft: #f3d4c4;
+  --brand: oklch(0.46 0.09 155);
+  --brand-strong: oklch(0.36 0.08 155);
+  --brand-soft: oklch(0.93 0.035 155);
+  --accent: oklch(0.58 0.14 45);
+  --accent-soft: oklch(0.92 0.04 50);
 
-  /* Legacy aliases — keep Tailwind/classnames working during migration */
+  /* Legacy aliases */
   --paper: var(--canvas);
   --paper-2: var(--surface-2);
-  --paper-3: color-mix(in srgb, var(--surface-2) 70%, var(--brand-soft) 30%);
+  --paper-3: color-mix(in oklch, var(--surface-2) 72%, var(--brand-soft) 28%);
   --kaffir: var(--brand);
   --kaffir-dark: var(--brand-strong);
   --kaffir-soft: var(--brand-soft);
   --orange: var(--accent);
   --orange-soft: var(--accent-soft);
-  --line: color-mix(in srgb, var(--ink) 10%, transparent);
-  --stroke: color-mix(in srgb, var(--ink) 10%, transparent);
-  --stroke-strong: color-mix(in srgb, var(--ink) 18%, transparent);
-  --focus-ring: color-mix(in srgb, var(--brand) 35%, transparent);
+  --line: color-mix(in oklch, var(--ink) 12%, transparent);
+  --stroke: color-mix(in oklch, var(--ink) 10%, transparent);
+  --stroke-strong: color-mix(in oklch, var(--ink) 18%, transparent);
+  --focus-ring: color-mix(in oklch, var(--brand) 32%, transparent);
 
-  /* Depth */
-  --shadow-sm: 0 4px 16px rgba(23, 20, 18, 0.05);
-  --shadow-md: 0 10px 28px rgba(23, 20, 18, 0.07);
-  --shadow-lg: 0 18px 48px rgba(23, 20, 18, 0.12);
-  --shadow-card: var(--shadow-md);
+  /* Depth — soft offset, never zero-blur halo */
+  --shadow-sm: 0 1px 2px oklch(0.24 0.02 55 / 0.04), 0 4px 14px oklch(0.24 0.02 55 / 0.05);
+  --shadow-md: 0 2px 4px oklch(0.24 0.02 55 / 0.04), 0 12px 28px oklch(0.24 0.02 55 / 0.08);
+  --shadow-lg: 0 4px 8px oklch(0.24 0.02 55 / 0.05), 0 20px 44px oklch(0.24 0.02 55 / 0.12);
+  --shadow-card: var(--shadow-sm);
   --shadow-float: var(--shadow-lg);
 
-  /* Shape */
-  --radius-sm: 0.75rem;
-  --radius-md: 1rem;
-  --radius-lg: 1.5rem;
-  --radius-xl: 1.85rem;
+  /* Shape — paper soft, not marshmallow */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.85rem;
+  --radius-lg: 1.15rem;
+  --radius-xl: 1.5rem;
   --radius-full: 999px;
   --radius-card: var(--radius-lg);
 
-  /* Space */
+  /* 4pt space scale */
   --space-1: 0.25rem;
   --space-2: 0.5rem;
   --space-3: 0.75rem;
@@ -62,25 +60,25 @@
   --space-8: 2.5rem;
   --space-card: var(--space-4);
 
-  /* Motion */
-  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
-  --dur-fast: 140ms;
-  --dur-med: 280ms;
-  --blur-nav: 14px;
-  --blur-sheet: 18px;
+  /* Motion — expo-out, no bounce */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 160ms;
+  --dur-med: 320ms;
+  --blur-nav: 12px;
+  --blur-sheet: 16px;
 
-  /* Type — Prompt (display) + IBM Plex Sans Thai (body) */
+  /* Type — Prompt display + Bai Jamjuree body; fixed rem for app UI */
   --font-title: var(--font-prompt), "Prompt", system-ui, sans-serif;
-  --font-body: var(--font-plex-thai), "IBM Plex Sans Thai", system-ui, sans-serif;
+  --font-body: var(--font-bai), "Bai Jamjuree", system-ui, sans-serif;
   --font-numeric: var(--font-prompt), "Prompt", system-ui, sans-serif;
-  --text-display: clamp(1.85rem, 1.5rem + 1.6vw, 2.5rem);
-  --text-title: clamp(1.15rem, 1.05rem + 0.4vw, 1.35rem);
+  --text-display: 2rem;
+  --text-title: 1.25rem;
   --text-body: 1rem;
   --text-caption: 0.8125rem;
-  --leading-display: 1.12;
-  --leading-title: 1.28;
-  --leading-body: 1.5;
+  --leading-display: 1.15;
+  --leading-title: 1.3;
+  --leading-body: 1.55;
 }
 
 @theme inline {
@@ -117,13 +115,15 @@ body {
   font-size: var(--text-body);
   line-height: var(--leading-body);
   -webkit-font-smoothing: antialiased;
+  text-underline-offset: 0.18em;
+  caret-color: var(--brand);
 }
 
 .text-display {
   font-family: var(--font-title);
   font-size: var(--text-display);
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
   line-height: var(--leading-display);
 }
 
@@ -131,7 +131,7 @@ body {
   font-family: var(--font-title);
   font-size: var(--text-title);
   font-weight: 600;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.02em;
   line-height: var(--leading-title);
 }
 
@@ -145,7 +145,7 @@ body {
 .text-caption {
   font-family: var(--font-body);
   font-size: var(--text-caption);
-  font-weight: 400;
+  font-weight: 500;
   letter-spacing: 0.01em;
   color: var(--ink-muted);
 }
@@ -166,12 +166,28 @@ body {
   color: var(--surface-solid);
 }
 
-/* —— 2026 utilities —— */
+/* —— surfaces —— */
 .df-canvas {
   background:
-    radial-gradient(120% 70% at 50% -12%, var(--canvas-glow) 0%, transparent 55%),
-    radial-gradient(80% 50% at 100% 0%, color-mix(in srgb, var(--brand-soft) 55%, transparent) 0%, transparent 45%),
+    radial-gradient(110% 60% at 50% -8%, var(--canvas-glow) 0%, transparent 58%),
+    radial-gradient(70% 40% at 100% 0%, color-mix(in oklch, var(--brand-soft) 50%, transparent) 0%, transparent 50%),
     var(--canvas);
+  background-attachment: local;
+}
+
+.df-canvas::before {
+  content: "";
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.df-canvas > * {
+  position: relative;
+  z-index: 1;
 }
 
 .df-card {
@@ -183,7 +199,7 @@ body {
 
 .df-card-hero {
   border-radius: var(--radius-lg);
-  background: linear-gradient(145deg, var(--brand) 0%, var(--brand-strong) 100%);
+  background: linear-gradient(160deg, var(--brand) 0%, var(--brand-strong) 100%);
   color: var(--surface-solid);
   box-shadow: var(--shadow-md);
 }
@@ -191,8 +207,8 @@ body {
 .df-chip {
   display: inline-flex;
   align-items: center;
-  border-radius: var(--radius-full);
-  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  padding: 0.5rem 0.9rem;
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--ink-muted);
@@ -211,7 +227,7 @@ body {
 .df-nav-float {
   border: 1px solid var(--stroke);
   border-radius: var(--radius-xl);
-  background: color-mix(in srgb, var(--surface-solid) 86%, transparent);
+  background: color-mix(in oklch, var(--surface-solid) 92%, transparent);
   box-shadow: var(--shadow-lg);
   backdrop-filter: blur(var(--blur-nav));
   -webkit-backdrop-filter: blur(var(--blur-nav));
@@ -238,7 +254,7 @@ body {
 }
 
 .df-field:focus {
-  border-color: color-mix(in srgb, var(--brand) 55%, var(--stroke));
+  border-color: color-mix(in oklch, var(--brand) 55%, var(--stroke));
   background: var(--surface-solid);
   box-shadow: 0 0 0 3px var(--focus-ring);
 }
@@ -251,19 +267,41 @@ body {
 }
 
 .df-press:active {
-  transform: scale(0.97);
+  transform: scale(0.98);
+}
+
+.df-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  border-bottom: 1px solid var(--stroke);
+  padding: var(--space-4) 0;
+  transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+.df-row:last-child {
+  border-bottom: 0;
+}
+
+.df-stagger > * {
+  --df-i: 0;
 }
 
 @media (prefers-reduced-motion: no-preference) {
   .df-enter {
     animation: df-enter var(--dur-med) var(--ease-out) both;
   }
+
+  .df-stagger > * {
+    animation: df-enter var(--dur-med) var(--ease-out) both;
+    animation-delay: calc(var(--df-i, 0) * 40ms);
+  }
 }
 
 @keyframes df-enter {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -276,7 +314,8 @@ body {
     transform: none;
   }
 
-  .df-enter {
+  .df-enter,
+  .df-stagger > * {
     animation: none;
   }
 }
@@ -305,5 +344,5 @@ body {
 
 .leaflet-control-attribution {
   font-size: 10px;
-  background: color-mix(in srgb, var(--surface-solid) 90%, transparent) !important;
+  background: color-mix(in oklch, var(--surface-solid) 90%, transparent) !important;
 }
