@@ -43,6 +43,8 @@ export default async function FamilyDmPage({
           senderId: x.senderId,
           body: x.body,
           createdAt: x.createdAt,
+          imageR2Key: x.imageR2Key,
+          deletedAt: x.deletedAt,
         }))}
       />
     </AppShell>

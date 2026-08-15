@@ -11,7 +11,7 @@
 
 อย่าใช้ `drizzle-kit migrate` กับ snapshot ว่าง — schema ต้นทางคือ `0000_init.sql` + `db:push`
 
-ตรวจตาราง: `user`, `session`, `account`, `verification`, `captures`, `tasks`, `expenses`, `vault_items`, `home_items`, `shopping_items`, `home_bills`, `journal_entries`, `journal_photos`, `families`, `family_members`, `family_messages`, `family_location_shares`
+ตรวจตาราง: `user`, `session`, `account`, `verification`, `captures`, `tasks`, `expenses`, `vault_items`, `home_items`, `shopping_items`, `home_bills`, `journal_entries`, `journal_photos`, `families`, `family_members`, `family_messages`, `family_channel_reads`, `family_location_shares`, `family_shopping_items`, `family_chores`
 
 ## 2) Auth env (มีใน `.env.local` แล้ว)
 - [x] `BETTER_AUTH_SECRET` (สุ่ม 32 bytes)

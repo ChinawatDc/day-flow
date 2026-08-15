@@ -6,18 +6,39 @@ import { redirect } from "next/navigation";
 import { getDb } from "@/lib/db/client";
 import {
   families,
+  familyChores,
   familyLocationShares,
   familyMembers,
   familyMessages,
+  familyShoppingItems,
 } from "@/lib/db/schema";
+import { env } from "@/lib/env";
 import { ablyDm, ablyGeo, ablyGroup, dmChannel, newJoinCode, publishFamily } from "@/lib/family/channels";
-import { findFamilyByCode, getMembership, listLiveLocations, listMessages } from "@/lib/family/data";
+import {
+  countUnread,
+  findFamilyByCode,
+  getMembership,
+  inviteExpiryFromNow,
+  listFamilyChores,
+  listFamilyShopping,
+  listLiveLocations,
+  listMessages,
+  listMessagesBefore,
+  markChannelRead,
+} from "@/lib/family/data";
+import { uploadPrivateObject } from "@/lib/r2/client";
 import { requireUser } from "@/lib/session";
+
 
 function normalizeCode(raw: string) {
   const u = raw.trim().toUpperCase().replace(/\s+/g, "");
   if (/^PAN[A-Z0-9]{4}$/.test(u)) return `PAN-${u.slice(3)}`;
   return u;
+}
+
+function refreshFamily(peerId?: string) {
+  revalidatePath("/family");
+  if (peerId) revalidatePath(`/family/dm/${peerId}`);
 }
 
 async function requireMember(userId: string) {
@@ -26,27 +47,75 @@ async function requireMember(userId: string) {
   return m;
 }
 
+async function requireOwner(userId: string) {
+  const m = await requireMember(userId);
+  if (m.role !== "owner") redirect("/family");
+  return m;
+}
+
+async function mintJoinCode() {
+  let joinCode = newJoinCode();
+  for (let i = 0; i < 5; i++) {
+    const exists = await findFamilyByCode(joinCode);
+    if (!exists) return joinCode;
+    joinCode = newJoinCode();
+  }
+  return joinCode;
+}
+
+function serializeMsg(x: {
+  id: string;
+  senderId: string;
+  body: string;
+  imageR2Key?: string | null;
+  deletedAt?: Date | string | null;
+  createdAt: Date | string;
+}) {
+  return {
+    id: x.id,
+    senderId: x.senderId,
+    body: x.deletedAt ? "" : x.body,
+    imageR2Key: x.deletedAt ? null : (x.imageR2Key ?? null),
+    deletedAt: x.deletedAt
+      ? x.deletedAt instanceof Date
+        ? x.deletedAt.toISOString()
+        : String(x.deletedAt)
+      : null,
+    createdAt: x.createdAt instanceof Date ? x.createdAt.toISOString() : String(x.createdAt),
+  };
+}
+
 export async function createFamily(formData: FormData) {
   const user = await requireUser();
   const name = String(formData.get("name") ?? "").trim() || "บ้านเรา";
   if (await getMembership(user.id)) redirect("/family");
   const db = getDb();
-  let joinCode = newJoinCode();
-  for (let i = 0; i < 5; i++) {
-    const exists = await findFamilyByCode(joinCode);
-    if (!exists) break;
-    joinCode = newJoinCode();
-  }
+  const joinCode = await mintJoinCode();
   const id = crypto.randomUUID();
-  await db.insert(families).values({ id, name, joinCode, createdBy: user.id });
+  await db.insert(families).values({
+    id,
+    name,
+    joinCode,
+    joinCodeExpiresAt: inviteExpiryFromNow(7),
+    createdBy: user.id,
+  });
   await db.insert(familyMembers).values({
     id: crypto.randomUUID(),
     familyId: id,
     userId: user.id,
     role: "owner",
   });
-  revalidatePath("/family");
+  refreshFamily();
   redirect("/family");
+}
+
+export async function renameFamily(formData: FormData) {
+  const user = await requireUser();
+  const m = await requireOwner(user.id);
+  const name = String(formData.get("name") ?? "").trim().slice(0, 80);
+  if (!name) return;
+  await getDb().update(families).set({ name }).where(eq(families.id, m.familyId));
+  refreshFamily();
 }
 
 export async function joinFamilyByCode(raw: string) {
@@ -55,13 +124,16 @@ export async function joinFamilyByCode(raw: string) {
   const code = normalizeCode(raw);
   const family = await findFamilyByCode(code);
   if (!family) redirect(`/family?err=${encodeURIComponent("ไม่พบโค้ดนี้")}`);
+  if (family.joinCodeExpiresAt && new Date(family.joinCodeExpiresAt).getTime() <= Date.now()) {
+    redirect(`/family?err=${encodeURIComponent("โค้ดหมดอายุแล้ว")}`);
+  }
   await getDb().insert(familyMembers).values({
     id: crypto.randomUUID(),
     familyId: family.id,
     userId: user.id,
     role: "member",
   });
-  revalidatePath("/family");
+  refreshFamily();
   redirect("/family");
 }
 
@@ -71,52 +143,102 @@ export async function joinFamily(formData: FormData) {
 
 export async function rotateJoinCode() {
   const user = await requireUser();
-  const m = await requireMember(user.id);
-  if (m.role !== "owner") return;
-  let joinCode = newJoinCode();
-  for (let i = 0; i < 5; i++) {
-    const exists = await findFamilyByCode(joinCode);
-    if (!exists) break;
-    joinCode = newJoinCode();
-  }
-  await getDb().update(families).set({ joinCode }).where(eq(families.id, m.familyId));
-  revalidatePath("/family");
+  const m = await requireOwner(user.id);
+  const joinCode = await mintJoinCode();
+  await getDb()
+    .update(families)
+    .set({ joinCode, joinCodeExpiresAt: inviteExpiryFromNow(7) })
+    .where(eq(families.id, m.familyId));
+  refreshFamily();
 }
 
-export async function leaveFamily() {
+export async function transferOwnership(formData: FormData) {
+  const user = await requireUser();
+  const m = await requireOwner(user.id);
+  const nextOwnerId = String(formData.get("userId") ?? "");
+  if (!nextOwnerId || nextOwnerId === user.id) return;
+  const db = getDb();
+  const [target] = await db
+    .select({ id: familyMembers.id })
+    .from(familyMembers)
+    .where(and(eq(familyMembers.familyId, m.familyId), eq(familyMembers.userId, nextOwnerId)))
+    .limit(1);
+  if (!target) return;
+  await db
+    .update(familyMembers)
+    .set({ role: "member" })
+    .where(and(eq(familyMembers.familyId, m.familyId), eq(familyMembers.userId, user.id)));
+  await db
+    .update(familyMembers)
+    .set({ role: "owner" })
+    .where(and(eq(familyMembers.familyId, m.familyId), eq(familyMembers.userId, nextOwnerId)));
+  refreshFamily();
+}
+
+export async function leaveFamily(formData?: FormData) {
   const user = await requireUser();
   const m = await getMembership(user.id);
   if (!m) redirect("/family");
   const db = getDb();
+  const members = await db
+    .select({ userId: familyMembers.userId, role: familyMembers.role })
+    .from(familyMembers)
+    .where(eq(familyMembers.familyId, m.familyId));
+
+  if (m.role === "owner" && members.length > 1) {
+    const newOwnerId = String(formData?.get("newOwnerId") ?? "");
+    if (!newOwnerId || newOwnerId === user.id) {
+      redirect(`/family?err=${encodeURIComponent("โอนเจ้าของก่อนออกจากบ้าน")}`);
+    }
+    const ok = members.some((x) => x.userId === newOwnerId);
+    if (!ok) redirect(`/family?err=${encodeURIComponent("ไม่พบสมาชิกที่จะโอน")}`);
+    await db
+      .update(familyMembers)
+      .set({ role: "owner" })
+      .where(and(eq(familyMembers.familyId, m.familyId), eq(familyMembers.userId, newOwnerId)));
+  }
+
   await db
     .delete(familyMembers)
     .where(and(eq(familyMembers.familyId, m.familyId), eq(familyMembers.userId, user.id)));
+
   const leftover = await db
-    .select({ id: familyMembers.id, userId: familyMembers.userId })
+    .select({ id: familyMembers.id })
     .from(familyMembers)
     .where(eq(familyMembers.familyId, m.familyId));
   if (leftover.length === 0) {
     await db.delete(families).where(eq(families.id, m.familyId));
-  } else if (m.role === "owner") {
-    await db
-      .update(familyMembers)
-      .set({ role: "owner" })
-      .where(and(eq(familyMembers.familyId, m.familyId), eq(familyMembers.userId, leftover[0].userId)));
   }
-  revalidatePath("/family");
+  refreshFamily();
   redirect("/family");
 }
 
 export async function removeMember(formData: FormData) {
   const user = await requireUser();
-  const m = await requireMember(user.id);
-  if (m.role !== "owner") return;
+  const m = await requireOwner(user.id);
   const userId = String(formData.get("userId") ?? "");
   if (!userId || userId === user.id) return;
   await getDb()
     .delete(familyMembers)
     .where(and(eq(familyMembers.familyId, m.familyId), eq(familyMembers.userId, userId)));
-  revalidatePath("/family");
+  refreshFamily();
+}
+
+async function uploadChatImage(userId: string, familyId: string, file: File | null) {
+  if (!file || file.size === 0) return null;
+  if (!env.r2Configured) return null;
+  if (!file.type.startsWith("image/")) return null;
+  if (file.size > 8 * 1024 * 1024) return null;
+  try {
+    const safe = file.name.replace(/[^\w.\-ก-๙]+/g, "_") || "image.jpg";
+    const key = `family/${familyId}/chat/${userId}/${Date.now()}-${safe}`;
+    const buf = Buffer.from(await file.arrayBuffer());
+    await uploadPrivateObject(key, buf, file.type || "image/jpeg");
+    return key;
+  } catch (err) {
+    console.error("family chat upload failed", err);
+    return null;
+  }
 }
 
 export async function sendGroupMessage(formData: FormData) {
@@ -134,7 +256,13 @@ async function sendOnChannel(formData: FormData, channel: string, peerId?: strin
   const user = await requireUser();
   const m = await requireMember(user.id);
   const body = String(formData.get("body") ?? "").trim().slice(0, 2000);
-  if (!body) return;
+  const file = formData.get("image");
+  const imageR2Key = await uploadChatImage(
+    user.id,
+    m.familyId,
+    file instanceof File ? file : null,
+  );
+  if (!body && !imageR2Key) return;
   const id = crypto.randomUUID();
   const createdAt = new Date();
   await getDb().insert(familyMessages).values({
@@ -142,32 +270,117 @@ async function sendOnChannel(formData: FormData, channel: string, peerId?: strin
     familyId: m.familyId,
     channel,
     senderId: user.id,
-    body,
+    body: body || (imageR2Key ? "รูป" : ""),
+    imageR2Key,
   });
-  const payload = { id, senderId: user.id, body, createdAt: createdAt.toISOString() };
+  const payload = serializeMsg({
+    id,
+    senderId: user.id,
+    body: body || (imageR2Key ? "รูป" : ""),
+    imageR2Key,
+    deletedAt: null,
+    createdAt,
+  });
   if (channel === "group") {
     await publishFamily(ablyGroup(m.familyId), "message", payload);
   } else if (peerId) {
     await publishFamily(ablyDm(m.familyId, user.id, peerId), "message", payload);
   }
-  revalidatePath("/family");
-  if (peerId) revalidatePath(`/family/dm/${peerId}`);
+  await markChannelRead(m.familyId, user.id, channel);
+  refreshFamily(peerId);
 }
 
-export async function startLocationShare() {
+export async function deleteOwnMessage(formData: FormData) {
   const user = await requireUser();
   const m = await requireMember(user.id);
-  const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+  const db = getDb();
+  const [row] = await db
+    .select({
+      id: familyMessages.id,
+      channel: familyMessages.channel,
+      senderId: familyMessages.senderId,
+      createdAt: familyMessages.createdAt,
+    })
+    .from(familyMessages)
+    .where(and(eq(familyMessages.id, id), eq(familyMessages.familyId, m.familyId)))
+    .limit(1);
+  if (!row || row.senderId !== user.id) return;
+  const deletedAt = new Date();
+  await db.update(familyMessages).set({ deletedAt }).where(eq(familyMessages.id, id));
+  const peerParts = row.channel.includes(":") ? row.channel.split(":") : null;
+  const peerId = peerParts?.find((p) => p !== user.id);
+  await publishFamily(
+    row.channel === "group" ? ablyGroup(m.familyId) : ablyDm(m.familyId, user.id, peerId ?? user.id),
+    "message",
+    serializeMsg({
+      id,
+      senderId: user.id,
+      body: "",
+      imageR2Key: null,
+      deletedAt,
+      createdAt: row.createdAt,
+    }),
+  );
+  refreshFamily(peerId);
+}
+
+export async function markFamilyChannelRead(channel: string) {
+  const user = await requireUser();
+  const m = await getMembership(user.id);
+  if (!m || !channel) return;
+  await markChannelRead(m.familyId, user.id, channel);
+}
+
+export async function loadOlderGroupMessages(beforeIso: string) {
+  const user = await requireUser();
+  const m = await getMembership(user.id);
+  if (!m) return [];
+  const before = new Date(beforeIso);
+  if (Number.isNaN(before.getTime())) return [];
+  const rows = await listMessagesBefore(m.familyId, "group", before);
+  return rows.map(serializeMsg);
+}
+
+export async function loadOlderDmMessages(peerId: string, beforeIso: string) {
+  const user = await requireUser();
+  const m = await getMembership(user.id);
+  if (!m || !peerId) return [];
+  const before = new Date(beforeIso);
+  if (Number.isNaN(before.getTime())) return [];
+  const rows = await listMessagesBefore(m.familyId, dmChannel(user.id, peerId), before);
+  return rows.map(serializeMsg);
+}
+
+function parseShareDurationMinutes(raw: FormData | string) {
+  const value = typeof raw === "string" ? raw : String(raw.get("minutes") ?? "60");
+  if (value === "0" || value === "until") return 0; // until stop → 12h hard cap
+  const n = Number(value);
+  if (n === 15 || n === 60 || n === 180) return n;
+  return 60;
+}
+
+function expiresFromMinutes(minutes: number) {
+  if (minutes <= 0) return new Date(Date.now() + 12 * 60 * 60 * 1000);
+  return new Date(Date.now() + minutes * 60 * 1000);
+}
+
+export async function startLocationShare(formData?: FormData) {
+  const user = await requireUser();
+  const m = await requireMember(user.id);
+  const minutes = parseShareDurationMinutes(formData ?? new FormData());
+  const expiresAt = expiresFromMinutes(minutes);
   const db = getDb();
   const [existing] = await db
-    .select({ id: familyLocationShares.id })
+    .select({ id: familyLocationShares.id, lat: familyLocationShares.lat, lng: familyLocationShares.lng })
     .from(familyLocationShares)
     .where(and(eq(familyLocationShares.familyId, m.familyId), eq(familyLocationShares.userId, user.id)))
     .limit(1);
   if (existing) {
     await db
       .update(familyLocationShares)
-      .set({ expiresAt, updatedAt: new Date(), lat: "", lng: "" })
+      .set({ expiresAt, updatedAt: new Date() })
       .where(eq(familyLocationShares.id, existing.id));
   } else {
     await db.insert(familyLocationShares).values({
@@ -180,10 +393,42 @@ export async function startLocationShare() {
   await publishFamily(ablyGeo(m.familyId), "share", {
     userId: user.id,
     expiresAt: expiresAt.toISOString(),
-    lat: "",
-    lng: "",
+    lat: existing?.lat ?? "",
+    lng: existing?.lng ?? "",
   });
-  revalidatePath("/family");
+  refreshFamily();
+}
+
+export async function extendLocationShare(formData: FormData) {
+  const user = await requireUser();
+  const m = await requireMember(user.id);
+  const add = parseShareDurationMinutes(formData);
+  const db = getDb();
+  const [row] = await db
+    .select({
+      id: familyLocationShares.id,
+      expiresAt: familyLocationShares.expiresAt,
+      lat: familyLocationShares.lat,
+      lng: familyLocationShares.lng,
+    })
+    .from(familyLocationShares)
+    .where(and(eq(familyLocationShares.familyId, m.familyId), eq(familyLocationShares.userId, user.id)))
+    .limit(1);
+  if (!row) return;
+  const base = Math.max(new Date(row.expiresAt).getTime(), Date.now());
+  const extraMs = (add <= 0 ? 60 : add) * 60 * 1000;
+  const expiresAt = new Date(base + extraMs);
+  await db
+    .update(familyLocationShares)
+    .set({ expiresAt, updatedAt: new Date() })
+    .where(eq(familyLocationShares.id, row.id));
+  await publishFamily(ablyGeo(m.familyId), "share", {
+    userId: user.id,
+    expiresAt: expiresAt.toISOString(),
+    lat: row.lat,
+    lng: row.lng,
+  });
+  refreshFamily();
 }
 
 export async function pingLocation(formData: FormData) {
@@ -219,7 +464,19 @@ export async function stopLocationShare() {
     .delete(familyLocationShares)
     .where(and(eq(familyLocationShares.familyId, m.familyId), eq(familyLocationShares.userId, user.id)));
   await publishFamily(ablyGeo(m.familyId), "stop", { userId: user.id });
-  revalidatePath("/family");
+  refreshFamily();
+}
+
+export async function stopMemberLocationShare(formData: FormData) {
+  const user = await requireUser();
+  const m = await requireOwner(user.id);
+  const userId = String(formData.get("userId") ?? "");
+  if (!userId) return;
+  await getDb()
+    .delete(familyLocationShares)
+    .where(and(eq(familyLocationShares.familyId, m.familyId), eq(familyLocationShares.userId, userId)));
+  await publishFamily(ablyGeo(m.familyId), "stop", { userId });
+  refreshFamily();
 }
 
 export async function pollGroupMessages() {
@@ -227,12 +484,7 @@ export async function pollGroupMessages() {
   const m = await getMembership(user.id);
   if (!m) return [];
   const rows = await listMessages(m.familyId, "group");
-  return rows.map((x) => ({
-    id: x.id,
-    senderId: x.senderId,
-    body: x.body,
-    createdAt: x.createdAt instanceof Date ? x.createdAt.toISOString() : String(x.createdAt),
-  }));
+  return rows.map(serializeMsg);
 }
 
 export async function pollDmMessages(peerId: string) {
@@ -240,12 +492,7 @@ export async function pollDmMessages(peerId: string) {
   const m = await getMembership(user.id);
   if (!m || !peerId) return [];
   const rows = await listMessages(m.familyId, dmChannel(user.id, peerId));
-  return rows.map((x) => ({
-    id: x.id,
-    senderId: x.senderId,
-    body: x.body,
-    createdAt: x.createdAt instanceof Date ? x.createdAt.toISOString() : String(x.createdAt),
-  }));
+  return rows.map(serializeMsg);
 }
 
 export async function pollLiveLocations() {
@@ -260,4 +507,109 @@ export async function pollLiveLocations() {
     lng: l.lng,
     expiresAt: new Date(l.expiresAt).toISOString(),
   }));
+}
+
+export async function getGroupUnreadCount() {
+  const user = await requireUser();
+  const m = await getMembership(user.id);
+  if (!m) return 0;
+  return countUnread(m.familyId, user.id, "group");
+}
+
+/* —— Shared ops: shopping —— */
+
+export async function createFamilyShopping(formData: FormData) {
+  const user = await requireUser();
+  const m = await requireMember(user.id);
+  const name = String(formData.get("name") ?? "").trim().slice(0, 120);
+  if (!name) return;
+  const assigneeId = String(formData.get("assigneeId") ?? "") || null;
+  await getDb().insert(familyShoppingItems).values({
+    id: crypto.randomUUID(),
+    familyId: m.familyId,
+    name,
+    assigneeId,
+    createdBy: user.id,
+  });
+  refreshFamily();
+}
+
+export async function toggleFamilyShopping(formData: FormData) {
+  const user = await requireUser();
+  const m = await requireMember(user.id);
+  const id = String(formData.get("id") ?? "");
+  const bought = String(formData.get("bought")) === "1";
+  if (!id) return;
+  await getDb()
+    .update(familyShoppingItems)
+    .set({ bought, updatedAt: new Date() })
+    .where(and(eq(familyShoppingItems.id, id), eq(familyShoppingItems.familyId, m.familyId)));
+  refreshFamily();
+}
+
+export async function deleteFamilyShopping(formData: FormData) {
+  const user = await requireUser();
+  const m = await requireMember(user.id);
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+  await getDb()
+    .delete(familyShoppingItems)
+    .where(and(eq(familyShoppingItems.id, id), eq(familyShoppingItems.familyId, m.familyId)));
+  refreshFamily();
+}
+
+export async function createFamilyChore(formData: FormData) {
+  const user = await requireUser();
+  const m = await requireMember(user.id);
+  const title = String(formData.get("title") ?? "").trim().slice(0, 120);
+  if (!title) return;
+  const dueOn = String(formData.get("dueOn") ?? "") || null;
+  const assigneeId = String(formData.get("assigneeId") ?? "") || null;
+  await getDb().insert(familyChores).values({
+    id: crypto.randomUUID(),
+    familyId: m.familyId,
+    title,
+    dueOn,
+    assigneeId,
+    createdBy: user.id,
+  });
+  refreshFamily();
+}
+
+export async function toggleFamilyChore(formData: FormData) {
+  const user = await requireUser();
+  const m = await requireMember(user.id);
+  const id = String(formData.get("id") ?? "");
+  const done = String(formData.get("done")) === "1";
+  if (!id) return;
+  await getDb()
+    .update(familyChores)
+    .set({ done, updatedAt: new Date() })
+    .where(and(eq(familyChores.id, id), eq(familyChores.familyId, m.familyId)));
+  refreshFamily();
+}
+
+export async function deleteFamilyChore(formData: FormData) {
+  const user = await requireUser();
+  const m = await requireMember(user.id);
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+  await getDb()
+    .delete(familyChores)
+    .where(and(eq(familyChores.id, id), eq(familyChores.familyId, m.familyId)));
+  refreshFamily();
+}
+
+export async function pollFamilyShopping() {
+  const user = await requireUser();
+  const m = await getMembership(user.id);
+  if (!m) return [];
+  return listFamilyShopping(m.familyId);
+}
+
+export async function pollFamilyChores() {
+  const user = await requireUser();
+  const m = await getMembership(user.id);
+  if (!m) return [];
+  return listFamilyChores(m.familyId);
 }

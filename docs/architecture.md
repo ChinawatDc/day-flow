@@ -18,14 +18,14 @@
 | ฟอนต์ | Prompt (title/numeric) + Bai Jamjuree (body) ผ่าน `next/font/google` — token ใน `app/globals.css` |
 | Auth | better-auth + Drizzle adapter, cookie session, `nextCookies` |
 | DB | Drizzle + `drizzle-orm/neon-http` (`neon()` HTTP ไม่ใช้ WebSocket Pool) |
-| ไฟล์ | S3 API ของ R2, key `userId/{module}/...` |
+| ไฟล์ | S3 API ของ R2, key `userId/{module}/...` หรือ `family/{familyId}/chat/...` (สมาชิกบ้านอ่านได้) |
 | Realtime | Ably REST publish + Realtime subscribe (token จาก session) |
 | Host | Vercel |
 
 ## โฟลเดอร์สำคัญ
 - `app/(app)/` — หน้าหลังล็อกอิน (`layout` เรียก `requireUser`, `dynamic = force-dynamic`) บ้านคือ `/menu` สรุปวันคือ `/today`
 - สไตล์: [DESIGN-2026.md](./DESIGN-2026.md)
-- `app/(app)/family/` — ครอบครัว (แชท/โลเคชัน) แยกจากสมุดคนเดียว
+- `app/(app)/family/` — ครอบครัว MVP: บ้าน/เชิญ/แชท/โลเคชัน/ซื้อของ/งานบ้าน แยกจากสมุดคนเดียว
 - `components/notebook/` — RecordRow, ComposerSheet, NotebookForm, ConfirmDelete, AmountText
 - `app/(app)/*/actions.ts` — mutation
 - `lib/db/schema.ts` — auth tables + โมดูล
@@ -34,7 +34,7 @@
 
 ## ความปลอดภัยขั้นต่ำ V0.1
 - ทุกหน้าแอปต้องมี session
-- ไฟล์ดูได้เฉพาะ key ที่ขึ้นต้นด้วย `user.id`
+- ไฟล์ดูได้เฉพาะ key ที่ขึ้นต้นด้วย `user.id` หรือ `family/{familyId}/` เมื่อเป็นสมาชิกบ้านนั้น
 - R2 ไม่ public
 - ไม่ใช้ Neon เดียวกับ FitKub
 - ครอบครัวแยกจากสมุดคนเดียว (ไม่แชร์งาน/เงิน/คลัง)

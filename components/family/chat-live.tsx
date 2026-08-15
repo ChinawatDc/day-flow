@@ -1,7 +1,16 @@
 "use client";
 
 import { useCallback } from "react";
-import { pollDmMessages, pollGroupMessages, sendDmMessage, sendGroupMessage } from "@/app/(app)/family/actions";
+import {
+  deleteOwnMessage,
+  loadOlderDmMessages,
+  loadOlderGroupMessages,
+  markFamilyChannelRead,
+  pollDmMessages,
+  pollGroupMessages,
+  sendDmMessage,
+  sendGroupMessage,
+} from "@/app/(app)/family/actions";
 import { FamilyChat, type ChatMsg } from "@/components/family/family-chat";
 
 export function GroupChatLive({
@@ -18,6 +27,8 @@ export function GroupChatLive({
   initial: ChatMsg[];
 }) {
   const poll = useCallback(() => pollGroupMessages(), []);
+  const loadOlder = useCallback((beforeIso: string) => loadOlderGroupMessages(beforeIso), []);
+  const onOpen = useCallback(() => markFamilyChannelRead("group"), []);
   return (
     <FamilyChat
       channelName={channelName}
@@ -27,6 +38,9 @@ export function GroupChatLive({
       initial={initial}
       action={sendGroupMessage}
       poll={poll}
+      loadOlder={loadOlder}
+      onOpen={onOpen}
+      deleteAction={deleteOwnMessage}
     />
   );
 }
@@ -47,6 +61,11 @@ export function DmChatLive({
   initial: ChatMsg[];
 }) {
   const poll = useCallback(() => pollDmMessages(peerId), [peerId]);
+  const loadOlder = useCallback((beforeIso: string) => loadOlderDmMessages(peerId, beforeIso), [peerId]);
+  const onOpen = useCallback(() => {
+    const a = [meId, peerId].sort((x, y) => x.localeCompare(y)).join(":");
+    return markFamilyChannelRead(a);
+  }, [meId, peerId]);
   return (
     <FamilyChat
       channelName={channelName}
@@ -57,6 +76,9 @@ export function DmChatLive({
       action={sendDmMessage}
       hiddenFields={<input type="hidden" name="peerId" value={peerId} />}
       poll={poll}
+      loadOlder={loadOlder}
+      onOpen={onOpen}
+      deleteAction={deleteOwnMessage}
     />
   );
 }

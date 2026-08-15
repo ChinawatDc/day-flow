@@ -176,6 +176,7 @@ export const families = pgTable("families", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
   joinCode: text("join_code").notNull().unique(),
+  joinCodeExpiresAt: timestamp("join_code_expires_at"),
   createdBy: text("created_by")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
@@ -211,8 +212,26 @@ export const familyMessages = pgTable("family_messages", {
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
   body: text("body").notNull(),
+  imageR2Key: text("image_r2_key"),
+  deletedAt: timestamp("deleted_at"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
+
+export const familyChannelReads = pgTable(
+  "family_channel_reads",
+  {
+    id: text("id").primaryKey(),
+    familyId: text("family_id")
+      .notNull()
+      .references(() => families.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    channel: text("channel").notNull(),
+    lastReadAt: timestamp("last_read_at").notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("family_channel_read_pair").on(t.familyId, t.userId, t.channel)],
+);
 
 export const familyLocationShares = pgTable(
   "family_location_shares",
@@ -231,3 +250,34 @@ export const familyLocationShares = pgTable(
   },
   (t) => [uniqueIndex("family_location_user").on(t.familyId, t.userId)],
 );
+
+export const familyShoppingItems = pgTable("family_shopping_items", {
+  id: text("id").primaryKey(),
+  familyId: text("family_id")
+    .notNull()
+    .references(() => families.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+  bought: boolean("bought").notNull().default(false),
+  assigneeId: text("assignee_id").references(() => user.id, { onDelete: "set null" }),
+  createdBy: text("created_by")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const familyChores = pgTable("family_chores", {
+  id: text("id").primaryKey(),
+  familyId: text("family_id")
+    .notNull()
+    .references(() => families.id, { onDelete: "cascade" }),
+  title: text("title").notNull(),
+  dueOn: date("due_on"),
+  done: boolean("done").notNull().default(false),
+  assigneeId: text("assignee_id").references(() => user.id, { onDelete: "set null" }),
+  createdBy: text("created_by")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});

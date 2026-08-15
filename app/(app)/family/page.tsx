@@ -52,12 +52,20 @@ export default async function FamilyPage({
   }
 
   return (
-    <FamilyHome
-      userId={user.id}
-      familyId={m.familyId}
-      name={m.name}
-      joinCode={m.joinCode}
-      role={m.role}
-    />
+    <>
+      {err ? (
+        <div className="mx-auto w-full max-w-lg px-4 pt-3">
+          <p className="text-caption rounded-[var(--radius-md)] bg-orange-soft px-3 py-2 text-orange">{err}</p>
+        </div>
+      ) : null}
+      <FamilyHome
+        userId={user.id}
+        familyId={m.familyId}
+        name={m.name}
+        joinCode={m.joinCode}
+        joinCodeExpiresAt={m.joinCodeExpiresAt}
+        role={m.role}
+      />
+    </>
   );
 }

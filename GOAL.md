@@ -44,7 +44,11 @@
 | ใช้จริง 7 วัน | | |
 
 ## Out of scope for V0.1.0
-LINE, AI/OCR, ครอบครัว/RBAC, Google Calendar, ธนาคาร, รวม FitKub/HomeFlow
+LINE, AI/OCR, Google Calendar, ธนาคาร, รวม FitKub/HomeFlow, เงินครัวเรือนร่วม / โหมดเด็ก (family MVP ไม่รวม)
+
+## Family module (shipped MVP)
+โมดูล `/family` แยกจากสมุดคนเดียว: บ้าน+โค้ดเชิญหมดอายุ, โอนเจ้าของ, แชทกลุ่ม/DM (pagination / ลบ / รูป), โลเคชันมีระยะเวลา, รายการซื้อของ+งานบ้านร่วม — ไม่แชร์ tasks/money ส่วนตัว
+
 
 ## Blocked
 | Blocker | ต้องการอะไร | Owner |

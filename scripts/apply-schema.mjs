@@ -1,5 +1,6 @@
 import { config } from "dotenv";
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 import { neon } from "@neondatabase/serverless";
 
 config({ path: ".env.local" });
@@ -12,15 +13,23 @@ if (!url) {
 }
 
 const sql = neon(url);
-const raw = readFileSync(new URL("../drizzle/0000_init.sql", import.meta.url), "utf8");
-const statements = raw
-  .split(/;\s*\n/)
-  .map((s) => s.trim())
-  .filter((s) => s.length > 0 && !s.startsWith("--"));
+const dir = new URL("../drizzle/", import.meta.url);
+const files = readdirSync(dir)
+  .filter((f) => f.endsWith(".sql"))
+  .sort();
 
-for (const statement of statements) {
-  await sql.query(statement);
-  console.log("ok:", statement.slice(0, 60).replace(/\s+/g, " "));
+for (const file of files) {
+  const raw = readFileSync(join(dir.pathname, file), "utf8");
+  const statements = raw
+    .split(/;\s*\n/)
+    .map((s) => s.trim())
+    .filter((s) => s.length > 0 && !s.startsWith("--"));
+
+  console.log(`--- ${file} ---`);
+  for (const statement of statements) {
+    await sql.query(statement);
+    console.log("ok:", statement.slice(0, 60).replace(/\s+/g, " "));
+  }
 }
 
 console.log("schema applied");

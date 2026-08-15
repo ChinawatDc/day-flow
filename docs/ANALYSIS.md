@@ -17,7 +17,7 @@ day-flow โค้ดถึงเกณฑ์ใช้จริงได้ แ�
 
 | จุด | ที่อยู่ | ทำไมอันตราย |
 |-----|--------|-------------|
-| Poll แชท + โลเคชันทุก 1s | `components/family/family-chat.tsx`, `geo-share.tsx`, `family/actions.ts` | เปิดแท็บครอบครัว = DB read ต่อเนื่อง; คนแชร์ยัง `pingLocation` ทุกวินาที → write storm |
+| Poll แชท + โลเคชันทุก 1s | ~~ค้าง~~ → Ably live = safety 20s; offline backoff 1→3→10s; GPS threshold 25m / ≥5s | `use-backup-poll.ts`, `family-chat.tsx`, `geo-share.tsx` |
 | Docs / e2e ไม่ตรงบ้านแอป | `GOAL.md`, `flow.md`, `docs/*`, `tests/flow.spec.ts` vs `app/(app)/page.tsx` | ล็อกอินไป `/menu` แต่เทสรอ `/today` — CI/acceptance มั่ว |
 | อัปโหลด R2 เงียบเมื่อพัง | `lib/upload.ts` | คืน `null` แล้วบันทึกรายการต่อ — ผู้ใช้คิดว่ามีไฟล์ |
 | แทนที่ไฟล์ไม่ลบของเก่า | `vault/actions`, `money/actions`, `home/actions` | orphan objects ใน R2 |
@@ -108,7 +108,13 @@ day-flow โค้ดถึงเกณฑ์ใช้จริงได้ แ�
 
 ## 5) งานทำความสะอาดที่ทำได้ทันที (คลื่น 0)
 
-สถานะ: **ทำแล้วใน PR นี้** (ดูรายการด้านล่าง) — ยัง**ไม่**แตะ poll ครอบครัว / docs sync ทั้งชุด
+สถานะ: **ทำแล้วใน PR นี้** — รวม realtime ครอบครัว (Ably-first + backoff poll, threshold GPS) และ sync เอกสาร family MVP
+
+รายการเดิมที่ยังทำต่อได้:
+- ใส่ขนาดไฟล์สูงสุดฝั่ง action อื่น
+- `getTodaySnapshot` เบาลง
+- route-level `loading.tsx`
+
 
 1. **ลบโค้ด/ไฟล์ตาย** ✅
    - `components/hub-grid.tsx`
