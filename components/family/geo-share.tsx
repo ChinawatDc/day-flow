@@ -176,7 +176,7 @@ export function GeoShare({
       <ul className="grid gap-2">
         {visible.length === 0 ? <li className="text-caption">ยังไม่มีคนแชร์ — กดแชร์แล้วเปิดหน้านี้ไว้</li> : null}
         {visible.map((p) => (
-          <li key={p.userId} className="flex items-center justify-between rounded-2xl border border-line bg-paper-2 px-3 py-2.5">
+          <li key={p.userId} className="df-card flex items-center justify-between px-3 py-2.5">
             <div>
               <p className="text-sm font-medium">
                 {p.name ?? names[p.userId] ?? "สมาชิก"}

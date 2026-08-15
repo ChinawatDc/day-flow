@@ -23,7 +23,8 @@
 | Host | Vercel |
 
 ## โฟลเดอร์สำคัญ
-- `app/(app)/` — หน้าหลังล็อกอิน (`layout` เรียก `requireUser`, `dynamic = force-dynamic`) บ้านคือ `/today` ฮับคือ `/menu`
+- `app/(app)/` — หน้าหลังล็อกอิน (`layout` เรียก `requireUser`, `dynamic = force-dynamic`) บ้านคือ `/menu` สรุปวันคือ `/today`
+- สไตล์: [DESIGN-2026.md](./DESIGN-2026.md)
 - `app/(app)/family/` — ครอบครัว (แชท/โลเคชัน) แยกจากสมุดคนเดียว
 - `components/notebook/` — RecordRow, ComposerSheet, NotebookForm, ConfirmDelete, AmountText
 - `app/(app)/*/actions.ts` — mutation

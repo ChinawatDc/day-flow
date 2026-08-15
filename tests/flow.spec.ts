@@ -12,7 +12,7 @@ test("login then create task and expense", async ({ page }) => {
   await page.locator("#email").fill(email);
   await page.locator("#password").fill("password12");
   await page.getByRole("button", { name: "สมัคร" }).click();
-  await page.waitForURL("**/today", { timeout: 30000 });
+  await page.waitForURL("**/menu", { timeout: 30000 });
 
   await page.goto("/tasks");
   await page.locator("#title").fill(`งาน ${stamp}`);

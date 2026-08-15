@@ -5,7 +5,8 @@ import { CategorySelect } from "@/components/notebook/category-select";
 import { ConfirmDelete } from "@/components/notebook/confirm-delete";
 import { ComposerSheet } from "@/components/notebook/composer-sheet";
 import { NotebookForm } from "@/components/notebook/notebook-form";
-import { RecordRow } from "@/components/notebook/record-row";
+import { OverviewCard } from "@/components/notebook/overview-card";
+import { RecordRow, SoftTag } from "@/components/notebook/record-row";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -29,12 +30,18 @@ export default async function InboxPage() {
   const open = await listUnfiledCaptures(user.id);
 
   return (
-    <AppShell title="จดด่วน">
+    <AppShell title="จดด่วน" subtitle="โยนไว้ก่อน แล้วค่อยจัด">
       {env.r2Configured ? null : (
         <p className="text-caption mb-3 text-orange">ยังไม่ได้ตั้งค่า R2 — จดข้อความได้</p>
       )}
-      <div className="mb-4">
-        <ComposerSheet label="จด" title="โยนเข้า Inbox">
+
+      <div className="mb-5 grid grid-cols-2 gap-3">
+        <OverviewCard tone="kaffir" title="ค้างจัด" value={String(open.length)} hint="รายการยังไม่เข้าโมดูล" />
+        <OverviewCard title="วิธีใช้" value="จด → จัด" hint="งาน เงิน คลัง บ้าน บันทึก" />
+      </div>
+
+      <div className="mb-5">
+        <ComposerSheet label="จดใหม่" title="โยนเข้า Inbox">
           <NotebookForm action={createCapture}>
             <Label htmlFor="note">ข้อความ</Label>
             <Textarea id="note" name="note" placeholder="ซื้อนม, นัดหมอ..." />
@@ -45,13 +52,14 @@ export default async function InboxPage() {
       </div>
 
       {open.length === 0 ? (
-        <EmptyState title="Inbox ว่าง" hint="กดจดด้านบน แล้วค่อยจัดทีหลัง" />
+        <EmptyState title="Inbox ว่าง" hint="กดจดใหม่ด้านบน แล้วค่อยจัดทีหลัง" />
       ) : (
-        <ul className="grid gap-2">
+        <ul className="grid gap-3">
           {open.map((row) => (
             <RecordRow
               key={row.id}
               title={row.note || "มีไฟล์แนบ"}
+              tag={<SoftTag tone="orange">ยังไม่จัด</SoftTag>}
               hint={row.r2Key ? <FileLink r2Key={row.r2Key} /> : null}
               actions={
                 <>

@@ -12,7 +12,7 @@ export function StatCard({
   className?: string;
 }) {
   return (
-    <div className={cn("rounded-2xl border border-line bg-paper-2 px-3 py-3", className)}>
+    <div className={cn("df-card px-3 py-3", className)}>
       {icon ? <div className="mb-1 text-kaffir">{icon}</div> : null}
       <p className="text-display text-[1.6rem] leading-none">{value}</p>
       <p className="text-caption mt-1">{tip}</p>

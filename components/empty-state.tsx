@@ -15,15 +15,15 @@ export function EmptyState({
   children?: React.ReactNode;
 }) {
   return (
-    <div className="rounded-xl border border-dashed border-line bg-paper-2 px-4 py-10">
+    <div className="df-card border-dashed px-5 py-12 text-center">
       <p className="text-title">{title}</p>
-      <p className="text-caption mt-1">{hint}</p>
+      <p className="text-caption mx-auto mt-2 max-w-xs">{hint}</p>
       {actionHref && actionLabel ? (
-        <Button asChild className="mt-4">
+        <Button asChild className="mt-5">
           <Link href={actionHref}>{actionLabel}</Link>
         </Button>
       ) : null}
-      {children ? <div className="mt-4 flex flex-wrap gap-2">{children}</div> : null}
+      {children ? <div className="mt-5 flex flex-wrap justify-center gap-2">{children}</div> : null}
     </div>
   );
 }

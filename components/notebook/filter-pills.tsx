@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export function FilterPills({
   items,
@@ -7,11 +7,15 @@ export function FilterPills({
   items: { href: string; label: string; active: boolean }[];
 }) {
   return (
-    <div className="mb-4 flex flex-wrap gap-2">
+    <div className="mb-4 flex gap-1 overflow-x-auto rounded-[var(--radius-full)] bg-paper-2 p-1">
       {items.map((it) => (
-        <Button key={it.href} asChild size="sm" variant={it.active ? "default" : "outline"}>
-          <Link href={it.href}>{it.label}</Link>
-        </Button>
+        <Link
+          key={it.href}
+          href={it.href}
+          className={cn("df-chip shrink-0", it.active && "df-chip-active")}
+        >
+          {it.label}
+        </Link>
       ))}
     </div>
   );

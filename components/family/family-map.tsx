@@ -135,9 +135,9 @@ export function FamilyMap({ pins }: { pins: MapPin[] }) {
   }, [pins]);
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-line shadow-[0_12px_32px_rgba(28,25,23,0.08)]">
+    <div className="overflow-hidden rounded-[var(--radius-lg)] border border-[var(--stroke)] shadow-[var(--shadow-md)]">
       <div ref={host} className="h-[52vh] min-h-[280px] w-full bg-paper-2" />
-      <p className="text-caption border-t border-line bg-paper px-3 py-2">
+      <p className="text-caption border-t border-[var(--stroke)] bg-surface px-3 py-2">
         OpenStreetMap · หมุดขยับตามคนที่แชร์ (อัปเดตทุกวินาที)
       </p>
     </div>

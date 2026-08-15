@@ -5,7 +5,8 @@ import { GeoShare } from "@/components/family/geo-share";
 import { InviteQr } from "@/components/family/invite-qr";
 import { ChapterTabs } from "@/components/notebook/chapter-tabs";
 import { ConfirmDelete } from "@/components/notebook/confirm-delete";
-import { RecordRow } from "@/components/notebook/record-row";
+import { OverviewCard } from "@/components/notebook/overview-card";
+import { RecordRow, SoftTag } from "@/components/notebook/record-row";
 import { Button } from "@/components/ui/button";
 import { leaveFamily, removeMember, rotateJoinCode } from "./actions";
 import { env } from "@/lib/env";
@@ -36,13 +37,15 @@ export async function FamilyHome({
   const live = env.ablyConfigured;
 
   return (
-    <AppShell title="ครอบครัว">
+    <AppShell title="ครอบครัว" subtitle={name}>
+      <div className="mb-5 grid grid-cols-2 gap-3">
+        <OverviewCard tone="kaffir" title="สมาชิก" value={String(members.length)} />
+        <OverviewCard title="กำลังแชร์โลเคชัน" value={String(locations.length)} hint={live ? "สด" : "โหมดสำรอง"} />
+      </div>
       <ChapterTabs labels={["บ้าน", "กลุ่ม", "คน", "โลเคชัน"]}>
         <div className="grid gap-4">
-          <p className="text-title">{name}</p>
-          <p className="text-caption">สมาชิก {members.length} คน</p>
           {role === "owner" ? (
-            <div className="rounded-xl border border-line p-4">
+            <div className="df-card p-4">
               <p className="text-caption mb-2">โค้ดเชิญ</p>
               <p className="text-title mb-3 tracking-wide">{joinCode}</p>
               <InviteQr url={joinUrl} />
@@ -56,12 +59,12 @@ export async function FamilyHome({
           ) : (
             <p className="text-caption">ให้เจ้าของบ้านส่ง QR หรือโค้ด</p>
           )}
-          <ul className="grid gap-2">
+          <ul className="grid gap-3">
             {members.map((p) => (
               <RecordRow
                 key={p.userId}
                 title={p.name || p.email}
-                hint={p.role === "owner" ? "เจ้าของ" : "สมาชิก"}
+                tag={<SoftTag tone={p.role === "owner" ? "kaffir" : "muted"}>{p.role === "owner" ? "เจ้าของ" : "สมาชิก"}</SoftTag>}
                 actions={
                   role === "owner" && p.userId !== userId ? (
                     <ConfirmDelete
@@ -94,7 +97,7 @@ export async function FamilyHome({
             createdAt: x.createdAt,
           }))}
         />
-        <ul className="grid gap-2">
+        <ul className="grid gap-3">
           {members
             .filter((p) => p.userId !== userId)
             .map((p) => (

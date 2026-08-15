@@ -7,10 +7,9 @@ import { AmountText } from "@/components/notebook/amount-text";
 import { ChapterTabs } from "@/components/notebook/chapter-tabs";
 import { ConfirmDelete } from "@/components/notebook/confirm-delete";
 import { ComposerSheet } from "@/components/notebook/composer-sheet";
-import { ItemCard } from "@/components/notebook/item-card";
 import { NotebookForm } from "@/components/notebook/notebook-form";
-import { RecordRow } from "@/components/notebook/record-row";
-import { StatCard } from "@/components/notebook/stat-card";
+import { OverviewCard } from "@/components/notebook/overview-card";
+import { RecordRow, SoftTag } from "@/components/notebook/record-row";
 import { ToggleAction } from "@/components/notebook/toggle-action";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,11 +38,11 @@ export default async function HomePage() {
   const unpaid = bills.filter((b) => !b.paid).length;
 
   return (
-    <AppShell title="บ้าน">
+    <AppShell title="บ้าน" subtitle="ของ · ซื้อ · บิล">
       <div className="mb-5 grid grid-cols-3 gap-2">
-        <StatCard tip="ของในบ้าน" value={String(items.length)} icon={<Package className="size-4" />} />
-        <StatCard tip="รอซื้อ" value={String(openShop)} icon={<ShoppingCart className="size-4" />} />
-        <StatCard tip="บิลค้าง" value={String(unpaid)} icon={<Receipt className="size-4" />} />
+        <OverviewCard title="ของ" value={String(items.length)} />
+        <OverviewCard title="รอซื้อ" value={String(openShop)} />
+        <OverviewCard title="บิลค้าง" value={String(unpaid)} hint={unpaid > 0 ? "ยังไม่จ่าย" : "โล่ง"} />
       </div>
 
       <ChapterTabs labels={["ของ", "ซื้อ", "บิล"]}>
@@ -65,13 +64,14 @@ export default async function HomePage() {
           {items.length === 0 ? (
             <EmptyState title="บ้านยังว่าง" hint="เพิ่มของที่ใช้ประจำ ให้รู้ว่าอยู่ไหน กี่ชิ้น" />
           ) : (
-            <ul className="grid gap-2.5">
+            <ul className="grid gap-3">
               {items.map((it) => (
-                <ItemCard
+                <RecordRow
                   key={it.id}
                   title={it.name}
-                  hint={`${it.location || "ไม่ระบุที่"} · ${it.quantity} ชิ้น`}
-                  badge={`×${it.quantity}`}
+                  hint={it.location || "ไม่ระบุที่"}
+                  tag={<SoftTag tone="kaffir">×{it.quantity}</SoftTag>}
+                  leading={<Package className="size-5 text-kaffir" />}
                   actions={
                     <>
                       {it.r2Key ? <FileLink r2Key={it.r2Key} label="ดูรูป" /> : null}
@@ -97,26 +97,28 @@ export default async function HomePage() {
         </div>
 
         <div>
-          <form action={createShopping} className="mb-4 flex gap-2 rounded-2xl border border-line bg-paper-2 p-2">
+          <form action={createShopping} className="df-card mb-4 flex gap-2 p-2">
             <Input
               name="name"
               placeholder="จะซื้ออะไร…"
               required
-              className="border-0 bg-transparent shadow-none focus:ring-0"
+              className="border-0 bg-transparent shadow-none focus:shadow-none"
             />
-            <Button type="submit" className="shrink-0 rounded-xl">
+            <Button type="submit" className="shrink-0">
               เพิ่ม
             </Button>
           </form>
           {shopping.length === 0 ? (
             <EmptyState title="รายการซื้อว่าง" hint="พิมพ์ของที่จะซื้อด้านบน ติ๊กเมื่อซื้อแล้ว" />
           ) : (
-            <ul className="grid gap-2">
+            <ul className="grid gap-3">
               {shopping.map((s) => (
                 <RecordRow
                   key={s.id}
                   title={s.name}
                   done={s.bought}
+                  leading={<ShoppingCart className="size-5 text-kaffir" />}
+                  tag={s.bought ? <SoftTag>ซื้อแล้ว</SoftTag> : <SoftTag tone="orange">รอซื้อ</SoftTag>}
                   actions={
                     <>
                       <ToggleAction
@@ -160,15 +162,22 @@ export default async function HomePage() {
           {bills.length === 0 ? (
             <EmptyState title="ยังไม่มีบิล" hint="เพิ่มบิลเดือนนี้ หรือคัดลอกจากเดือนที่แล้ว" />
           ) : (
-            <ul className="grid gap-2.5">
+            <ul className="grid gap-3">
               {bills.map((b) => (
-                <ItemCard
+                <RecordRow
                   key={b.id}
                   title={b.title}
-                  hint={`${isoToThaiShort(b.dueOn) || "ไม่กำหนด"} · ${b.paid ? "จ่ายแล้ว" : "ยังไม่จ่าย"}`}
-                  value={<AmountText satang={b.amountSatang} className="text-base font-bold" />}
-                  muted={b.paid}
-                  warn={!b.paid}
+                  done={b.paid}
+                  value={<AmountText satang={b.amountSatang} />}
+                  leading={<Receipt className="size-5 text-kaffir" />}
+                  tag={
+                    <>
+                      <SoftTag tone={b.paid ? "muted" : "orange"}>
+                        {b.paid ? "จ่ายแล้ว" : "ยังไม่จ่าย"}
+                      </SoftTag>
+                      <SoftTag>{isoToThaiShort(b.dueOn) || "ไม่กำหนด"}</SoftTag>
+                    </>
+                  }
                   actions={
                     <>
                       <ToggleAction

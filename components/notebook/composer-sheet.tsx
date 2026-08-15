@@ -21,7 +21,7 @@ export function ComposerSheet({
   label: string;
   title: string;
   children: React.ReactNode;
-  variant?: "default" | "orange" | "outline";
+  variant?: "default" | "orange" | "outline" | "soft";
   compact?: boolean;
 }) {
   const [open, setOpen] = useState(false);
