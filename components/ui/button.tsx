@@ -10,9 +10,10 @@ const buttonVariants = cva(
       variant: {
         default: "bg-kaffir text-paper hover:bg-kaffir-dark",
         orange: "bg-orange text-paper hover:bg-orange/90",
-        outline: "border border-line bg-paper hover:bg-paper-3",
+        outline: "border border-line bg-surface hover:bg-paper-2",
         ghost: "hover:bg-paper-3",
         ink: "bg-ink text-paper hover:bg-ink/90",
+        soft: "bg-surface text-kaffir shadow-sm hover:bg-paper",
       },
       size: {
         default: "h-11 px-4",

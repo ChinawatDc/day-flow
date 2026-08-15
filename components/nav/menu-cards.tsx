@@ -8,7 +8,7 @@ export function MenuCards({
   items?: AppModule[];
 }) {
   return (
-    <ul className="grid gap-2">
+    <ul className="grid grid-cols-2 gap-3">
       {items.map((m) => {
         const Icon = m.icon;
         return (
@@ -16,16 +16,16 @@ export function MenuCards({
             <Link
               href={m.href}
               className={cn(
-                "flex items-center gap-3 rounded-2xl border border-line bg-paper px-3 py-3.5 transition-transform duration-150",
-                "hover:bg-paper-3 active:scale-[0.98]",
+                "flex h-full flex-col gap-3 rounded-[1.35rem] border border-line/70 bg-surface p-4 shadow-[var(--shadow-card)]",
+                "transition-transform duration-150 hover:border-kaffir/30 active:scale-[0.98]",
               )}
             >
-              <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-paper-2 text-kaffir">
+              <span className="flex size-11 items-center justify-center rounded-2xl bg-kaffir-soft text-kaffir">
                 <Icon className="size-5" />
               </span>
               <span className="min-w-0">
-                <span className="text-title block text-base">{m.label}</span>
-                <span className="text-caption mt-0.5 block truncate">{m.blurb}</span>
+                <span className="text-title block text-[1.05rem]">{m.label}</span>
+                <span className="text-caption mt-1 block line-clamp-2">{m.blurb}</span>
               </span>
             </Link>
           </li>
