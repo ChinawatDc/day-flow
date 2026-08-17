@@ -59,6 +59,18 @@ export const env = {
   get lineLoginConfigured() {
     return Boolean(env.lineLoginChannelId && env.lineLoginChannelSecret);
   },
+  get liffId() {
+    return process.env.NEXT_PUBLIC_LIFF_ID || "";
+  },
+  get liffUrl() {
+    return process.env.NEXT_PUBLIC_LIFF_URL || "";
+  },
+  get lineOaChannelId() {
+    return process.env.LINE_OA_CHANNEL_ID || "";
+  },
+  get lineOaBotBasicId() {
+    return process.env.LINE_OA_BOT_BASIC_ID || "";
+  },
   get lineOaSecret() {
     return process.env.LINE_OA_CHANNEL_SECRET || "";
   },
