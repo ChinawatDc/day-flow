@@ -12,6 +12,29 @@ export function formatMillion(satang: number) {
   return `${m.toLocaleString("th-TH", { maximumFractionDigits: 2 })} ลบ.`;
 }
 
+export function formatPriceRange(start: number, max?: number | null, unitCheck?: boolean) {
+  if (max != null && max > start) return `${formatMillion(start).replace(" ลบ.", "")}–${formatMillion(max)}`;
+  if (unitCheck) return `${formatMillion(start)} · เช็กแปลง`;
+  return formatMillion(start);
+}
+
+export function trafficLabel(level: string) {
+  if (level === "green") return "รับได้";
+  if (level === "yellow") return "มีช่วงติด";
+  if (level === "orange") return "ต้องเผื่อเวลา";
+  if (level === "red") return "ไกลสำหรับ routine";
+  return level;
+}
+
+export const BUDGET_CHIPS = [
+  { id: "all", label: "ทุกงบ", satang: null as number | null },
+  { id: "4", label: "4 ลบ.", satang: satangFromMillion(4) },
+  { id: "4.5", label: "4.5 ลบ.", satang: satangFromMillion(4.5) },
+  { id: "5", label: "5 ลบ.", satang: satangFromMillion(5) },
+  { id: "6", label: "6 ลบ.", satang: satangFromMillion(6) },
+  { id: "6.5", label: "6.5 ลบ.", satang: satangFromMillion(6.5) },
+] as const;
+
 export function formatFit(score: number) {
   return (score / 10).toFixed(1);
 }
@@ -49,10 +72,6 @@ export function houseTypeLabel(type: string, hasDetached: boolean, hasTwin: bool
   return "บ้านเดี่ยว";
 }
 
-export const BUDGET_CHIPS = [
-  { id: "all", label: "ทุกงบ", satang: null as number | null },
-  { id: "4", label: "4 ลบ.", satang: satangFromMillion(4) },
-  { id: "4.5", label: "4.5 ลบ.", satang: satangFromMillion(4.5) },
-  { id: "5", label: "5 ลบ.", satang: satangFromMillion(5) },
-  { id: "6.5", label: "6.5 ลบ.", satang: satangFromMillion(6.5) },
-] as const;
+export function googleMapsHref(lat: string, lng: string) {
+  return `https://www.google.com/maps?q=${encodeURIComponent(`${lat},${lng}`)}`;
+}

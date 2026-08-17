@@ -18,6 +18,7 @@ import { maybeUploadFamily } from "@/lib/upload";
 
 function refreshHunt(slug?: string) {
   revalidatePath("/family/hunt");
+  revalidatePath("/family/hunt/map");
   revalidatePath("/family/hunt/compare");
   revalidatePath("/family/hunt/shortlist");
   revalidatePath("/family/hunt/visits");

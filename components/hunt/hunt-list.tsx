@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { Columns3, Star } from "lucide-react";
 import { toggleCompare, toggleShortlist } from "@/app/(app)/family/hunt/actions";
+import { HuntMapModalButton } from "@/components/hunt/hunt-map-modal";
 import {
   formatFit,
-  formatMillion,
+  formatPriceRange,
   formatUsable,
   formatValueStars,
   houseTypeLabel,
@@ -18,6 +19,7 @@ export type HuntRow = {
   hasDetached: boolean;
   hasTwin: boolean;
   priceStartSatang: number;
+  priceMaxSatang?: number | null;
   priceNote: string;
   landNote: string;
   usableSqmMin: number | null;
@@ -25,6 +27,10 @@ export type HuntRow = {
   fitScore: number;
   valueScore: number;
   rank: number;
+  unitCheck?: boolean;
+  lat?: string | null;
+  lng?: string | null;
+  traffic?: string;
 };
 
 export function HuntCards({
@@ -43,7 +49,9 @@ export function HuntCards({
           <Link href={`/family/hunt/${p.id}`} className="block">
             <div className="flex items-baseline justify-between gap-2">
               <p className="hh-gold text-sm">#{p.rank}</p>
-              <p className="hh-gold text-lg">{formatMillion(p.priceStartSatang)}</p>
+              <p className="hh-gold text-lg">
+                {formatPriceRange(p.priceStartSatang, p.priceMaxSatang, p.unitCheck)}
+              </p>
             </div>
             <p className="mt-1 font-[family-name:var(--font-title)] text-base font-semibold">{p.name}</p>
             <p className="text-caption mt-1">
@@ -52,9 +60,11 @@ export function HuntCards({
             <p className="text-caption mt-1">
               {p.landNote || formatUsable(p.usableSqmMin, p.usableSqmMax)} · เหมาะ {formatFit(p.fitScore)} · คุ้ม{" "}
               {formatValueStars(p.valueScore)}
+              {p.unitCheck ? " · ต้องเช็กแปลงจริง" : ""}
             </p>
           </Link>
           <div className="mt-3 flex gap-2">
+            <HuntMapModalButton project={p} />
             <form action={toggleShortlist}>
               <input type="hidden" name="projectId" value={p.id} />
               <button type="submit" className={shortlisted.has(p.id) ? "hh-btn-soft hh-btn h-9 px-3" : "hh-btn-ghost hh-btn h-9 px-3"}>
@@ -113,7 +123,10 @@ export function HuntTable({
               </td>
               <td>{p.zone}</td>
               <td>
-                <span className="hh-gold">{formatMillion(p.priceStartSatang)}</span>
+                <span className="hh-gold">
+                  {formatPriceRange(p.priceStartSatang, p.priceMaxSatang, p.unitCheck)}
+                </span>
+                {p.unitCheck ? <p className="text-caption mt-0.5">ต้องเช็กแปลงจริง</p> : null}
                 {p.priceNote ? <p className="text-caption mt-0.5 max-w-[14rem]">{p.priceNote}</p> : null}
               </td>
               <td>
@@ -125,6 +138,7 @@ export function HuntTable({
               </td>
               <td>
                 <div className="flex gap-1.5">
+                  <HuntMapModalButton project={p} compact />
                   <form action={toggleShortlist}>
                     <input type="hidden" name="projectId" value={p.id} />
                     <button type="submit" className={shortlisted.has(p.id) ? "hh-btn-soft hh-btn h-8 px-2.5 text-xs" : "hh-btn-ghost hh-btn h-8 px-2.5 text-xs"}>

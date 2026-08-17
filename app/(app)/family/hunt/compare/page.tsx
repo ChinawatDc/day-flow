@@ -6,10 +6,11 @@ import {
   bahtPerWah,
   formatBaht,
   formatFit,
-  formatMillion,
+  formatPriceRange,
   formatUsable,
   formatValueStars,
   houseTypeLabel,
+  trafficLabel,
 } from "@/lib/hunt/format";
 
 export const dynamic = "force-dynamic";
@@ -36,7 +37,7 @@ export default async function HuntComparePage() {
   }
 
   const metrics: { label: string; value: (p: (typeof projects)[number]) => string }[] = [
-    { label: "ราคาเริ่ม", value: (p) => formatMillion(p.priceStartSatang) },
+    { label: "ราคา", value: (p) => formatPriceRange(p.priceStartSatang, p.priceMaxSatang, p.unitCheck) },
     { label: "ประเภท", value: (p) => houseTypeLabel(p.houseType, p.hasDetached, p.hasTwin) },
     { label: "โซน", value: (p) => p.zone },
     { label: "ที่ดิน", value: (p) => p.landNote || "—" },
@@ -55,6 +56,7 @@ export default async function HuntComparePage() {
     { label: "เหมาะ", value: (p) => formatFit(p.fitScore) },
     { label: "คุ้ม", value: (p) => formatValueStars(p.valueScore) },
     { label: "โหวตบ้าน", value: (p) => avg(p.id) },
+    { label: "รถติด", value: (p) => trafficLabel(p.traffic) },
     { label: "เส้นทาง ITF", value: (p) => p.commuteNote },
   ];
 
@@ -66,7 +68,9 @@ export default async function HuntComparePage() {
             <Link href={`/family/hunt/${p.id}`} className="font-semibold">
               {p.name}
             </Link>
-            <p className="hh-gold mt-2 text-xl">{formatMillion(p.priceStartSatang)}</p>
+            <p className="hh-gold mt-2 text-xl">
+              {formatPriceRange(p.priceStartSatang, p.priceMaxSatang, p.unitCheck)}
+            </p>
             {metrics.map((m) => (
               <div key={m.label} className="mt-3 border-t border-[var(--hh-line)] pt-2">
                 <p className="text-caption">{m.label}</p>

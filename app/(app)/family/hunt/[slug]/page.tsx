@@ -12,14 +12,18 @@ import {
   listVisits,
   listVotes,
 } from "@/lib/hunt/data";
+import { HuntMap } from "@/components/hunt/hunt-map";
 import {
   bahtPerWah,
   formatBaht,
   formatFit,
   formatMillion,
+  formatPriceRange,
   formatUsable,
   formatValueStars,
+  googleMapsHref,
   houseTypeLabel,
+  trafficLabel,
 } from "@/lib/hunt/format";
 import { isoToThaiDisplay } from "@/lib/thai-date";
 import { bangkokTodayIso } from "@/lib/utils";
@@ -59,8 +63,11 @@ export default async function HuntDetailPage({ params }: { params: Promise<{ slu
         <p className="text-caption mt-1">
           {project.developer} · {project.zone} · {houseTypeLabel(project.houseType, project.hasDetached, project.hasTwin)}
         </p>
-        <p className="hh-gold mt-4 text-3xl">{formatMillion(project.priceStartSatang)}</p>
+        <p className="hh-gold mt-4 text-3xl">
+          {formatPriceRange(project.priceStartSatang, project.priceMaxSatang, project.unitCheck)}
+        </p>
         <p className="text-caption mt-1">{project.priceNote}</p>
+        {project.unitCheck ? <p className="mt-2 text-sm text-[var(--hh-gold)]">ต้องเช็กแปลงจริง</p> : null}
         <dl className="mt-5 grid grid-cols-2 gap-3 text-sm">
           <div>
             <dt className="text-caption">ที่ดิน</dt>
@@ -110,6 +117,84 @@ export default async function HuntDetailPage({ params }: { params: Promise<{ slu
           </Link>
         </div>
       </div>
+
+      {(project.pros || project.cons) && (
+        <div className="hh-card grid gap-4 p-5 md:grid-cols-2">
+          {project.pros ? (
+            <div>
+              <p className="font-semibold">ข้อดี</p>
+              <p className="mt-2 text-sm leading-relaxed">{project.pros}</p>
+            </div>
+          ) : null}
+          {project.cons ? (
+            <div>
+              <p className="font-semibold">ข้อเสีย</p>
+              <p className="mt-2 text-sm leading-relaxed">{project.cons}</p>
+            </div>
+          ) : null}
+        </div>
+      )}
+
+      <div className="hh-card p-5">
+        <p className="font-semibold">ทำเลรอบโครงการ</p>
+        <dl className="mt-4 grid gap-3 text-sm">
+          <div>
+            <dt className="text-caption">รถติด</dt>
+            <dd>{trafficLabel(project.traffic)}</dd>
+          </div>
+          {project.hospitalNote ? (
+            <div>
+              <dt className="text-caption">โรงพยาบาล</dt>
+              <dd>{project.hospitalNote}</dd>
+            </div>
+          ) : null}
+          {project.mallNote ? (
+            <div>
+              <dt className="text-caption">ห้าง</dt>
+              <dd>{project.mallNote}</dd>
+            </div>
+          ) : null}
+          {project.highwayNote ? (
+            <div>
+              <dt className="text-caption">ทางด่วน / เส้นหลัก</dt>
+              <dd>{project.highwayNote}</dd>
+            </div>
+          ) : null}
+          {project.schoolNote ? (
+            <div>
+              <dt className="text-caption">โรงเรียน</dt>
+              <dd>{project.schoolNote}</dd>
+            </div>
+          ) : null}
+        </dl>
+      </div>
+
+      {project.lat && project.lng ? (
+        <div className="grid gap-3">
+          <HuntMap
+            compact
+            pins={[
+              {
+                id: project.id,
+                name: project.name,
+                lat: project.lat,
+                lng: project.lng,
+                priceLabel: formatPriceRange(project.priceStartSatang, project.priceMaxSatang, project.unitCheck),
+                kind: "project",
+                traffic: project.traffic,
+              },
+            ]}
+          />
+          <a
+            href={googleMapsHref(project.lat, project.lng)}
+            target="_blank"
+            rel="noreferrer"
+            className="hh-btn hh-btn-ghost w-fit"
+          >
+            เปิด Google Maps
+          </a>
+        </div>
+      ) : null}
 
       <div className="hh-card p-5">
         <p className="font-semibold">แหล่งราคา</p>

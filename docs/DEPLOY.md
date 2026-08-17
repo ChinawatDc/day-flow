@@ -58,4 +58,4 @@ npm run dev
 - Login callback: `https://<โดเมน>/api/line/callback`
 - OA webhook: `https://<โดเมน>/api/line/webhook`
 - รายละเอียด: [LINE-HUNT.md](./LINE-HUNT.md)
-- Schema เพิ่ม: รัน [drizzle/0003_hunt.sql](../drizzle/0003_hunt.sql) หรือ `npm run db:push`
+- Schema เพิ่ม: รัน [drizzle/0003_hunt.sql](../drizzle/0003_hunt.sql) แล้ว [drizzle/0004_hunt_map.sql](../drizzle/0004_hunt_map.sql) หรือ `npm run db:push`

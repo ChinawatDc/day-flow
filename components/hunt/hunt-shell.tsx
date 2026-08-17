@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowLeft, CalendarDays, Columns3, LayoutList, Star } from "lucide-react";
+import { ArrowLeft, CalendarDays, Columns3, LayoutList, Map, Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const tabs = [
   { href: "/family/hunt", label: "ตาราง", icon: LayoutList, exact: true },
+  { href: "/family/hunt/map", label: "แมพ", icon: Map },
   { href: "/family/hunt/compare", label: "เทียบ", icon: Columns3 },
   { href: "/family/hunt/shortlist", label: "shortlist", icon: Star },
   { href: "/family/hunt/visits", label: "นัดดู", icon: CalendarDays },
@@ -78,7 +79,7 @@ export function HuntShell({
       </div>
 
       <nav className="hh-nav fixed inset-x-3 bottom-[max(0.55rem,env(safe-area-inset-bottom))] z-40 rounded-2xl px-2 py-2 md:hidden">
-        <div className="grid grid-cols-4">
+        <div className="grid grid-cols-5">
           {tabs.map((t) => {
             const Icon = t.icon;
             const active = tabActive(pathname, t.href, "exact" in t && t.exact);

@@ -440,7 +440,8 @@ body {
 }
 
 /* —— เลือกบ้าน / family hunt — cool listing, not notebook glass —— */
-.hh-shell {
+.hh-shell,
+.hh-dialog {
   --hh-canvas: oklch(0.2 0.018 250);
   --hh-glow: oklch(0.28 0.04 250);
   --hh-surface: oklch(0.26 0.02 250);
@@ -453,15 +454,23 @@ body {
   --hh-gold-soft: oklch(0.34 0.05 80);
   --hh-line: color-mix(in oklch, white 12%, transparent);
   --hh-focus: color-mix(in oklch, var(--hh-gold) 35%, transparent);
+  color: var(--hh-ink);
+}
+
+.hh-shell {
   min-height: 100dvh;
   background:
     radial-gradient(90% 50% at 10% -10%, var(--hh-glow) 0%, transparent 55%),
     radial-gradient(60% 40% at 100% 0%, color-mix(in oklch, var(--hh-gold-soft) 55%, transparent) 0%, transparent 50%),
     var(--hh-canvas);
-  color: var(--hh-ink);
 }
 
-.hh-shell .text-caption {
+.hh-dialog {
+  background: var(--hh-canvas);
+}
+
+.hh-shell .text-caption,
+.hh-dialog .text-caption {
   color: var(--hh-muted);
 }
 
@@ -580,4 +589,36 @@ body {
   color: oklch(0.96 0.01 90);
   padding: 1rem;
   box-shadow: 0 12px 32px oklch(0.1 0.02 250 / 0.25);
+}
+
+.hh-shell .leaflet-container,
+.hh-dialog .leaflet-container {
+  font: inherit;
+  background: var(--hh-surface);
+}
+
+.hh-shell .leaflet-control-attribution,
+.hh-dialog .leaflet-control-attribution {
+  font-size: 10px;
+  background: color-mix(in oklch, var(--hh-elevated) 90%, transparent) !important;
+  color: var(--hh-muted);
+}
+
+.hh-shell .leaflet-popup-content-wrapper,
+.hh-shell .leaflet-popup-tip,
+.hh-dialog .leaflet-popup-content-wrapper,
+.hh-dialog .leaflet-popup-tip {
+  background: var(--hh-elevated);
+  color: var(--hh-ink);
+}
+
+.hh-shell .leaflet-popup-content-wrapper,
+.hh-dialog .leaflet-popup-content-wrapper {
+  border-radius: 12px;
+  box-shadow: 0 12px 32px oklch(0.1 0.02 250 / 0.45);
+}
+
+.hh-shell .leaflet-popup-content a,
+.hh-dialog .leaflet-popup-content a {
+  color: var(--hh-gold);
 }

@@ -1,0 +1,12 @@
+ALTER TABLE "hunt_projects" ADD COLUMN IF NOT EXISTS "price_max_satang" integer;
+ALTER TABLE "hunt_projects" ADD COLUMN IF NOT EXISTS "lat" text NOT NULL DEFAULT '';
+ALTER TABLE "hunt_projects" ADD COLUMN IF NOT EXISTS "lng" text NOT NULL DEFAULT '';
+ALTER TABLE "hunt_projects" ADD COLUMN IF NOT EXISTS "traffic" text NOT NULL DEFAULT 'orange';
+ALTER TABLE "hunt_projects" ADD COLUMN IF NOT EXISTS "hospital_note" text NOT NULL DEFAULT '';
+ALTER TABLE "hunt_projects" ADD COLUMN IF NOT EXISTS "mall_note" text NOT NULL DEFAULT '';
+ALTER TABLE "hunt_projects" ADD COLUMN IF NOT EXISTS "highway_note" text NOT NULL DEFAULT '';
+ALTER TABLE "hunt_projects" ADD COLUMN IF NOT EXISTS "school_note" text NOT NULL DEFAULT '';
+ALTER TABLE "hunt_projects" ADD COLUMN IF NOT EXISTS "pros" text NOT NULL DEFAULT '';
+ALTER TABLE "hunt_projects" ADD COLUMN IF NOT EXISTS "cons" text NOT NULL DEFAULT '';
+ALTER TABLE "hunt_projects" ADD COLUMN IF NOT EXISTS "budget_under_6" boolean NOT NULL DEFAULT false;
+ALTER TABLE "hunt_projects" ADD COLUMN IF NOT EXISTS "unit_check" boolean NOT NULL DEFAULT false;

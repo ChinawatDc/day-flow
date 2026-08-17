@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, inArray } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, notInArray, sql } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import {
   huntCompareSets,
@@ -14,12 +14,56 @@ import { seedPriceNotes, seedRows } from "./seed";
 
 export async function ensureHuntSeeded() {
   const db = getDb();
-  const existing = await db.select({ id: huntProjects.id }).from(huntProjects).limit(1);
-  if (existing.length) return;
   const rows = seedRows();
   if (!rows.length) return;
-  await db.insert(huntProjects).values(rows);
-  await db.insert(huntPriceNotes).values(seedPriceNotes());
+  await db
+    .insert(huntProjects)
+    .values(rows)
+    .onConflictDoUpdate({
+      target: huntProjects.id,
+      set: {
+        name: sql`excluded.name`,
+        developer: sql`excluded.developer`,
+        zone: sql`excluded.zone`,
+        houseType: sql`excluded.house_type`,
+        hasDetached: sql`excluded.has_detached`,
+        hasTwin: sql`excluded.has_twin`,
+        priceStartSatang: sql`excluded.price_start_satang`,
+        priceMaxSatang: sql`excluded.price_max_satang`,
+        priceNote: sql`excluded.price_note`,
+        landNote: sql`excluded.land_note`,
+        landWahTenths: sql`excluded.land_wah_tenths`,
+        usableSqmMin: sql`excluded.usable_sqm_min`,
+        usableSqmMax: sql`excluded.usable_sqm_max`,
+        bedrooms: sql`excluded.bedrooms`,
+        bathrooms: sql`excluded.bathrooms`,
+        parking: sql`excluded.parking`,
+        fitScore: sql`excluded.fit_score`,
+        valueScore: sql`excluded.value_score`,
+        rank: sql`excluded.rank`,
+        commuteNote: sql`excluded.commute_note`,
+        sizeNote: sql`excluded.size_note`,
+        caveat: sql`excluded.caveat`,
+        lat: sql`excluded.lat`,
+        lng: sql`excluded.lng`,
+        traffic: sql`excluded.traffic`,
+        hospitalNote: sql`excluded.hospital_note`,
+        mallNote: sql`excluded.mall_note`,
+        highwayNote: sql`excluded.highway_note`,
+        schoolNote: sql`excluded.school_note`,
+        pros: sql`excluded.pros`,
+        cons: sql`excluded.cons`,
+        budgetUnder6: sql`excluded.budget_under_6`,
+        unitCheck: sql`excluded.unit_check`,
+      },
+    });
+  const ids = rows.map((r) => r.id);
+  await db.delete(huntProjects).where(notInArray(huntProjects.id, ids));
+  const notes = seedPriceNotes();
+  if (notes.length) {
+    await db.delete(huntPriceNotes);
+    await db.insert(huntPriceNotes).values(notes);
+  }
 }
 
 export async function listHuntProjects() {
