@@ -49,6 +49,8 @@ LINE, AI/OCR, Google Calendar, ธนาคาร, รวม FitKub/HomeFlow, �
 ## Family module (shipped MVP)
 โมดูล `/family` แยกจากสมุดคนเดียว: บ้าน+โค้ดเชิญหมดอายุ, โอนเจ้าของ, แชทกลุ่ม/DM (pagination / ลบ / รูป), โลเคชันมีระยะเวลา, รายการซื้อของ+งานบ้านร่วม — ไม่แชร์ tasks/money ส่วนตัว
 
+เลือกบ้าน `/family/hunt` — ตารางโครงการร่วมในครอบครัว โทน UI คนละสมุด (slate+ทอง) seed 13 โครงการ ส.ค. 2026 LINE Login/OA เป็นตัวเลือก
+
 
 ## Blocked
 | Blocker | ต้องการอะไร | Owner |

@@ -92,6 +92,15 @@ export async function FamilyHome({
         ]}
       >
         <div className="grid gap-4">
+          <Link href="/family/hunt" className="hh-entry">
+            <p className="text-sm font-medium" style={{ color: "oklch(0.74 0.02 250)" }}>
+              โมดูลร่วม
+            </p>
+            <p className="mt-1 font-[family-name:var(--font-title)] text-lg font-semibold">เลือกบ้าน</p>
+            <p className="mt-1 text-sm" style={{ color: "oklch(0.82 0.1 82)" }}>
+              ตารางโครงการ · เทียบราคา · นัดดู
+            </p>
+          </Link>
           {role === "owner" ? (
             <>
               <div className="df-card p-4">

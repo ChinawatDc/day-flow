@@ -8,6 +8,12 @@ import { user } from "@/lib/db/schema";
 import { deletePrefix } from "@/lib/r2/client";
 import { requireUser } from "@/lib/session";
 
+export async function unlinkLine() {
+  const sessionUser = await requireUser();
+  await getDb().update(user).set({ lineUserId: null, updatedAt: new Date() }).where(eq(user.id, sessionUser.id));
+  revalidatePath("/settings");
+}
+
 export async function deleteAccount() {
   const sessionUser = await requireUser();
   await deletePrefix(`${sessionUser.id}/`);

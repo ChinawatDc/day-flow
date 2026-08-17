@@ -9,9 +9,11 @@ import { authClient } from "@/lib/auth-client";
 
 export function LoginForm({
   googleEnabled,
+  lineEnabled,
   nextPath = "/menu",
 }: {
   googleEnabled: boolean;
+  lineEnabled?: boolean;
   nextPath?: string;
 }) {
   const router = useRouter();
@@ -79,6 +81,11 @@ export function LoginForm({
           onClick={() => authClient.signIn.social({ provider: "google", callbackURL: nextPath })}
         >
           เข้าด้วย Google
+        </Button>
+      ) : null}
+      {lineEnabled ? (
+        <Button asChild variant="outline">
+          <a href={`/api/line/login?next=${encodeURIComponent(nextPath)}`}>เข้าด้วย LINE</a>
         </Button>
       ) : null}
     </form>

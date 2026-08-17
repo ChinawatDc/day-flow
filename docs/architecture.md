@@ -6,6 +6,8 @@
                      ├ /api/auth/*  better-auth
                      ├ /api/files   signed URL
                      ├ /api/health
+                     ├ /api/line/login|callback  LINE Login
+                     ├ /api/line/webhook         LINE OA
                      └ /api/realtime/token  Ably
               Neon Postgres          Cloudflare R2 (private)
               Ably (แชท/โลเคชันครอบครัว — ไม่ใช้ Neon WebSocket)
@@ -24,8 +26,9 @@
 
 ## โฟลเดอร์สำคัญ
 - `app/(app)/` — หน้าหลังล็อกอิน (`layout` เรียก `requireUser`, `dynamic = force-dynamic`) บ้านคือ `/menu` สรุปวันคือ `/today`
-- สไตล์: [DESIGN-2026.md](./DESIGN-2026.md)
+- สไตล์สมุด: [DESIGN-2026.md](./DESIGN-2026.md)
 - `app/(app)/family/` — ครอบครัว MVP: บ้าน/เชิญ/แชท/โลเคชัน/ซื้อของ/งานบ้าน แยกจากสมุดคนเดียว
+- `app/(app)/family/hunt/` — เลือกบ้าน (โทน `--hh-*`) ตาราง/เทียบ/นัดดู — [DESIGN-HUNT.md](./DESIGN-HUNT.md)
 - `components/notebook/` — RecordRow, ComposerSheet, NotebookForm, ConfirmDelete, AmountText
 - `app/(app)/*/actions.ts` — mutation
 - `lib/db/schema.ts` — auth tables + โมดูล

@@ -14,7 +14,7 @@ export async function GET() {
   }
   try {
     await getDb().execute(sql`select 1`);
-    return NextResponse.json({ ok: true, db: true, r2, authEnv });
+    return NextResponse.json({ ok: true, db: true, r2, authEnv, lineLogin: env.lineLoginConfigured, lineOa: env.lineOaConfigured });
   } catch {
     return NextResponse.json({ ok: false, db: false, r2, authEnv }, { status: 500 });
   }

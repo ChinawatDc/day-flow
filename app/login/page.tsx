@@ -10,10 +10,10 @@ export const dynamic = "force-dynamic";
 export default async function LoginPage({
   searchParams,
 }: {
-  searchParams: Promise<{ next?: string }>;
+  searchParams: Promise<{ next?: string; err?: string }>;
 }) {
   const session = await getSession();
-  const { next } = await searchParams;
+  const { next, err } = await searchParams;
   const dest = safeNextPath(next);
   if (session?.user) redirect(dest);
 
@@ -30,8 +30,13 @@ export default async function LoginPage({
       <section className="flex items-center px-5 py-10 md:px-16 md:py-16">
         <div className="df-card df-enter w-full max-w-md p-6 md:p-8">
           <h1 className="text-title text-[1.75rem]">เข้าสู่ระบบ</h1>
+          {err === "line" ? <p className="mt-3 text-sm text-orange">เข้าด้วย LINE ไม่สำเร็จ</p> : null}
           <div className="mt-7">
-            <LoginForm googleEnabled={Boolean(process.env.GOOGLE_CLIENT_ID)} nextPath={dest} />
+            <LoginForm
+              googleEnabled={Boolean(process.env.GOOGLE_CLIENT_ID)}
+              lineEnabled={Boolean(process.env.LINE_LOGIN_CHANNEL_ID && process.env.LINE_LOGIN_CHANNEL_SECRET)}
+              nextPath={dest}
+            />
           </div>
         </div>
       </section>

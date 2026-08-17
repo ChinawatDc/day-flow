@@ -89,3 +89,7 @@ export async function getPresignedGetUrl(key: string, expiresIn = 3600) {
 export function objectKey(userId: string, module: string, filename: string) {
   return `${userId}/${module}/${Date.now()}-${filename}`;
 }
+
+export function familyObjectKey(familyId: string, module: string, filename: string) {
+  return `family/${familyId}/${module}/${Date.now()}-${filename}`;
+}

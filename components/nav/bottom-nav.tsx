@@ -11,6 +11,7 @@ const extra = ["/settings", "/vault", "/home", "/journal", "/family"];
 
 export function BottomNav() {
   const pathname = usePathname();
+  if (pathname.startsWith("/family/hunt")) return null;
   const menuActive =
     pathname === "/menu" || extra.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 

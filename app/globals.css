@@ -438,3 +438,146 @@ body {
   font-size: 10px;
   background: color-mix(in oklch, var(--surface-solid) 90%, transparent) !important;
 }
+
+/* —— เลือกบ้าน / family hunt — cool listing, not notebook glass —— */
+.hh-shell {
+  --hh-canvas: oklch(0.2 0.018 250);
+  --hh-glow: oklch(0.28 0.04 250);
+  --hh-surface: oklch(0.26 0.02 250);
+  --hh-elevated: oklch(0.3 0.018 250);
+  --hh-ink: oklch(0.96 0.01 90);
+  --hh-muted: oklch(0.74 0.02 250);
+  --hh-faint: oklch(0.58 0.02 250);
+  --hh-gold: oklch(0.82 0.1 82);
+  --hh-gold-strong: oklch(0.72 0.12 75);
+  --hh-gold-soft: oklch(0.34 0.05 80);
+  --hh-line: color-mix(in oklch, white 12%, transparent);
+  --hh-focus: color-mix(in oklch, var(--hh-gold) 35%, transparent);
+  min-height: 100dvh;
+  background:
+    radial-gradient(90% 50% at 10% -10%, var(--hh-glow) 0%, transparent 55%),
+    radial-gradient(60% 40% at 100% 0%, color-mix(in oklch, var(--hh-gold-soft) 55%, transparent) 0%, transparent 50%),
+    var(--hh-canvas);
+  color: var(--hh-ink);
+}
+
+.hh-shell .text-caption {
+  color: var(--hh-muted);
+}
+
+.hh-card {
+  border: 1px solid var(--hh-line);
+  border-radius: 1rem;
+  background: color-mix(in oklch, var(--hh-surface) 92%, black);
+  box-shadow: 0 12px 32px oklch(0.1 0.02 250 / 0.35);
+}
+
+.hh-chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  border: 1px solid var(--hh-line);
+  padding: 0.45rem 0.85rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--hh-muted);
+  white-space: nowrap;
+}
+
+.hh-chip-on {
+  border-color: color-mix(in oklch, var(--hh-gold) 55%, var(--hh-line));
+  background: var(--hh-gold-soft);
+  color: var(--hh-gold);
+}
+
+.hh-gold {
+  color: var(--hh-gold);
+  font-family: var(--font-numeric);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.hh-nav {
+  border: 1px solid var(--hh-line);
+  background: color-mix(in oklch, var(--hh-elevated) 88%, transparent);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.hh-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.hh-table th {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--hh-muted);
+  text-align: left;
+  padding: 0.7rem 0.75rem;
+  border-bottom: 1px solid var(--hh-line);
+}
+
+.hh-table td {
+  padding: 0.85rem 0.75rem;
+  border-bottom: 1px solid var(--hh-line);
+  vertical-align: top;
+}
+
+.hh-table tr:hover td {
+  background: color-mix(in oklch, var(--hh-gold-soft) 35%, transparent);
+}
+
+.hh-field {
+  height: 2.75rem;
+  width: 100%;
+  border: 1px solid var(--hh-line);
+  border-radius: 0.75rem;
+  background: color-mix(in oklch, var(--hh-canvas) 70%, transparent);
+  padding: 0 0.85rem;
+  color: var(--hh-ink);
+  outline: none;
+}
+
+.hh-field:focus {
+  border-color: var(--hh-gold);
+  box-shadow: 0 0 0 3px var(--hh-focus);
+}
+
+.hh-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  height: 2.6rem;
+  padding: 0 1rem;
+  border-radius: 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  background: var(--hh-gold);
+  color: oklch(0.18 0.02 80);
+}
+
+.hh-btn-ghost {
+  background: transparent;
+  border: 1px solid var(--hh-line);
+  color: var(--hh-ink);
+}
+
+.hh-btn-soft {
+  background: var(--hh-gold-soft);
+  color: var(--hh-gold);
+  border: 1px solid color-mix(in oklch, var(--hh-gold) 30%, transparent);
+}
+
+.hh-entry {
+  display: block;
+  border: 1px solid color-mix(in oklch, white 12%, transparent);
+  border-radius: 1rem;
+  background: oklch(0.26 0.02 250);
+  color: oklch(0.96 0.01 90);
+  padding: 1rem;
+  box-shadow: 0 12px 32px oklch(0.1 0.02 250 / 0.25);
+}

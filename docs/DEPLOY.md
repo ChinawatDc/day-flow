@@ -53,3 +53,9 @@ npm run dev
 - [ ] สมัครบัญชีใหม่บนโดเมนจริง (อย่าลืม trusted origin ของ better-auth = `BETTER_AUTH_URL`)
 
 `vercel.json` ตั้ง framework nextjs แล้ว ไม่มี cron ใน V0.1.0
+
+## 6) LINE (เลือกบ้าน — ไม่บังคับก่อนใช้ตาราง)
+- Login callback: `https://<โดเมน>/api/line/callback`
+- OA webhook: `https://<โดเมน>/api/line/webhook`
+- รายละเอียด: [LINE-HUNT.md](./LINE-HUNT.md)
+- Schema เพิ่ม: รัน [drizzle/0003_hunt.sql](../drizzle/0003_hunt.sql) หรือ `npm run db:push`

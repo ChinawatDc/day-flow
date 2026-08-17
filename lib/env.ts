@@ -50,4 +50,22 @@ export const env = {
         env.r2BucketName,
     );
   },
+  get lineLoginChannelId() {
+    return process.env.LINE_LOGIN_CHANNEL_ID || "";
+  },
+  get lineLoginChannelSecret() {
+    return process.env.LINE_LOGIN_CHANNEL_SECRET || "";
+  },
+  get lineLoginConfigured() {
+    return Boolean(env.lineLoginChannelId && env.lineLoginChannelSecret);
+  },
+  get lineOaSecret() {
+    return process.env.LINE_OA_CHANNEL_SECRET || "";
+  },
+  get lineOaToken() {
+    return process.env.LINE_OA_CHANNEL_ACCESS_TOKEN || "";
+  },
+  get lineOaConfigured() {
+    return Boolean(env.lineOaSecret && env.lineOaToken);
+  },
 };

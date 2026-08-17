@@ -14,6 +14,7 @@ export const user = pgTable("user", {
   email: text("email").notNull().unique(),
   emailVerified: boolean("email_verified").notNull().default(false),
   image: text("image"),
+  lineUserId: text("line_user_id").unique(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   updatedAt: timestamp("updated_at").notNull().defaultNow(),
 });
@@ -296,5 +297,121 @@ export const familyAppointments = pgTable("family_appointments", {
   createdBy: text("created_by")
     .notNull()
     .references(() => user.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const huntProjects = pgTable("hunt_projects", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  developer: text("developer").notNull(),
+  zone: text("zone").notNull(),
+  houseType: text("house_type").notNull().default("detached"),
+  hasDetached: boolean("has_detached").notNull().default(true),
+  hasTwin: boolean("has_twin").notNull().default(false),
+  priceStartSatang: integer("price_start_satang").notNull(),
+  priceNote: text("price_note").notNull().default(""),
+  landNote: text("land_note").notNull().default(""),
+  landWahTenths: integer("land_wah_tenths"),
+  usableSqmMin: integer("usable_sqm_min"),
+  usableSqmMax: integer("usable_sqm_max"),
+  bedrooms: integer("bedrooms"),
+  bathrooms: integer("bathrooms"),
+  parking: integer("parking"),
+  fitScore: integer("fit_score").notNull(),
+  valueScore: integer("value_score").notNull(),
+  rank: integer("rank").notNull(),
+  commuteNote: text("commute_note").notNull().default(""),
+  sizeNote: text("size_note").notNull().default(""),
+  caveat: text("caveat").notNull().default(""),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const huntPriceNotes = pgTable("hunt_price_notes", {
+  id: text("id").primaryKey(),
+  projectId: text("project_id")
+    .notNull()
+    .references(() => huntProjects.id, { onDelete: "cascade" }),
+  source: text("source").notNull(),
+  priceSatang: integer("price_satang"),
+  note: text("note").notNull().default(""),
+  asOf: date("as_of").notNull(),
+});
+
+export const huntFamilyPicks = pgTable(
+  "hunt_family_picks",
+  {
+    id: text("id").primaryKey(),
+    familyId: text("family_id")
+      .notNull()
+      .references(() => families.id, { onDelete: "cascade" }),
+    projectId: text("project_id")
+      .notNull()
+      .references(() => huntProjects.id, { onDelete: "cascade" }),
+    shortlisted: boolean("shortlisted").notNull().default(false),
+    note: text("note").notNull().default(""),
+    updatedBy: text("updated_by")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("hunt_pick_family_project").on(t.familyId, t.projectId)],
+);
+
+export const huntVotes = pgTable(
+  "hunt_votes",
+  {
+    id: text("id").primaryKey(),
+    familyId: text("family_id")
+      .notNull()
+      .references(() => families.id, { onDelete: "cascade" }),
+    projectId: text("project_id")
+      .notNull()
+      .references(() => huntProjects.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    score: integer("score").notNull(),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("hunt_vote_member").on(t.familyId, t.projectId, t.userId)],
+);
+
+export const huntCompareSets = pgTable("hunt_compare_sets", {
+  id: text("id").primaryKey(),
+  familyId: text("family_id")
+    .notNull()
+    .references(() => families.id, { onDelete: "cascade" })
+    .unique(),
+  projectIds: text("project_ids").notNull().default(""),
+  updatedAt: timestamp("updated_at").notNull().defaultNow(),
+});
+
+export const huntVisits = pgTable("hunt_visits", {
+  id: text("id").primaryKey(),
+  familyId: text("family_id")
+    .notNull()
+    .references(() => families.id, { onDelete: "cascade" }),
+  projectId: text("project_id")
+    .notNull()
+    .references(() => huntProjects.id, { onDelete: "cascade" }),
+  visitedOn: date("visited_on").notNull(),
+  startsAt: timestamp("starts_at"),
+  place: text("place").notNull().default(""),
+  summary: text("summary").notNull().default(""),
+  appointmentId: text("appointment_id").references(() => familyAppointments.id, {
+    onDelete: "set null",
+  }),
+  createdBy: text("created_by")
+    .notNull()
+    .references(() => user.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const huntVisitPhotos = pgTable("hunt_visit_photos", {
+  id: text("id").primaryKey(),
+  visitId: text("visit_id")
+    .notNull()
+    .references(() => huntVisits.id, { onDelete: "cascade" }),
+  r2Key: text("r2_key").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
