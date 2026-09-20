@@ -1,4 +1,4 @@
-import { asc, eq } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 import { getDb, getSql } from "@/lib/db/client";
 import { huntBankApps, huntLoanDocs } from "@/lib/db/schema";
 import { DEFAULT_BANKS, DEFAULT_LOAN_DOCS } from "./default-data";
@@ -89,6 +89,25 @@ export async function ensureLoanTrackerSeeded(familyId: string, userId: string) 
 
     if (docsToInsert.length > 0) {
       await db.insert(huntLoanDocs).values(docsToInsert);
+    }
+
+    // Update titles and descriptions for existing docs if they changed
+    for (const t of DEFAULT_LOAN_DOCS) {
+      await db
+        .update(huntLoanDocs)
+        .set({
+          title: t.title,
+          description: t.description,
+          category: t.category,
+          sortOrder: t.sortOrder,
+        })
+        .where(
+          and(
+            eq(huntLoanDocs.familyId, familyId),
+            eq(huntLoanDocs.target, t.target),
+            eq(huntLoanDocs.docKey, t.docKey),
+          ),
+        );
     }
 
     // Check existing banks
