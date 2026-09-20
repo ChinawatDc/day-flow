@@ -1,4 +1,4 @@
-import { CalendarDays, MessageCircle } from "lucide-react";
+import { CalendarDays, FileCheck, Home, MessageCircle } from "lucide-react";
 import { AmountText } from "@/components/notebook/amount-text";
 import { AppShell } from "@/components/app-shell";
 import { MenuCards } from "@/components/nav/menu-cards";
@@ -51,6 +51,18 @@ export default async function MenuPage() {
             title: "ครอบครัว",
             items: [
               { ...byId.family, hint: "บ้านและสมาชิก" },
+              {
+                href: "/family/hunt/loan",
+                label: "เตรียมยื่นกู้บ้าน",
+                hint: "Venue Portrait · กู้ร่วม 4 แบงก์",
+                icon: FileCheck,
+              },
+              {
+                href: "/family/hunt",
+                label: "เลือกบ้าน",
+                hint: "ตารางโครงการ · เทียบ · แผนที่",
+                icon: Home,
+              },
               {
                 href: "/family?tab=plan",
                 label: "วางแผนบ้าน",

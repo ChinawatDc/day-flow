@@ -427,3 +427,53 @@ export const huntVisitPhotos = pgTable("hunt_visit_photos", {
   r2Key: text("r2_key").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
+
+export const huntLoanDocs = pgTable(
+  "hunt_loan_docs",
+  {
+    id: text("id").primaryKey(),
+    familyId: text("family_id")
+      .notNull()
+      .references(() => families.id, { onDelete: "cascade" }),
+    docKey: text("doc_key").notNull(),
+    category: text("category").notNull(), // 'personal' | 'income' | 'debt' | 'property'
+    target: text("target").notNull(), // 'primary' | 'co_borrower' | 'shared'
+    title: text("title").notNull(),
+    description: text("description").notNull().default(""),
+    status: text("status").notNull().default("pending"), // 'pending' | 'ready' | 'submitted'
+    note: text("note").notNull().default(""),
+    fileUrl: text("file_url"),
+    sortOrder: integer("sort_order").notNull().default(0),
+    updatedBy: text("updated_by")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("hunt_loan_doc_family_target_key").on(t.familyId, t.target, t.docKey)],
+);
+
+export const huntBankApps = pgTable(
+  "hunt_bank_apps",
+  {
+    id: text("id").primaryKey(),
+    familyId: text("family_id")
+      .notNull()
+      .references(() => families.id, { onDelete: "cascade" }),
+    bankCode: text("bank_code").notNull(), // 'scb' | 'ghb' | 'ktb' | 'kbank'
+    bankName: text("bank_name").notNull(),
+    color: text("color").notNull().default("#4b5563"),
+    status: text("status").notNull().default("preparing"), // 'preparing' | 'submitted' | 'appraisal' | 'approved' | 'rejected'
+    submittedAt: date("submitted_at"),
+    approvedAmountSatang: integer("approved_amount_satang"),
+    interestRatePercent: text("interest_rate_percent").notNull().default(""),
+    monthlyPaymentSatang: integer("monthly_payment_satang"),
+    contactPerson: text("contact_person").notNull().default(""),
+    contactPhone: text("contact_phone").notNull().default(""),
+    note: text("note").notNull().default(""),
+    updatedBy: text("updated_by")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    updatedAt: timestamp("updated_at").notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("hunt_bank_app_family_bank").on(t.familyId, t.bankCode)],
+);

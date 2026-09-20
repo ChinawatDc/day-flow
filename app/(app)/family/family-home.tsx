@@ -92,15 +92,28 @@ export async function FamilyHome({
         ]}
       >
         <div className="grid gap-4">
-          <Link href="/family/hunt" className="hh-entry">
-            <p className="text-sm font-medium" style={{ color: "oklch(0.74 0.02 250)" }}>
-              โมดูลร่วม
-            </p>
-            <p className="mt-1 font-[family-name:var(--font-title)] text-lg font-semibold">เลือกบ้าน</p>
-            <p className="mt-1 text-sm" style={{ color: "oklch(0.82 0.1 82)" }}>
-              ตารางโครงการ · เทียบราคา · นัดดู
-            </p>
-          </Link>
+          <div className="grid gap-2 sm:grid-cols-2">
+            <Link href="/family/hunt" className="hh-entry">
+              <p className="text-sm font-medium" style={{ color: "oklch(0.74 0.02 250)" }}>
+                โมดูลร่วม
+              </p>
+              <p className="mt-1 font-[family-name:var(--font-title)] text-lg font-semibold">เลือกบ้าน</p>
+              <p className="mt-1 text-sm" style={{ color: "oklch(0.82 0.1 82)" }}>
+                ตารางโครงการ · เทียบราคา · นัดดู
+              </p>
+            </Link>
+            <Link href="/family/hunt/loan" className="hh-entry border-[var(--hh-gold)]/40 bg-[oklch(0.24_0.03_75)]">
+              <div className="flex items-center gap-1 text-xs font-semibold text-[var(--hh-gold)]">
+                <span>⭐ โครงการที่เลือก</span>
+              </div>
+              <p className="mt-1 font-[family-name:var(--font-title)] text-lg font-semibold">
+                Venue Portrait Westgate
+              </p>
+              <p className="mt-1 text-sm" style={{ color: "oklch(0.88 0.08 85)" }}>
+                เตรียมเอกสารกู้ร่วม 4 แบงก์ (SCB, ธอส, KTB, KBank)
+              </p>
+            </Link>
+          </div>
           {role === "owner" ? (
             <>
               <div className="df-card p-4">
