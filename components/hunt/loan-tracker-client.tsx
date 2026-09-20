@@ -112,17 +112,30 @@ export function LoanTrackerClient({
         </div>
 
         {/* Quick Tips */}
+        {/* Quick Tips from SC Asset & SCB */}
         <div className="mt-4 grid gap-2 rounded-xl border border-[var(--hh-line)] bg-[var(--hh-canvas)]/60 p-3 text-xs text-[var(--hh-muted)] sm:grid-cols-2">
           <div className="flex items-start gap-2">
             <Clock className="mt-0.5 size-3.5 shrink-0 text-amber-500" />
             <span>
-              <strong>หนังสือรับรองเงินเดือน:</strong> ต้องมีอายุไม่เกิน 30 วันนับถึงวันยื่นแบงก์
+              <strong>หนังสือรับรองเงินเดือน:</strong> อายุไม่เกิน 30 วัน (*กรณีกู้สวัสดิการ ธอส. ระบุ &ldquo;กู้สวัสดิการแบบไม่มีเงินฝาก&rdquo;)
             </span>
           </div>
           <div className="flex items-start gap-2">
             <FileText className="mt-0.5 size-3.5 shrink-0 text-blue-500" />
             <span>
-              <strong>Statement บัญชีเงินเดือน:</strong> ย้อนหลัง 6 เดือนต่อเนื่อง พร้อมตราประทับ
+              <strong>Statement & สลิปเงินเดือน 6 เดือน:</strong> ขอเพิ่มเดือนที่โบนัสเข้าด้วย พร้อมประทับตราธนาคาร
+            </span>
+          </div>
+          <div className="flex items-start gap-2">
+            <CheckCircle2 className="mt-0.5 size-3.5 shrink-0 text-emerald-500" />
+            <span>
+              <strong>การเซ็นสำเนา:</strong> เซ็นกำกับรับรองสำเนาถูกต้องทุกใบ ทั้งผู้กู้หลักและผู้กู้ร่วม (คู่สมรส)
+            </span>
+          </div>
+          <div className="flex items-start gap-2">
+            <Sparkles className="mt-0.5 size-3.5 shrink-0 text-[var(--hh-gold)]" />
+            <span>
+              <strong>ภาษี & เงินออม:</strong> ภ.ง.ด.90/91 ปี 68, ทวิ 50 และทรัพย์สินปลอดภาระ (ถ้ามีช่วยให้ผ่านง่ายขึ้น)
             </span>
           </div>
         </div>
