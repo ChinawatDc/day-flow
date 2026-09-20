@@ -9,9 +9,13 @@ const globalForDb = globalThis as unknown as {
   dayFlowDb?: AppDb;
 };
 
+export function getSql() {
+  return neon(env.databaseUrl);
+}
+
 export function getDb() {
   if (!globalForDb.dayFlowDb) {
-    const sql = neon(env.databaseUrl);
+    const sql = getSql();
     globalForDb.dayFlowDb = drizzle(sql, { schema });
   }
   return globalForDb.dayFlowDb;
