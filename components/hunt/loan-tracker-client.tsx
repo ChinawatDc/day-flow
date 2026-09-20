@@ -227,7 +227,50 @@ export function LoanTrackerClient({
         </div>
       </section>
 
-      {/* 2. Bank Selection Cards (คลิกเพื่อเลือกดูและอัปเดตแต่ละธนาคาร) */}
+      {/* 2. รายการเอกสารของผู้พัฒนา (SC Asset) ในวันทำสัญญา (ตารางแสดงรายการ) */}
+      <section className="rounded-2xl border border-[var(--hh-line)] bg-[var(--hh-surface)] p-5 shadow-[var(--shadow-sm)]">
+        <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <div className="flex items-center gap-1.5 font-[family-name:var(--font-title)] text-lg font-bold text-[var(--hh-ink)]">
+              <Building2 className="size-5 text-[var(--hh-gold)]" />
+              รายการเอกสารของผู้พัฒนา (SC Asset) ในวันทำสัญญา
+            </div>
+            <p className="text-xs text-[var(--hh-muted)] mt-1">
+              เกณฑ์เอกสารพิจารณาสินเชื่อในวันทำสัญญา ทั้งผู้กู้หลักและผู้กู้ร่วม <em>(เซ็นชื่อรับรองสำเนาถูกต้องทุกใบ)</em>
+            </p>
+          </div>
+          <span className="self-start sm:self-auto rounded-full bg-[var(--hh-gold-soft)] border border-[var(--hh-gold)]/30 px-2.5 py-0.5 text-xs font-semibold text-[var(--hh-gold)]">
+            SC Asset Official Checklist
+          </span>
+        </div>
+
+        <div className="mt-4 overflow-x-auto rounded-xl border border-[var(--hh-line)]">
+          <table className="hh-table text-xs">
+            <thead>
+              <tr className="bg-[var(--hh-canvas)]">
+                <th className="w-12 text-center font-bold">ลำดับ</th>
+                <th className="min-w-[190px] font-bold">เอกสารที่ต้องเตรียม</th>
+                <th className="min-w-[180px] font-bold text-emerald-700">กรณีรายได้ประจำ (พนักงานบริษัท)</th>
+                <th className="min-w-[180px] font-bold text-[var(--hh-muted)]">กรณีเจ้าของกิจการ</th>
+                <th className="min-w-[150px] font-bold text-[var(--hh-gold)]">หมายเหตุ</th>
+              </tr>
+            </thead>
+            <tbody>
+              {SC_ASSET_REQUIREMENTS.map((item) => (
+                <tr key={item.no}>
+                  <td className="text-center font-bold text-[var(--hh-muted)] bg-[var(--hh-canvas)]/40">{item.no}</td>
+                  <td className="font-semibold text-[var(--hh-ink)]">{item.doc}</td>
+                  <td className="text-[var(--hh-ink)] font-medium bg-emerald-500/[0.02]">{item.employed}</td>
+                  <td className="text-[var(--hh-muted)]">{item.business}</td>
+                  <td className="text-[var(--hh-gold)] font-medium">{item.remark}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      {/* 3. Bank Selection Cards (คลิกเพื่อเลือกดูและอัปเดตแต่ละธนาคาร) */}
       <section className="grid gap-3">
         <div className="flex items-center justify-between">
           <div>
@@ -456,46 +499,6 @@ export function LoanTrackerClient({
             )}
           </div>
         )}
-      </section>
-
-      {/* 3. SC Asset Checklist Reference Table (ตารางแสดงรายการของผู้พัฒนาโครงการ) */}
-      <section className="rounded-2xl border border-[var(--hh-line)] bg-[var(--hh-surface)] p-5 shadow-[var(--shadow-sm)]">
-        <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <div className="flex items-center gap-1.5 font-[family-name:var(--font-title)] text-base font-bold text-[var(--hh-ink)]">
-              <Building2 className="size-4 text-[var(--hh-gold)]" />
-              รายการเอกสารของผู้พัฒนา (SC Asset) ในวันทำสัญญา
-            </div>
-            <p className="text-xs text-[var(--hh-muted)]">
-              เกณฑ์เอกสารพิจารณาสินเชื่อในวันทำสัญญา ทั้งผู้กู้หลักและผู้กู้ร่วม (เซ็นชื่อรับรองสำเนาถูกต้องทุกใบ)
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-4 overflow-x-auto">
-          <table className="hh-table text-xs">
-            <thead>
-              <tr className="bg-[var(--hh-canvas)]">
-                <th className="w-10 text-center">ลำดับ</th>
-                <th className="min-w-[180px]">เอกสารที่ต้องเตรียม</th>
-                <th className="min-w-[170px]">กรณีรายได้ประจำ (พนักงานบริษัท)</th>
-                <th className="min-w-[170px]">กรณีเจ้าของกิจการ</th>
-                <th className="min-w-[140px]">หมายเหตุ</th>
-              </tr>
-            </thead>
-            <tbody>
-              {SC_ASSET_REQUIREMENTS.map((item) => (
-                <tr key={item.no}>
-                  <td className="text-center font-semibold text-[var(--hh-muted)]">{item.no}</td>
-                  <td className="font-medium text-[var(--hh-ink)]">{item.doc}</td>
-                  <td className="text-[var(--hh-ink)]">{item.employed}</td>
-                  <td className="text-[var(--hh-muted)]">{item.business}</td>
-                  <td className="text-[var(--hh-gold)]">{item.remark}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
       </section>
 
       {/* 4. Split Screen Checklists: แบ่งของผม (ผู้กู้หลัก) & ของแฟน (ผู้กู้ร่วม) อย่างละแถบ/ครึ่งหน้า */}
