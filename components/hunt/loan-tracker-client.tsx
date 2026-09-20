@@ -59,6 +59,8 @@ const SC_ASSET_REQUIREMENTS = [
   {
     no: 1,
     doc: "สำเนาบัตรประจำตัวประชาชน / บัตรข้าราชการ",
+    primaryKey: "primary_id_card",
+    coKey: "co_id_card",
     employed: "1 ชุด (เซ็นกำกับ)",
     business: "1 ชุด (เซ็นกำกับ)",
     remark: "ทั้งผู้กู้หลัก และ ผู้กู้ร่วม",
@@ -66,6 +68,8 @@ const SC_ASSET_REQUIREMENTS = [
   {
     no: 2,
     doc: "สำเนาทะเบียนบ้าน",
+    primaryKey: "primary_house_reg",
+    coKey: "co_house_reg",
     employed: "1 ชุด (ทุกหน้าที่มีคนอยู่)",
     business: "1 ชุด (ทุกหน้าที่มีคนอยู่)",
     remark: "ทั้งผู้กู้หลัก และ ผู้กู้ร่วม",
@@ -73,6 +77,8 @@ const SC_ASSET_REQUIREMENTS = [
   {
     no: 3,
     doc: "สำเนาทะเบียนสมรส / ใบหย่า / ใบมรณบัตร (ถ้ามี)",
+    primaryKey: "primary_marriage_cert",
+    coKey: "co_marriage_or_proof",
     employed: "1 ชุด",
     business: "1 ชุด",
     remark: "กรณีสมรสจดทะเบียน / มีบุตร",
@@ -80,6 +86,8 @@ const SC_ASSET_REQUIREMENTS = [
   {
     no: 4,
     doc: "สำเนาใบเปลี่ยนชื่อ-สกุล (ถ้ามี)",
+    primaryKey: "primary_name_change",
+    coKey: "co_name_change",
     employed: "1 ชุด (เซ็นกำกับ)",
     business: "1 ชุด (เซ็นกำกับ)",
     remark: "ถ้าเคยเปลี่ยนชื่อ/นามสกุล",
@@ -87,6 +95,8 @@ const SC_ASSET_REQUIREMENTS = [
   {
     no: 5,
     doc: "หนังสือรับรองเงินเดือน และสลิปเงินเดือน",
+    primaryKey: "primary_salary_cert",
+    coKey: "co_salary_cert",
     employed: "สลิป 6 เดือน + หนังสือรับรอง (อายุไม่เกิน 30 วัน)",
     business: "สำเนาบัญชีกระแสรายวัน/ออมทรัพย์ ย้อนหลัง 6 เดือน",
     remark: "ธอส. ระบุ 'กู้สวัสดิการแบบไม่มีเงินฝาก'",
@@ -94,6 +104,8 @@ const SC_ASSET_REQUIREMENTS = [
   {
     no: 6,
     doc: "Statement บัญชีเงินเดือนย้อนหลัง 6 เดือน",
+    primaryKey: "primary_bank_statement",
+    coKey: "co_bank_statement",
     employed: "ย้อนหลัง 6 เดือน (ขอเพิ่มเดือนโบนัสเข้า)",
     business: "งบการเงินกิจการย้อนหลัง 3 ปี (ถ้ามี)",
     remark: "ประทับตราธนาคาร",
@@ -101,6 +113,8 @@ const SC_ASSET_REQUIREMENTS = [
   {
     no: 7,
     doc: "สำเนาสมุดเงินฝากส่วนตัว / บัญชีเงินออม (ถ้ามี)",
+    primaryKey: "primary_savings_assets",
+    coKey: "co_savings_assets",
     employed: "สมุดเงินฝาก / สลากออมทรัพย์",
     business: "ทะเบียนการค้า / ทะเบียนพาณิชย์",
     remark: "แสดงความมั่นคงทางการเงิน",
@@ -108,6 +122,8 @@ const SC_ASSET_REQUIREMENTS = [
   {
     no: 8,
     doc: "เอกสารแสดงฐานะทางการเงิน / ทรัพย์สินปลอดภาระ (ถ้ามี)",
+    primaryKey: "primary_savings_assets",
+    coKey: "co_savings_assets",
     employed: "ทะเบียนรถ / โฉนดที่ดินปลอดภาระ",
     business: "ใบหักภาษี ณ ที่จ่าย / ภ.ง.ด. / บิลซื้อขาย",
     remark: "ช่วยเพิ่มโอกาสอนุมัติ",
@@ -115,6 +131,8 @@ const SC_ASSET_REQUIREMENTS = [
   {
     no: 9,
     doc: "เอกสารการเสียภาษี (ภ.ง.ด. 90/91 ปี 68 หรือ ทวิ 50)",
+    primaryKey: "primary_tax_pnd90_91",
+    coKey: "co_tax_pnd90_91",
     employed: "ภ.ง.ด.90/91 หรือ ทวิ 50",
     business: "ภาพถ่ายกิจการ / สัญญาเช่า / สต็อกสินค้า",
     remark: "ยืนยันรายได้สุทธิรอบปี",
@@ -122,6 +140,8 @@ const SC_ASSET_REQUIREMENTS = [
   {
     no: 10,
     doc: "สำเนาใบอนุญาตประกอบวิชาชีพ (ถ้ามี)",
+    primaryKey: "primary_license_prof",
+    coKey: "co_license_prof",
     employed: "แพทย์, วิศวกร, ทนายความ, สถาปนิก",
     business: "แพทย์, วิศวกร, ทนายความ, สถาพยาบาล",
     remark: "ได้รับเรทดอกเบี้ยวิชาชีพพิเศษ",
@@ -249,6 +269,16 @@ export function LoanTrackerClient({
             <thead>
               <tr className="bg-[var(--hh-canvas)]">
                 <th className="w-12 text-center font-bold">ลำดับ</th>
+                <th className="w-24 text-center font-bold text-sky-700 bg-sky-500/[0.05]">
+                  <div className="flex items-center justify-center gap-1">
+                    <span>ของผม</span>
+                  </div>
+                </th>
+                <th className="w-24 text-center font-bold text-rose-700 bg-rose-500/[0.05]">
+                  <div className="flex items-center justify-center gap-1">
+                    <span>ของแฟน</span>
+                  </div>
+                </th>
                 <th className="min-w-[190px] font-bold">เอกสารที่ต้องเตรียม</th>
                 <th className="min-w-[180px] font-bold text-emerald-700">กรณีรายได้ประจำ (พนักงานบริษัท)</th>
                 <th className="min-w-[180px] font-bold text-[var(--hh-muted)]">กรณีเจ้าของกิจการ</th>
@@ -256,15 +286,74 @@ export function LoanTrackerClient({
               </tr>
             </thead>
             <tbody>
-              {SC_ASSET_REQUIREMENTS.map((item) => (
-                <tr key={item.no}>
-                  <td className="text-center font-bold text-[var(--hh-muted)] bg-[var(--hh-canvas)]/40">{item.no}</td>
-                  <td className="font-semibold text-[var(--hh-ink)]">{item.doc}</td>
-                  <td className="text-[var(--hh-ink)] font-medium bg-emerald-500/[0.02]">{item.employed}</td>
-                  <td className="text-[var(--hh-muted)]">{item.business}</td>
-                  <td className="text-[var(--hh-gold)] font-medium">{item.remark}</td>
-                </tr>
-              ))}
+              {SC_ASSET_REQUIREMENTS.map((item) => {
+                const primaryDoc = optimisticDocs.find((d) => d.target === "primary" && d.docKey === item.primaryKey);
+                const coDoc = optimisticDocs.find((d) => d.target === "co_borrower" && d.docKey === item.coKey);
+                const isPrimaryReady = primaryDoc ? (primaryDoc.status === "ready" || primaryDoc.status === "submitted") : false;
+                const isCoReady = coDoc ? (coDoc.status === "ready" || coDoc.status === "submitted") : false;
+
+                return (
+                  <tr key={item.no} className="hover:bg-[var(--hh-surface-2)]/30 transition-colors">
+                    <td className="text-center font-bold text-[var(--hh-muted)] bg-[var(--hh-canvas)]/40">{item.no}</td>
+                    {/* Checkbox ของผม (ผู้กู้หลัก) */}
+                    <td className="text-center bg-sky-500/[0.02]">
+                      {primaryDoc ? (
+                        <button
+                          type="button"
+                          onClick={() => handleToggleDoc(primaryDoc.id, primaryDoc.status)}
+                          className={cn(
+                            "inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[11px] font-semibold border transition-all cursor-pointer",
+                            isPrimaryReady
+                              ? "bg-sky-500 text-white border-sky-600 shadow-xs"
+                              : "bg-[var(--hh-surface)] text-[var(--hh-muted)] border-[var(--hh-line)] hover:border-sky-400 hover:text-sky-600"
+                          )}
+                          title={isPrimaryReady ? "ทำเครื่องหมายว่ายังไม่เสร็จ" : "ทำเครื่องหมายว่าเตรียมแล้ว"}
+                        >
+                          <span className={cn(
+                            "size-3.5 rounded flex items-center justify-center text-[10px]",
+                            isPrimaryReady ? "bg-white text-sky-600 font-black" : "border border-current"
+                          )}>
+                            {isPrimaryReady ? "✓" : ""}
+                          </span>
+                          <span>{isPrimaryReady ? "พร้อม" : "ยังไม่เสร็จ"}</span>
+                        </button>
+                      ) : (
+                        <span className="text-[var(--hh-muted)]">—</span>
+                      )}
+                    </td>
+                    {/* Checkbox ของแฟน (ผู้กู้ร่วม) */}
+                    <td className="text-center bg-rose-500/[0.02]">
+                      {coDoc ? (
+                        <button
+                          type="button"
+                          onClick={() => handleToggleDoc(coDoc.id, coDoc.status)}
+                          className={cn(
+                            "inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[11px] font-semibold border transition-all cursor-pointer",
+                            isCoReady
+                              ? "bg-rose-500 text-white border-rose-600 shadow-xs"
+                              : "bg-[var(--hh-surface)] text-[var(--hh-muted)] border-[var(--hh-line)] hover:border-rose-400 hover:text-rose-600"
+                          )}
+                          title={isCoReady ? "ทำเครื่องหมายว่ายังไม่เสร็จ" : "ทำเครื่องหมายว่าเตรียมแล้ว"}
+                        >
+                          <span className={cn(
+                            "size-3.5 rounded flex items-center justify-center text-[10px]",
+                            isCoReady ? "bg-white text-rose-600 font-black" : "border border-current"
+                          )}>
+                            {isCoReady ? "✓" : ""}
+                          </span>
+                          <span>{isCoReady ? "พร้อม" : "ยังไม่เสร็จ"}</span>
+                        </button>
+                      ) : (
+                        <span className="text-[var(--hh-muted)]">—</span>
+                      )}
+                    </td>
+                    <td className="font-semibold text-[var(--hh-ink)]">{item.doc}</td>
+                    <td className="text-[var(--hh-ink)] font-medium bg-emerald-500/[0.02]">{item.employed}</td>
+                    <td className="text-[var(--hh-muted)]">{item.business}</td>
+                    <td className="text-[var(--hh-gold)] font-medium">{item.remark}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
